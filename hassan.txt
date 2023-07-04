@@ -10,3 +10,4 @@ A
 A
 by Hassan hhhhhhhhh
 and this added by ayoub
+ok wtf wher is malloc
