@@ -27,5 +27,4 @@ fclean : clean
 	@rm -f minishell
 
 re : fclean all
-
 .PHONY:		all clean fclean re
