@@ -1,7 +1,7 @@
 CFLAGS = -Werror -Wextra -Wall
 CC = gcc
 RM = rm -rf
-SRC = main.c
+SRC = main.c utils.c
 OBJ = ${SRC:.c=.o}
 LIBS = -lreadline
 

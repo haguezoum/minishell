@@ -1,6 +1,7 @@
 #include "minishell.h"
 
-void display_prompt() {
+void display_prompt()
+{
     // Display the prompt and read user input
     char *line = readline(PROMPT);
 
@@ -9,6 +10,14 @@ void display_prompt() {
     {
         printf("exit\n");
         exit(1);
+    }
+    
+    if (ft_strcmp(line, "") == 0 || *line == ' ' || *line == '\t')
+    {
+        // Check if the input line contains only spaces or tabs
+        // Return from the loop and display a new prompt
+        free(line);
+        return;
     }
 
     // Add non-empty input to the command history
@@ -32,4 +41,3 @@ int main() {
      */
     return 0;
 }
-

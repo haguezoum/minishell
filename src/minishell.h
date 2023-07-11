@@ -16,4 +16,7 @@
  */
 
 #define PROMPT "\x1B[37mminishell\x1B[31m_gpt\x1B[0m\x1B[33m~>\x1B[0m "
+
+int ft_strcmp(const char *s1, const char *s2);
+
 #endif
