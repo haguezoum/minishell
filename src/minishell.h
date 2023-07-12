@@ -19,4 +19,47 @@
 
 int ft_strcmp(const char *s1, const char *s2);
 
+enum e_token {
+    WORD,
+    WHITE_SPACE = ' ',
+    NEW_LINE = '\n',
+    QUOTE = '\'',
+    DOUBLE_QUOTE = '\"',
+    ESCAPE = '\\',
+    ENV = '$',
+    PIPE = '|',
+    REDIR_IN = '<',
+    REDIR_OUT = '>',
+    HERE_DOC,
+    DREDIR_OUT
+};
+
+enum e_state {
+    IN_DOUBLE_QUOTES,
+    IN_SINGLE_QUOTES,
+    DEFAULT
+};
+
+typedef struct s_global {
+    char *content;
+    int size;
+    enum e_token type;
+    enum e_state token_state;
+    struct s_global *next_token;
+    struct s_global *prev_token;
+} t_global;
+
+typedef struct s_lexer {
+    t_global *head;
+    t_global *last;
+    int count;
+} t_lexer;
+
+void free_lexer(t_lexer *lexer);
+void add_token(t_lexer *lexer, t_global *token);
+t_global *new_token(char *content, int size, enum e_token type, enum e_state token_state);
+t_lexer *init_lexer(t_lexer *lexer);
+t_lexer *lexer(char *line);
+void print_list(t_lexer *lexer);
+
 #endif

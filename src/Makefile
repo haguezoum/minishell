@@ -1,7 +1,7 @@
-CFLAGS = -Werror -Wextra -Wall
+CFLAGS = 
 CC = gcc
 RM = rm -rf
-SRC = main.c utils.c
+SRC = main.c utils.c lexer_utils.c lexer.c
 OBJ = ${SRC:.c=.o}
 LIBS = -lreadline
 

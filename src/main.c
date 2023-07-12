@@ -26,6 +26,11 @@ void display_prompt()
         add_history(line);
     }
 
+    // Call the lexer function
+    t_lexer *lexerObj = lexer(line);
+    print_list(lexerObj);
+    free_lexer(lexerObj);
+
     // Free the memory allocated by readline
     free(line);
 }
@@ -41,3 +46,4 @@ int main() {
      */
     return 0;
 }
+
