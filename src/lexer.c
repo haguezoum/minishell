@@ -98,7 +98,7 @@ int tokenize_lexeme(t_lexer *lexer, char *line, int i, enum e_state *state)
 
     return i;
 }
-
+/*
 t_lexer *lexer(char *line)
 {
     int i;
@@ -115,5 +115,23 @@ t_lexer *lexer(char *line)
     }
     free(line);
     return (lexer);
+}
+*/
+
+t_lexer *lexer(char *line)
+{
+    int i;
+    t_lexer *lexer;
+    enum e_state state;
+
+    i = 0;
+    state = DEFAULT;
+    lexer = init_lexer(lexer);
+    if (lexer)
+    {
+        while (line[i])
+            i = tokenize_lexeme(lexer, line, i, &state);
+    }
+    return lexer;
 }
 
