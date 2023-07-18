@@ -46,3 +46,23 @@ void free_lexer(t_lexer *lexer) {
     free(lexer);
 }
 
+void print_list(t_lexer *lexer)
+{
+    t_global *token;
+
+    token = lexer->head;
+    while (token)
+    {
+        int i = 0;
+        printf("content: ");
+        while (i < token->size)
+            putchar(token->content[i++]);
+        printf(", size: %i", token->size);
+        printf(", token_state: %i", token->token_state);
+        printf(", type: %i\n", token->type);
+
+        token = token->next_token;
+    }
+}
+
+

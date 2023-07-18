@@ -5,7 +5,7 @@
 # include "libft/libft.h"
 # include <readline/history.h>
 # include <readline/readline.h>
-
+# include "token.h"
 
 
 /*
@@ -18,9 +18,9 @@
 #define PROMPT "\x1B[37mminishell\x1B[31m_gpt\x1B[0m\x1B[33m~>\x1B[0m "
 
 int ft_strcmp(const char *s1, const char *s2);
-
+/*
 enum e_token {
-    WORD,
+    WORD = -1,
     WHITE_SPACE = ' ',
     NEW_LINE = '\n',
     QUOTE = '\'',
@@ -34,6 +34,7 @@ enum e_token {
     DREDIR_OUT
 };
 
+*/
 enum e_state {
     IN_DOUBLE_QUOTES,
     IN_SINGLE_QUOTES,
@@ -61,5 +62,7 @@ t_global *new_token(char *content, int size, enum e_token type, enum e_state tok
 t_lexer *init_lexer(t_lexer *lexer);
 t_lexer *lexer(char *line);
 void print_list(t_lexer *lexer);
+void print_list(t_lexer *lexer);
+
 
 #endif
