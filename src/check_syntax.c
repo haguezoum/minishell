@@ -1,28 +1,49 @@
 #include "minishell.h"
 
-t_global *skip_spaces(t_global *ptr, int opt) {
-    while (ptr && ptr->type == WHITE_SPACE) {
-        if (opt)
-            ptr = ptr->next_token;
+// Function to skip over white spaces in the token list in a given direction.
+// Parameters:
+//   - current_token: A pointer to the current token in the list.
+//   - direction: The direction to skip white spaces (1 for forward, 0 for backward).
+// Returns: A pointer to the next non-white space token in the specified direction.
+t_global *skip_whitespace(t_global *current_token, int direction) {
+    while (current_token && current_token->type == WHITE_SPACE) {
+        if (direction)
+            current_token = current_token->next_token;
         else
-            ptr = ptr->prev_token;
+            current_token = current_token->prev_token;
     }
-    return ptr;
+    return current_token;
 }
 
+// Function to check if a token type is an operator (e.g., pipe, redirection).
+// Parameter:
+//   - type: The token type to check.
+// Returns: 1 if the token type is an operator, 0 otherwise.
 int is_operator(enum e_token type) {
     return (type == PIPE || type == REDIR_IN || type == REDIR_OUT || type == DREDIR_OUT);
 }
 
+// Function to check if a token type is a valid word (e.g., word or environment variable).
+// Parameter:
+//   - type: The token type to check.
+// Returns: 1 if the token type is a valid word, 0 otherwise.
 int is_valid_word(enum e_token type) {
     return (type == WORD || type == ENV);
 }
 
+// Function to check if a token type is a valid character (e.g., white space, quote, escape).
+// Parameter:
+//   - type: The token type to check.
+// Returns: 1 if the token type is a valid character, 0 otherwise.
 int is_valid_char(enum e_token type) {
     return (type == WHITE_SPACE || type == NEW_LINE || type == QUOTE || type == DOUBLE_QUOTE ||
             type == ESCAPE || is_operator(type) || is_valid_word(type));
 }
 
+// Function to display a syntax error message to standard error.
+// Parameter:
+//   - msg: The error message to display.
+// Returns: EXIT_FAILURE to indicate an error.
 int syntax_error(const char *msg) {
     write(STDERR_FILENO, "minishell: syntax error: ", ft_strlen("minishell: syntax error: "));
     write(STDERR_FILENO, msg, ft_strlen(msg));
@@ -30,82 +51,110 @@ int syntax_error(const char *msg) {
     return EXIT_FAILURE;
 }
 
-int pipe_error(t_global *ptr) {
-    t_global *prev = skip_spaces(ptr->prev_token, 0);
-    t_global *next = skip_spaces(ptr->next_token, 1);
+// Function to check for syntax errors related to the pipe operator.
+// Parameter:
+//   - current_token: A pointer to the current token in the token list.
+// Returns: EXIT_SUCCESS if there are no syntax errors, EXIT_FAILURE otherwise.
+int check_pipe_error(t_global *current_token) {
+    t_global *prev_token = skip_whitespace(current_token->prev_token, 0);
+    t_global *next_token = skip_whitespace(current_token->next_token, 1);
 
-    if ((!prev || !next) || (prev->type != WORD && next->type != WORD && !is_operator(next->type)))
+    // Check if the pipe operator is surrounded by valid words or other operators.
+    if ((!prev_token || !next_token) || (prev_token->type != WORD && next_token->type != WORD && !is_operator(next_token->type)))
         return EXIT_FAILURE;
 
     return EXIT_SUCCESS;
 }
 
-int redir_error(t_global *ptr) {
-    t_global *next = skip_spaces(ptr->next_token, 1);
+// Function to check for syntax errors related to redirection operators.
+// Parameter:
+//   - current_token: A pointer to the current token in the token list.
+// Returns: EXIT_SUCCESS if there are no syntax errors, EXIT_FAILURE otherwise.
+int check_redirection_error(t_global *current_token) {
+    t_global *next_token = skip_whitespace(current_token->next_token, 1);
 
-    if (!next || (next->type != WORD && next->type != ENV))
+    // Check if the redirection operator is followed by a valid word or environment variable.
+    if (!next_token || (next_token->type != WORD && next_token->type != ENV))
         return EXIT_FAILURE;
 
     return EXIT_SUCCESS;
 }
 
-
-t_global *check_unclosed_quotes(t_global **ptr, enum e_token type) {
-    while (*ptr) {
-        *ptr = (*ptr)->next_token;
-        if (!*ptr || (*ptr)->type == type)
+// Function to check for unclosed quotes (single or double) in the token list.
+// Parameters:
+//   - current_token: A pointer to the current token in the token list.
+//   - type: The type of quote to check for (QUOTE or DOUBLE_QUOTE).
+// Returns: A pointer to the closing quote token if found, NULL otherwise.
+t_global *check_unclosed_quotes(t_global **current_token, enum e_token type) {
+    while (*current_token) {
+        *current_token = (*current_token)->next_token;
+        // Check if the closing quote is found or if the end of the token list is reached.
+        if (!*current_token || (*current_token)->type == type)
             break;
     }
-    if (!*ptr)
+    // If the end of the token list is reached without finding the closing quote, display an error message.
+    if (!*current_token)
         write(STDERR_FILENO, "minishell: unclosed quotes detected.\n", ft_strlen("minishell: unclosed quotes detected.\n"));
-    return *ptr;
+    return *current_token;
 }
 
-int check_syntax(t_lexer *lexer) {
-    t_global *ptr = lexer->head;
+// Function to check the syntax of the entire command in the token list.
+// Parameter:
+//   - lexer: A pointer to the lexer object containing the token list.
+// Returns: EXIT_SUCCESS if there are no syntax errors, EXIT_FAILURE otherwise.
+int check_command_syntax(t_lexer *lexer) {
+    t_global *current_token = lexer->head;
     t_global *prev_word = NULL;
     int has_operator = 0;
     int has_command = 0;
 
-    while (ptr) {
-        if (ptr->type == PIPE) {
+    while (current_token) {
+        if (current_token->type == PIPE) {
+            // Check for consecutive pipes or pipes at the beginning of a command.
             if (has_operator || !has_command)
-                return syntax_error("unexpected token `|'");
+                return syntax_error("unexpected pipe `|'");
             has_operator = 1;
-        } else if (is_operator(ptr->type)) {
+        } else if (is_operator(current_token->type)) {
+            // Check for redirection errors and set the appropriate flags.
             if (!prev_word)
                 return syntax_error("unexpected token before redirection");
-            t_global *next_token = skip_spaces(ptr->next_token, 1);
+            t_global *next_token = skip_whitespace(current_token->next_token, 1);
             if (!next_token || !is_valid_word(next_token->type))
                 return syntax_error("unexpected token after redirection");
             has_operator = 1;
-            ptr = next_token;
-        } else if (ptr->type == NEW_LINE) {
+            current_token = next_token;
+        } else if (current_token->type == NEW_LINE) {
+            // Check for invalid newlines or newlines at the end of a command.
             if (!prev_word && !has_operator)
                 return syntax_error("unexpected token `newline'");
             has_operator = 0;
             has_command = 0;
-        } else if (ptr->type == DOUBLE_QUOTE || ptr->type == QUOTE) {
-            t_global *quote = check_unclosed_quotes(&ptr, ptr->type);
+        } else if (current_token->type == DOUBLE_QUOTE || current_token->type == QUOTE) {
+            // Check for unclosed quotes and update the current token accordingly.
+            t_global *quote = check_unclosed_quotes(&current_token, current_token->type);
             if (!quote)
                 return EXIT_FAILURE;
-        } else if (ptr->type == ESCAPE) {
-            if (!ptr->next_token)
+        } else if (current_token->type == ESCAPE) {
+            // Skip the escaped character.
+            if (!current_token->next_token)
                 return syntax_error("unexpected token `escape'");
-            ptr = ptr->next_token; // Skip the escaped character
-        } else if (!is_valid_char(ptr->type)) {
+            current_token = current_token->next_token;
+        } else if (!is_valid_char(current_token->type)) {
+            // Check for invalid characters.
             return syntax_error("unexpected token");
         }
 
-        if (is_valid_word(ptr->type)) {
-            prev_word = ptr;
+        if (is_valid_word(current_token->type)) {
+            // Update the previous word pointer and set the appropriate flags.
+            prev_word = current_token;
             has_operator = 0;
             has_command = 1;
         }
 
-        ptr = ptr->next_token;
+        current_token = current_token->next_token;
     }
 
+    // Check for missing commands or trailing operators.
     if (has_operator || !has_command)
         return syntax_error("unexpected end of command");
 

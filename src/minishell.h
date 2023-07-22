@@ -61,6 +61,5 @@ t_global *new_token(char *content, int size, enum e_token type, enum e_state tok
 t_lexer *init_lexer(t_lexer *lexer);
 t_lexer *lexer(char *line);
 void print_list(t_lexer *lexer);
-int check_syntax(t_lexer *lexer);
-
+int check_command_syntax(t_lexer *lexer);
 #endif

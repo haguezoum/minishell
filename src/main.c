@@ -78,7 +78,7 @@ void display_prompt()
     t_lexer *lexerObj = lexer(line);
     
     // Check syntax errors
-    int syntax_result = check_syntax(lexerObj);
+    int syntax_result = check_command_syntax(lexerObj);
     if (syntax_result != EXIT_SUCCESS) {
         // If there are syntax errors, do not proceed with further processing
         free_lexer(lexerObj);
