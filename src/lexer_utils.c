@@ -65,4 +65,3 @@ void print_list(t_lexer *lexer)
     }
 }
 
-

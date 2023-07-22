@@ -7,7 +7,6 @@
 # include <readline/readline.h>
 # include "token.h"
 
-
 /*
  * the ANSI escape sequence \x1B[37m is used to set the color to white for "minishell",
  *  \x1B[31m sets the color to red for "_gpt",
@@ -62,7 +61,6 @@ t_global *new_token(char *content, int size, enum e_token type, enum e_state tok
 t_lexer *init_lexer(t_lexer *lexer);
 t_lexer *lexer(char *line);
 void print_list(t_lexer *lexer);
-void print_list(t_lexer *lexer);
-
+int check_syntax(t_lexer *lexer);
 
 #endif

@@ -1,5 +1,5 @@
 #include "minishell.h"
-
+#include "token.h"
 /*
  *  Helper function to handle single quotes state :
  *  This function handle_single_quotes adds a single quote token to the lexer, 
@@ -58,6 +58,21 @@ void handle_double_quotes(t_lexer *lexer, char *line, int i, enum e_state *state
  *   the add_token function, passing the starting address of the word, its length (i - j), 
  *   the type of token (WORD), and the current state.
  */
+
+/*
+void tokenize_word(t_lexer *lexer, char *line, int i, enum e_state *state) 
+{
+    // Store the starting index of the word
+    int j = i;
+
+    // Loop to find the end of the word
+    while (line[i] && !ft_strchr("\'\"<>|$ \t\v\r\f\n", line[i]))
+        i++;
+
+    // Add the word token to the lexer
+    add_token(lexer, new_token(line + j, i - j, WORD, *state));
+}
+*/
 
 void tokenize_word(t_lexer *lexer, char *line, int i, enum e_state *state) 
 {
@@ -165,6 +180,10 @@ int tokenize_redirection(t_lexer *lexer, char *line, int i, enum e_state *state)
  */
 
 
+int is_whitespace(char c) {
+    return c == ' ' || c == '\t' || c == '\v' || c == '\r' || c == '\f' || c == '\n';
+}
+
 int tokenize_lexeme(t_lexer *lexer, char *line, int i, enum e_state *state) {
     // Check the current character and tokenize accordingly
     if (line[i] == '\'') {
@@ -186,21 +205,60 @@ int tokenize_lexeme(t_lexer *lexer, char *line, int i, enum e_state *state) {
             i = tokenize_env_variable(lexer, line, i, state);
         }
     } else if (ft_strchr("<>|", line[i])) {
-        // If the character is a redirection symbol, tokenize redirection
-        i = tokenize_redirection(lexer, line, i, state);
-    } else if (ft_strchr(" \t\v\r\f\n", line[i])) {
+        // If the character is a redirection symbol or a pipe, tokenize accordingly
+        add_token(lexer, new_token(line + i, 1, line[i], *state));
+        i++;
+    } else if (is_whitespace(line[i])) {
         // If the character is a whitespace, tokenize whitespace
         add_token(lexer, new_token(line + i, 1, WHITE_SPACE, *state));
         i++;
     } else {
-        // Otherwise, tokenize a word
-        tokenize_word(lexer, line, i, state);
-        i++;
+        // Otherwise, tokenize a word and pass the current state
+        int j = i;
+        while (line[i] && !ft_strchr(" \t\v\r\f\n\'\"<>|$", line[i])) {
+            if (*state == DEFAULT && (line[i] == '\'' || line[i] == '\"')) {
+                // Inside a word, set token_state to 0 if we encounter a quote
+                if (line[i] == '\"') {
+                    *state = IN_DOUBLE_QUOTES;
+                } else if (line[i] == '\'') {
+                    *state = IN_SINGLE_QUOTES;
+                }
+                add_token(lexer, new_token(line + j, i - j, WORD, *state));
+                j = i + 1; // Skip the quote
+            }
+            i++;
+        }
+        add_token(lexer, new_token(line + j, i - j, WORD, *state));
+    }
+
+    // Check for HEREDOC (<<)
+    if (line[i] == '<' && line[i + 1] == '<') {
+        add_token(lexer, new_token(line + i, 2, HERE_DOC, *state));
+        i += 2; // Move past the HEREDOC token
+        return i;
+    }
+
+    // Check for DRED (>>)
+    if (line[i] == '>' && line[i + 1] == '>') {
+        add_token(lexer, new_token(line + i, 2,   DREDIR_OUT, *state));
+        i += 2; // Move past the DRED token
+        return i;
+    }
+
+    // Update the state back to DEFAULT when reaching the closing single or double quote
+    if ((*state == IN_DOUBLE_QUOTES && line[i] == '\"') || (*state == IN_SINGLE_QUOTES && line[i] == '\'')) {
+        *state = DEFAULT;
+        add_token(lexer, new_token(line + i, 1, *state, *state)); // Add the closing quote as a separate token
+        i++; // Move past the closing quote
     }
 
     // Return the updated index 'i'
     return i;
 }
+
+
+
+
 
 /*******************************************************************************************************************************/
 

@@ -1,7 +1,7 @@
 CFLAGS = 
 CC = gcc
 RM = rm -rf
-SRC = main.c libft_utils.c lexer_utils.c lexer.c
+SRC = main.c libft_utils.c lexer_utils.c lexer.c check_syntax.c
 OBJ = ${SRC:.c=.o}
 LIBS = -lreadline
 
