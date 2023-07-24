@@ -1,4 +1,4 @@
-/*
+
 #include "minishell.h"
 
 void display_prompt()
@@ -44,8 +44,8 @@ int main() {
 
     return 0;
 }
-*/
 
+/*
 #include "minishell.h"
 
 void display_prompt()
@@ -101,9 +101,6 @@ int main() {
         display_prompt();
     }
 
-    /* This line will not be reached as the loop is infinite,
-     *  but included for completeness
-     */
     return 0;
 }
-
+*/
