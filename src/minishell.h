@@ -63,16 +63,16 @@ t_lexer *lexer(char *line);
 void print_list(t_lexer *lexer);
 int check_command_syntax(t_lexer *lexer);
 /***********************************************************************************/
-
 /*
-    doubly linked list to store the environment
+   doubly linked list to store the environment 
+   variables as a variable/data pairs.
 */
 typedef struct s_environment
 {
-    char                *var_name;
-    char                *data;
-    struct s_environment *next;
-    struct s_environment *prev;
-} t_environment;
+    char                *variable; // The name of the environment variable.
+    char                *data;     // The value of the environment variable.
+    struct s_environment *next;    // Pointer to the next environment variable.
+    struct s_environment *prev;    // Pointer to the previous environment variable.
+
 
 #endif
