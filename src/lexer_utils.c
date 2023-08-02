@@ -46,6 +46,7 @@ void free_lexer(t_lexer *lexer) {
     free(lexer);
 }
 
+/*
 void print_list(t_lexer *lexer)
 {
     t_global *token;
@@ -63,5 +64,31 @@ void print_list(t_lexer *lexer)
 
         token = token->next_token;
     }
+}
+
+
+*/
+
+#include <stdio.h>
+
+void print_list(t_lexer *lexer) {
+    t_global *token;
+
+    printf("\n\x1b[1;33m╔═════════════════════════════════════════╗\x1b[0m\n");
+    printf("\x1b[1;33m║          Lexer Output                   ║\x1b[0m\n");
+    printf("\x1b[1;33m╠═════════════════════════════════════════╣\x1b[0m\n");
+    printf("\x1b[1;33m║   \x1b[1;35mContent   \x1b[0m\x1b[1;33m| \x1b[1;35mSize \x1b[0m\x1b[1;33m| \x1b[1;35mToken State \x1b[0m\x1b[1;33m| \x1b[1;35mType \x1b[0m\x1b[1;33m║\x1b[0m\n");
+    printf("\x1b[1;33m╠═════════════╪═════╪═════════════╪══════╣\x1b[0m\n");
+
+    token = lexer->head;
+    while (token) {
+        printf("\x1b[1;33m║ \x1b[1;32m%-11.*s \x1b[0m\x1b[1;33m│ \x1b[1;36m%3d \x1b[0m\x1b[1;33m│ \x1b[1;36m%9d \x1b[0m\x1b[1;33m│ \x1b[1;35m%4d \x1b[0m\x1b[1;33m║\x1b[0m\n",
+               token->size, token->content,
+               token->size, token->token_state, token->type);
+        printf("\x1b[1;33m╟─────────────┼─────┼─────────────┼──────╢\x1b[0m\n");
+        token = token->next_token;
+    }
+
+    printf("\x1b[1;33m╚═════════════╧═════╧═════════════╧══════╝\x1b[0m\n");
 }
 

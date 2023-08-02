@@ -20,7 +20,7 @@ t_global *skip_whitespace(t_global *current_token, int direction) {
 //   - type: The token type to check.
 // Returns: 1 if the token type is an operator, 0 otherwise.
 int is_operator(enum e_token type) {
-    return (type == PIPE || type == REDIR_IN || type == REDIR_OUT || type == DREDIR_OUT);
+    return (type == PIPE_LINE || type == REDIR_IN || type == REDIR_OUT || type == DREDIR_OUT);
 }
 
 // Function to check if a token type is a valid word (e.g., word or environment variable).
@@ -109,7 +109,7 @@ int check_command_syntax(t_lexer *lexer) {
     int has_command = 0;
 
     while (current_token) {
-        if (current_token->type == PIPE) {
+        if (current_token->type == PIPE_LINE) {
             // Check for consecutive pipes or pipes at the beginning of a command.
             if (has_operator || !has_command)
                 return syntax_error("unexpected pipe `|'");

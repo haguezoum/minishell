@@ -1,5 +1,4 @@
 #include "minishell.h"
-#include "token.h"
 /*
  *  Helper function to handle single quotes state :
  *  This function handle_single_quotes adds a single quote token to the lexer, 
@@ -184,6 +183,7 @@ int is_whitespace(char c) {
     return c == ' ' || c == '\t' || c == '\v' || c == '\r' || c == '\f' || c == '\n';
 }
 
+
 int tokenize_lexeme(t_lexer *lexer, char *line, int i, enum e_state *state) {
     // Check the current character and tokenize accordingly
     if (line[i] == '\'') {
@@ -255,6 +255,9 @@ int tokenize_lexeme(t_lexer *lexer, char *line, int i, enum e_state *state) {
     // Return the updated index 'i'
     return i;
 }
+
+
+
 
 
 

@@ -1,197 +1,150 @@
 #include "minishell.h"
 
-// Create an environment from a given array of strings (variable/data pairs).
-t_environment *initialize_environment(char **env_vars)
-{
-    t_environment *env = (t_environment*)malloc(sizeof(t_environment));
+t_environment *create_env_vars(char **environment_array) {
+    t_environment *env = ft_calloc(sizeof(t_environment), 1);
     if (!env)
         return NULL;
 
+    env->name = NULL;
+    env->data = NULL;
+    env->next = NULL;
+    env->prev = NULL;
+    env->environment_array = environment_array;
+    env->count = 0;
+    check.exit_status = 0; // Initialize the exit status to 0
+
     int i = 0;
-    while (env_vars[i])
-    {
-        char *variable;
-        char *data;
-        int index = strchr(env_vars[i], '=');
-        if (index != -1)
-        {
-            variable = strdup(env_vars[i]);
-            variable[index] = '\0'; // Remove the '=' character
-            data = strdup(env_vars[i] + index + 1);
-        }
-        else
-        {
-            variable = strdup(env_vars[i]);
-            data = NULL;
-        }
+    while (environment_array[i]) {
+        char *line = environment_array[i++];
+        char *env_search;
+        char *value;
+        char *index;
 
-        t_environment *new_elem = (t_environment*)malloc(sizeof(t_environment));
-        if (!new_elem)
-        {
-            delete_environment(env);
-            return NULL;
-        }
-
-        new_elem->variable = variable;
-        new_elem->data = data;
-
-        new_elem->next = NULL;
-        new_elem->prev = NULL;
-
-        if (env->head == NULL)
-        {
-            env->head = new_elem;
-            env->tail = new_elem;
-        }
-        else
-        {
-            new_elem->prev = env->tail;
-            env->tail->next = new_elem;
-            env->tail = new_elem;
+        index = ft_strchr(line, '=');
+        t_environment *elem = ft_calloc(sizeof(t_environment), 1);
+        if (index != NULL) {
+            env_search = ft_substr(line, 0, index - line);
+            value = ft_strdup(index + 1);
+            if (!env_search || !value || !elem) {
+                free(env_search);
+                free(value);
+                free(elem);
+                continue;
+            }
+            elem->name = env_search;
+            elem->data = value;
+        } else {
+            elem->name = ft_strdup(line);
+            elem->data = NULL;
         }
 
-        i++;
+        t_environment *tail = env->next;
+        if (!tail) {
+            env->next = elem;
+            elem->prev = env;
+        } else {
+            while (tail->next)
+                tail = tail->next;
+            tail->next = elem;
+            elem->prev = tail;
+        }
+
+        env->count++;
     }
-    env->size = i;
 
     return env;
 }
 
-// Print the entire environment.
-void print_environment(t_environment *env)
-{
-    t_environment *tmp = env->head;
-    while (tmp)
-    {
-        printf("%s=%s\n", tmp->variable, tmp->data);
+char *store_vars(char *search, t_environment *env) {
+    t_environment *tmp = env->next;
+
+    if (ft_strcmp(search, "?") == 0 || ft_strcmp(search, "?\n") == 0) {
+        return ft_itoa(check.exit_status);
+    }
+
+    while (tmp) {
+        if (strcmp(tmp->name, search) == 0) {
+            return ft_strdup(tmp->data);
+        }
         tmp = tmp->next;
     }
+
+    return NULL;
 }
 
-// Convert the environment to an array of strings (variable/data pairs).
-char **environment_to_array(t_environment *env)
-{
-    char **arr = (char**)malloc((env->size + 1) * sizeof(char *));
-    if (!arr)
-        return NULL;
 
-    t_environment *tmp = env->head;
+char *expand_vars(char *line, char **environment_array) {
     int i = 0;
+    int j = 0;
+    char *value;
+    char *res = malloc(1024); // Allocate initial memory for the expanded string
+    int env_search_len = 0;
+    char *env_search = NULL;
 
-    while (i < env->size)
-    {
-        arr[i] = strdup(tmp->variable);
-        if (tmp->data)
-        {
-            char *data_str = (char*)malloc(strlen(tmp->data) + 2); // +2 for '=' and '\0'
-            if (!data_str)
-            {
-                // Handle allocation failure
-                for (int j = 0; j < i; j++)
-                    free(arr[j]);
-                free(arr);
-                return NULL;
+    if (!res) {
+        // Failed to allocate memory
+        return NULL;
+    }
+
+    while (line[i]) {
+        if (line[i] != '$') {
+            res[j++] = line[i++];
+        } else {
+            i++;
+            if (line[i] == '?') {
+                env_search_len = 1;
+                env_search = ft_itoa(check.exit_status);
+            } else {
+                env_search_len = 0;
+                while (line[i] && ft_isalnum(line[i])) {
+                    env_search_len++;
+                    i++;
+                }
+                env_search = malloc(env_search_len + 1);
+                if (!env_search) {
+                    // Failed to allocate memory
+                    free(res);
+                    return NULL;
+                }
+                strncpy(env_search, &line[i - env_search_len], env_search_len);
+                env_search[env_search_len] = '\0';
             }
 
-            snprintf(data_str, strlen(tmp->data) + 2, "=%s", tmp->data);
-            arr[i] = strcat(arr[i], data_str);
-            free(data_str);
-        }
-        tmp = tmp->next;
-        i++;
-    }
-    arr[i] = NULL;
-    return arr;
-}
+            // Search for the environment variable directly in the loop
+            value = NULL;
+            int k = 0;
+            while (environment_array[k]) {
+                char *pos = ft_strchr(environment_array[k], '=');
+                if (pos != NULL) {
+                    if (strncmp(environment_array[k], env_search, pos - environment_array[k]) == 0) {
+                        value = pos + 1; // Skip the '=' character
+                        break;
+                    }
+                }
+                k++;
+            }
 
-// Delete the entire environment.
-void delete_environment(t_environment *env)
-{
-    t_environment *tmp = env->head;
-    while (tmp)
-    {
-        t_environment *next = tmp->next;
-        free(tmp->variable);
-        free(tmp->data);
-        free(tmp);
-        tmp = next;
-    }
-    free(env);
-}
+            free(env_search);
 
-// Print an array of strings representing the environment.
-void print_environment_array(char **env)
-{
-    int i = 0;
-    while (env[i])
-    {
-        printf("%s\n", env[i]);
-        i++;
-    }
-}
-
-// Get the value of a given variable in the environment.
-
-char *get_environment_value(char *variable, t_environment *env, int exit_status)
-{
-    // Special case for getting the exit status as a string
-    if (strcmp(variable, "?") == 0 || strcmp(variable, "?\n") == 0)
-    {
-        char *exit_status_str = (char*)malloc(5); // Max exit status is 255 (3 digits) + '\0'
-        if (!exit_status_str)
-            return NULL;
-
-        // Use ft_itoa to convert exit_status to a string
-        ft_itoa(exit_status, exit_status_str, 10);
-
-        return exit_status_str;
-    }
-
-    // Search for the specified variable in the environment
-    t_environment *elem = env->head;
-    while (elem && strcmp(elem->variable, variable))
-        elem = elem->next;
-
-    // If the variable is found, return its value. Otherwise, return NULL.
-    if (elem)
-    {
-        char *value = strdup(elem->data);
-        return value;
-    }
-    else
-    {
-        return NULL;
-    }
-}
-
-// Expand the environment variables in a given input.
-char *expand_environment(char *input, t_environment *env, int exit_status)
-{
-    char *expanded_str = (char*)malloc(1024);
-    if (!expanded_str)
-        return NULL;
-
-    int i = -1;
-    char *value = NULL;
-    while (input[++i] && input[i] != '$')
-        expanded_str[i] = input[i];
-
-    if (input[i] == '$')
-    {
-        input = input + i;
-        value = get_environment_value(&input[1], env, exit_status);
-        if (value)
-        {
-            int j = 0;
-            while (value[j])
-                expanded_str[i++] = value[j++];
+            if (value) {
+                while (*value) {
+                    if (j >= 1023) {
+                        // Double the buffer size if needed
+                        char *new_res = realloc(res, 2 * sizeof(res));
+                        if (!new_res) {
+                            // Failed to allocate memory
+                            free(res);
+                            return NULL;
+                        }
+                        res = new_res;
+                    }
+                    res[j++] = *value++;
+                }
+            }
         }
     }
 
-    while (*input)
-        expanded_str[i++] = *(input++);
-
-    expanded_str[i] = '\0';
-    return expanded_str;
+    res[j] = '\0';
+    return ft_strdup(res);
 }
 
