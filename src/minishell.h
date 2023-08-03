@@ -6,29 +6,13 @@
 # include <readline/history.h>
 # include <readline/readline.h>
 # include "get_next_line.h"
-/*
- * the ANSI escape sequence \x1B[37m is used to set the color to white for "minishell",
- *  \x1B[31m sets the color to red for "_gpt",
- *   \x1B[33m sets the color to yellow for "~>",
- *    and \x1B[0m resets the color to the default.
- */
+# include "token.h"
 
 #define PROMPT "\x1B[37mminishell\x1B[31m_gpt\x1B[0m\x1B[33m~>\x1B[0m "
-#define MAX_ARGS 100
-enum e_token {
-    WORD,
-    WHITE_SPACE = ' ',
-    NEW_LINE = '\n',
-    QUOTE = '\'',
-    DOUBLE_QUOTE = '\"',
-    ESCAPE = '\\',
-    ENV = '$',
-    PIPE_LINE = '|',
-    REDIR_IN = '<',
-    REDIR_OUT = '>',
-    HERE_DOC,
-    DREDIR_OUT
-};
+
+typedef struct s_node t_node;
+typedef struct s_cmd t_cmd;
+typedef struct s_relem t_relem;
 
 // Define a new struct to store exit status
 typedef struct s_exit {
@@ -37,61 +21,11 @@ typedef struct s_exit {
 
 t_check check;
 
-char	*ft_strndup(char *s1, int n);
+
+
+
 int ft_strcmp(const char *s1, const char *s2);
-enum e_state {
-    IN_DOUBLE_QUOTES,
-    IN_SINGLE_QUOTES,
-    DEFAULT
-};
-
-typedef struct s_global {
-    char *content;
-    int size;
-    enum e_token type;
-    enum e_state token_state;
-    struct s_global *next_token;
-    struct s_global *prev_token;
-} t_global;
-
-typedef struct s_lexer {
-    t_global *head;
-    t_global *last;
-    int count;
-} t_lexer;
-
-/**************************
- * Functions of the lexer 
- **************************/
-
-
-// lexer_utils.c : 
-
-t_lexer *init_lexer(t_lexer *lexer);
-t_global *new_token(char *content, int size, enum e_token type, enum e_state token_state);
-void add_token(t_lexer *lexer, t_global *token);
-void free_lexer(t_lexer *lexer);
-void print_list(t_lexer *lexer);
-
-// lexer.c : 
-
-void handle_single_quotes(t_lexer *lexer, char *line, int i, enum e_state *state);
-void handle_double_quotes(t_lexer *lexer, char *line, int i, enum e_state *state);
-void tokenize_word(t_lexer *lexer, char *line, int i, enum e_state *state);
-int tokenize_env_variable(t_lexer *lexer, char *line, int i, enum e_state *state);
-int tokenize_redirection(t_lexer *lexer, char *line, int i, enum e_state *state);
-int is_whitespace(char c);
-int tokenize_lexeme(t_lexer *lexer, char *line, int i, enum e_state *state);
-t_lexer *lexer(char *line);
-
-
-
-/************************************
- * Functions of the Syntax 
- ************************************/
-
-
-
+char	*ft_strndup(char *s1, int n);
 // check_syntax.c
 
 t_global *skip_whitespace(t_global *current_token, int direction);
@@ -106,7 +40,7 @@ int check_command_syntax(t_lexer *lexer);
 
 
 
-
+/*
 typedef struct s_environment {
     char *name;
     char *data;
@@ -115,6 +49,34 @@ typedef struct s_environment {
     char **environment_array;
     int count;
 } t_environment;
+*/
+
+// t_environment: Represents the environment linked list and its array representation
+typedef struct s_environment {
+    char *name;                       // Pointer to the name of the environment variable
+    char *data;                       // Pointer to the data (value) of the environment variable
+    struct s_environment *next;       // Pointer to the next environment variable in the list
+    struct s_environment *prev;       // Pointer to the previous environment variable in the list
+    char **environment_array;         // Array representation of the environment variables
+    int count;                        // Count of the total number of environment variables
+} t_environment;
+
+/* 
+    Explanation of the struct members:
+    - name: Represents the name of the environment variable. It is a pointer to a character array.
+    - data: Represents the data (value) of the environment variable. It is a pointer to a character array.
+    - next: Represents the pointer to the next environment variable in the linked list.
+    - prev: Represents the pointer to the previous environment variable in the linked list.
+    - environment_array: Represents the array representation of the environment variables.
+    - count: Represents the total count of environment variables stored in the list.
+*/
+
+/*
+    This struct is designed to store environment variables in a linked list.
+    The linked list allows for easy addition, removal, and manipulation of environment variables.
+    The environment_array member is used to provide a convenient array representation of the environment variables, which can be useful in certain situations where an array is more suitable than a linked list.
+    The count member keeps track of the total number of environment variables stored in the list.
+*/
 
 t_environment *create_env_vars(char **tab);
 char *store_vars(char *key, t_environment *env);
@@ -122,59 +84,52 @@ char *expand_vars(char *line, char **env);
 
 
 
+/*------------------------------------------------------------------------------------*/
 
-/********************************-----------------------------------------***************/
-
-
-
-// Forward declarations
-typedef struct s_node t_node;
-typedef struct s_cmd t_cmd;
-typedef struct s_relem t_relem;
-//typedef struct s_list t_list;
-
+// Define a struct for a linked list of redirection elements
 typedef struct s_rlist {
-    struct s_relem *first;
-    struct s_relem *last;
-    int total;
+    struct s_relem *first; // Pointer to the first element in the list
+    struct s_relem *last;  // Pointer to the last element in the list
+    int total;             // Total number of elements in the list
 } t_rlist;
+
 // Define the struct for the AST node
 struct s_node {
-    enum n_type {
-        COMMAND,
-        PIPE,
+    enum n_type {           // Enum representing node types
+        COMMAND,            // Command node - represents a command in the shell
+        PIPE,               // Pipe node - represents a pipe between commands
     } node_type;
     union u_node_content {
-        struct s_pipe {
-            t_node *left;
-            t_node *right;
+        struct s_pipe {     // Struct for a pipe node
+            t_node *left; // Pointer to the left node of the pipe
+            t_node *right; // Pointer to the right node of the pipe
         } pipe;
-        struct s_cmd {
-            char **args;
-            char **env;
-            struct fd_type {
-                int input;
-                int output;
+        struct s_cmd {      // Struct for a command node
+            char **args;     // Array of command arguments
+            char **env;      // Array of environment variables
+            struct fd_type { // Struct for file descriptors
+                int input;    // Input file descriptor
+                int output;   // Output file descriptor
             } fd;
-	 t_rlist *redirections; 
+            t_rlist *redirections; // Pointer to a list of redirections
         } command;
     } content;
 };
 
-// Struct to store a single redirection element
+// Define a struct for a single redirection element
 struct s_relem {
-    char *argument;
-    enum e_token type;
-    struct s_relem *next;
+    char *argument;     // Argument of the redirection - represents the file or target
+    enum e_token type;  // Type of the redirection - represents the type of redirection
+    struct s_relem *next; // Pointer to the next redirection element in the list
 };
+
 typedef struct s_relem t_relemt;
 typedef struct s_node t_tree_node;
 
+// Typedef for the AST struct
 typedef struct s_tree {
-    t_tree_node *top;
+    t_tree_node *top;   // Pointer to the top node of the AST
 } t_tree;
-
-
 
 
 
