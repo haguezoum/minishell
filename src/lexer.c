@@ -248,7 +248,7 @@ int tokenize_lexeme(t_lexer *lexer, char *line, int i, enum e_state *state) {
     // Update the state back to DEFAULT when reaching the closing single or double quote
     if ((*state == IN_DOUBLE_QUOTES && line[i] == '\"') || (*state == IN_SINGLE_QUOTES && line[i] == '\'')) {
         *state = DEFAULT;
-        add_token(lexer, new_token(line + i, 1, *state, *state)); // Add the closing quote as a separate token
+        add_token(lexer, new_token(line + i, 1, line[i], *state)); // Add the closing quote as a separate token
         i++; // Move past the closing quote
     }
 

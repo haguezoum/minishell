@@ -46,7 +46,7 @@ void free_lexer(t_lexer *lexer) {
     free(lexer);
 }
 
-/*
+
 void print_list(t_lexer *lexer)
 {
     t_global *token;
@@ -67,7 +67,8 @@ void print_list(t_lexer *lexer)
 }
 
 
-*/
+
+/*
 
 #include <stdio.h>
 
@@ -91,4 +92,4 @@ void print_list(t_lexer *lexer) {
 
     printf("\x1b[1;33m╚═════════════╧═════╧═════════════╧══════╝\x1b[0m\n");
 }
-
+*/
