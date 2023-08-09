@@ -18,6 +18,20 @@ void *ft_realloc(void *ptr, size_t old_size, size_t new_size)
     return new_ptr;
 }
 
+
+void free_env_vars(t_environment *env)
+{
+    t_environment *tmp = env;
+    while (tmp)
+    {
+        t_environment *next = tmp->next;
+        free(tmp->name);
+        free(tmp->data);
+        free(tmp);
+        tmp = next;
+    }
+}
+
 // Helper function to write error message for cd command
 void write_cd_error(char *command_name, char *arg, char *home_var)
 {
@@ -89,33 +103,35 @@ int our_cd(t_cmd *command, char ***environment)
     getcwd(current_dir, PATH_MAX);
 
     // Set the "PWD" and "OLDPWD" variables in the environment
-    t_env_elem *elem = search_env_elem(vars, "PWD");
-    if (elem)
+    tmp_vars = vars;
+    while (tmp_vars)
     {
-        // Update the value of the "PWD" variable
-        free(elem->value);
-        elem->value = ft_strdup(current_dir);
-    }
-
-    elem = search_env_elem(vars, "OLDPWD");
-    if (elem)
-    {
-        // Update the value of the "OLDPWD" variable
-        free(elem->value);
-        elem->value = ft_strdup(old_dir);
+        if (strcmp(tmp_vars->name, "PWD") == 0)
+        {
+            // Update the value of the "PWD" variable
+            free(tmp_vars->data);
+            tmp_vars->data = ft_strdup(current_dir);
+        }
+        else if (strcmp(tmp_vars->name, "OLDPWD") == 0)
+        {
+            // Update the value of the "OLDPWD" variable
+            free(tmp_vars->data);
+            tmp_vars->data = ft_strdup(old_dir);
+        }
+        tmp_vars = tmp_vars->next;
     }
 
     i = 0;
-    tmp_vars = vars->head;
-    while (i < vars->size)
+    tmp_vars = vars;
+    while (tmp_vars)
     {
-        char *key = ft_strdup(tmp_vars->key);
+        char *key = ft_strdup(tmp_vars->name);
         char *value = NULL;
-        if (tmp_vars->value)
+        if (tmp_vars->data)
         {
             // If the variable has a value, create "key=value" format
             value = ft_strjoin(key, "=");
-            value = ft_strjoin(value, tmp_vars->value);
+            value = ft_strjoin(value, tmp_vars->data);
         }
         // Reallocate memory for the new_environment array and store the new entry
         new_environment = ft_realloc(new_environment, i, i + 1, sizeof(char *));
