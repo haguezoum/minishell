@@ -38,27 +38,18 @@ void print_node(t_node *cmd, int depth) {
 }
 
 void print_tree(t_node *ptr, char **env, int depth) {
-    if (depth == 0) {
-	printf("\n");
-	printf("\n");
-        printf(ANSI_BOLD ANSI_UNDERLINE "Parser Output:\n" ANSI_COLOR_RESET);
-	printf("\n");
-	printf("\n");
-    }
+
+
 
     if (ptr->node_type == COMMAND) {
-        printf("%*s""*----------------------------------------------------*\n", depth * 1, "");
-        print_node(ptr, depth);
+        printf("%s*/*/*/*/**/*\n", ptr->content.command.args[0]);
 
-        printf("%*s""*----------------------------------------------------*\n", depth * 1, "");
-    } else if (ptr->node_type == PIPE) {
-        print_tree(ptr->content.pipe.right, env, depth + 1);
-	printf("\n");
- 	printf("%*s" ANSI_COLOR_YELLOW "*-----------------------------------------------------*\n" ANSI_COLOR_RESET, depth * 1, "");
-        printf("%*s" ANSI_COLOR_YELLOW "*                     PIPE Node                        *\n" ANSI_COLOR_RESET, depth * 1, "");
-        printf("%*s" ANSI_COLOR_YELLOW "*-----------------------------------------------------*\n" ANSI_COLOR_RESET, depth * 1, "");
-	printf("\n");
-        print_tree(ptr->content.pipe.left, env, depth + 1);
+    } 
+    else if (ptr->node_type == PIPE) 
+    {
+        print_tree(ptr->content.pipe.right, env, 0);
+
+        print_tree(ptr->content.pipe.left, env, 0 );
 
     }
 }
