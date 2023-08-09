@@ -33,7 +33,7 @@ void display_prompt(t_environment *env) {
 
     // Call the lexer function
     t_lexer *lexerObj = lexer(line);
-    print_list(lexerObj);
+    // print_list(lexerObj);
 
     // Perform syntax check
     int syntax_result = check_command_syntax(lexerObj);
@@ -41,7 +41,7 @@ void display_prompt(t_environment *env) {
         // Create AST tree and parse the input
         t_tree *astTree = init_tree(NULL);
         final_parse(&astTree, lexerObj->head, env);
-        print_tree(astTree->top, env->environment_array, 0);
+        execute(astTree->top); // call the fucntion that excute the command that stored in structer astTree->top
         // Free the AST tree
         free_ast_tree(astTree); // Use the new function to free the AST tree
     } else {
