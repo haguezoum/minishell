@@ -37,21 +37,5 @@ void print_node(t_node *cmd, int depth) {
     }
 }
 
-void print_tree(t_node *ptr, char **env, int depth) {
-
-
-
-    if (ptr->node_type == COMMAND) {
-        printf("%s*/*/*/*/**/*\n", ptr->content.command.args[0]);
-
-    } 
-    else if (ptr->node_type == PIPE) 
-    {
-        print_tree(ptr->content.pipe.right, env, 0);
-
-        print_tree(ptr->content.pipe.left, env, 0 );
-
-    }
-}
 
 
