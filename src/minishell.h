@@ -7,6 +7,8 @@
 # include <readline/readline.h>
 # include "get_next_line.h"
 # include "token.h"
+# include <string.h>
+# include <unistd.h>
 #include <sys/wait.h>
 
 #define PROMPT "\x1B[37mminishell\x1B[31m_gpt\x1B[0m\x1B[33m~>\x1B[0m "

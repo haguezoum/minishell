@@ -1,6 +1,4 @@
 #include "minishell.h"
-#include <string.h>
-#include <stdlib.h>
 
 void update_environment_array(t_environment *env) {
     // Free the existing environment array
