@@ -1,159 +1,127 @@
 #include "minishell.h"
 
-void *ft_realloc(void *ptr, size_t old_size, size_t new_size, size_t element_size)
+// Function to display error message for chdir failures
+void display_chdir_error(const char *path)
 {
-    // Calculate the total memory required for the new size
-    size_t total_new_size = new_size * element_size;
+    // Write the error message prefix
+    write(STDERR_FILENO, "minishell: cd: ", 15);
 
-    // Allocate memory for the new size
-    void *new_ptr = malloc(total_new_size);
-    if (new_ptr)
-    {
-        if (ptr)
-        {
-            // Copy the contents from the old memory to the new memory
-            ft_memcpy(new_ptr, ptr, old_size * element_size);
-            // Free the old memory
-            free(ptr);
-        }
-    }
-    return new_ptr;
+    // Write the provided path causing the error
+    write(STDERR_FILENO, path, strlen(path));
+
+    // Write the error message suffix
+    write(STDERR_FILENO, ": No such file or directory\n", 29);
+
+    // Print the error message using perror
+    perror("");
 }
 
-
-void free_env_vars(t_environment *env)
-{
-    t_environment *tmp = env;
-    while (tmp)
-    {
-        t_environment *next = tmp->next;
-        free(tmp->name);
-        free(tmp->data);
-        free(tmp);
-        tmp = next;
-    }
-}
-
-// Helper function to write error message for cd command
-void write_cd_error(char *command_name, char *arg, char *home_var)
-{
-    // Write error message with relevant information
-    write(2, "minishell: cd: ", 15);
-    write(2, command_name, ft_strlen(command_name));
-    write(2, ": ", 2);
-    write(2, arg, ft_strlen(arg));
-    write(2, ": ", 2);
-    write(2, home_var, ft_strlen(home_var));
-    write(2, ": No such file or directory\n", 28);
-}
-
+// Custom implementation of the cd command
 int our_cd(t_cmd *command, char ***environment)
 {
-    t_environment *vars;
-    t_environment *tmp_vars;
-    char **new_environment = NULL;
-    int i;
+    // Declare variables
+    t_environment *env_vars; // Stores environment variables as a linked list
+    char *current_working_dir = NULL; // Stores the current working directory path
+    char *old_working_dir = NULL; // Stores the previous working directory path
 
-    char *current_dir = NULL;
-    char *old_dir = NULL;
+    // Initialize environment variables by creating a linked list
+    env_vars = create_env_vars(*environment);
 
-    // Allocate memory for current_dir and old_dir using dynamic allocation
-    current_dir = (char *)malloc(PATH_MAX);
-    old_dir = (char *)malloc(PATH_MAX);
-
-    if (!current_dir || !old_dir)
+    // Allocate memory for dynamic strings to store paths
+    current_working_dir = (char *)malloc(PATH_MAX); // Allocate space for current working directory path
+    if (!current_working_dir)
     {
-        // Handle memory allocation error
-        perror("Memory allocation error");
-        check.exit_status = 1;
-        return (1);
+        perror("Failed to allocate memory for current_working_dir");
+        return -1; // Return an appropriate error code
     }
 
-    // Create environment variables list from existing environment
-    vars = create_env_vars(*environment);
-    // Get the current working directory and store it in old_dir
-    getcwd(old_dir, PATH_MAX);
+    old_working_dir = (char *)malloc(PATH_MAX); // Allocate space for previous working directory path
+    if (!old_working_dir)
+    {
+        perror("Failed to allocate memory for old_working_dir");
+        free(current_working_dir); // Clean up previously allocated memory
+        return -1; // Return an appropriate error code
+    }
 
-    // Check if a directory argument is provided
+    // Handle cd command with or without arguments
     if (!command->args[1])
     {
-        // Change to the home directory
+        // If no arguments are provided, change to the HOME directory
         if (chdir(expand_vars("$HOME", *environment)) != 0)
         {
-            // Handle chdir error by writing an error message
-            write_cd_error(command->args[0], expand_vars("$HOME", *environment), ": ");
+            // Display error message using the custom function
+            display_chdir_error(expand_vars("$HOME", *environment));
+
+            // Set the exit status to indicate an error
             check.exit_status = 1;
-            free(current_dir);
-            free(old_dir);
-            return (1);
+            return 1; // Return an error code
         }
     }
     else
     {
-        // Change to the specified directory argument
+        // Change to the specified directory if an argument is provided
         if (chdir(command->args[1]) != 0)
         {
-            // Handle chdir error by writing an error message
-            write_cd_error(command->args[0], command->args[1], ": ");
+            // Display error message using the custom function
+            display_chdir_error(command->args[1]);
+
+            // Set the exit status to indicate an error
             check.exit_status = 1;
-            free(current_dir);
-            free(old_dir);
-            return (1);
+            return 1; // Return an error code
         }
     }
-    // Get the updated current working directory
-    getcwd(current_dir, PATH_MAX);
 
-    // Set the "PWD" and "OLDPWD" variables in the environment
-    tmp_vars = vars;
-    while (tmp_vars)
+    // Get the current working directory and store it in current_working_dir
+    getcwd(current_working_dir, PATH_MAX);
+
+    // Update PWD and OLDPWD environment variables in the linked list
+    t_environment *current_env_elem = env_vars;
+    while (current_env_elem && strcmp(current_env_elem->name, "PWD") != 0)
+        current_env_elem = current_env_elem->next;
+    if (current_env_elem)
     {
-        if (strcmp(tmp_vars->name, "PWD") == 0)
-        {
-            // Update the value of the "PWD" variable
-            free(tmp_vars->data);
-            tmp_vars->data = ft_strdup(current_dir);
-        }
-        else if (strcmp(tmp_vars->name, "OLDPWD") == 0)
-        {
-            // Update the value of the "OLDPWD" variable
-            free(tmp_vars->data);
-            tmp_vars->data = ft_strdup(old_dir);
-        }
-        tmp_vars = tmp_vars->next;
+        free(current_env_elem->data);
+        current_env_elem->data = ft_strdup(current_working_dir);
     }
 
-    i = 0;
-    tmp_vars = vars;
-    while (tmp_vars)
+    // Update OLDPWD with the previous working directory
+    current_env_elem = env_vars;
+    while (current_env_elem && strcmp(current_env_elem->name, "OLDPWD") != 0)
+        current_env_elem = current_env_elem->next;
+    if (current_env_elem)
     {
-        char *key = ft_strdup(tmp_vars->name);
-        char *value = NULL;
-        if (tmp_vars->data)
-        {
-            // If the variable has a value, create "key=value" format
-            value = ft_strjoin(key, "=");
-            value = ft_strjoin(value, tmp_vars->data);
-        }
-        // Reallocate memory for the new_environment array and store the new entry
-        new_environment = ft_realloc(new_environment, i, i + 1, sizeof(char *));
-        new_environment[i] = value ? value : key;
-        free(key);
-        tmp_vars = tmp_vars->next;
-        i++;
+        free(current_env_elem->data);
+        current_env_elem->data = ft_strdup(old_working_dir);
     }
-    // Finish the new_environment array with a NULL entry
-    new_environment = ft_realloc(new_environment, i, i + 1, sizeof(char *));
-    new_environment[i] = NULL;
 
-    // Free allocated memory and update the environment variable list
-    free(current_dir);
-    free(old_dir);
-    free_env_vars(vars);
-    *environment = new_environment;
+    // Convert the linked list of environment variables to an array
+    current_env_elem = env_vars;
+    char **env_array = ft_calloc(current_env_elem->count + 1, sizeof(char *));
+    int i = 0;
 
-    // Set the exit status to indicate success
-    check.exit_status = 0;
-    return (0);
+    if (env_array)
+    {
+        while (current_env_elem)
+        {
+            // Create entries for environment array in the form "NAME=VALUE"
+            env_array[i] = ft_strjoin(current_env_elem->name, "=");
+            if (current_env_elem->data)
+                env_array[i] = ft_strjoin(env_array[i], current_env_elem->data);
+            current_env_elem = current_env_elem->next;
+            i++;
+        }
+        env_array[i] = NULL; // Set the last element to NULL to terminate the array
+    }
+
+    // Update the environment with the new environment array
+    *environment = env_array;
+
+    // Clean up dynamic memory allocated for path strings
+    free(current_working_dir);
+    free(old_working_dir);
+
+    // Update exit status and return success code
+    check.exit_status = 0; // Set exit status to indicate success
+    return 0; // Return success code
 }
 
