@@ -1,16 +1,18 @@
 #include "minishell.h"
 
-// Custom realloc function
-void *ft_realloc(void *ptr, size_t old_size, size_t new_size)
+void *ft_realloc(void *ptr, size_t old_size, size_t new_size, size_t element_size)
 {
+    // Calculate the total memory required for the new size
+    size_t total_new_size = new_size * element_size;
+
     // Allocate memory for the new size
-    void *new_ptr = malloc(new_size);
+    void *new_ptr = malloc(total_new_size);
     if (new_ptr)
     {
         if (ptr)
         {
             // Copy the contents from the old memory to the new memory
-            ft_memcpy(new_ptr, ptr, old_size);
+            ft_memcpy(new_ptr, ptr, old_size * element_size);
             // Free the old memory
             free(ptr);
         }
