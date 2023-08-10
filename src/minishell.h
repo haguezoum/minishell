@@ -11,6 +11,9 @@
 
 #define PROMPT "\x1B[37mminishell\x1B[31m_gpt\x1B[0m\x1B[33m~>\x1B[0m "
 
+
+
+
 typedef struct s_node t_node;
 typedef struct s_cmd t_cmd;
 typedef struct s_relem t_relem;
@@ -145,6 +148,7 @@ t_rlist *parse_redir(t_global **token, t_environment *env, t_rlist *redir_list) 
 void print_node(t_node *cmd, int depth);
 void print_tree(t_node *ptr, char **env, int depth);
 int final_parse(t_tree **tree, t_global *token, t_environment *env);
+int our_cd(t_cmd *command, char ***environment);
 
 
 
