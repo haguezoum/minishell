@@ -39,7 +39,7 @@ int check_redirection_error(t_global *current_token);
 t_global *check_unclosed_quotes(t_global **current_token, enum e_token type);
 int check_command_syntax(t_lexer *lexer);
 
-void execute(t_node *ptr);
+void execute(t_node *ptr, char **evn_vars);
 
 /*
 typedef struct s_environment {
