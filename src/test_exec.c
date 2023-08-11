@@ -22,37 +22,84 @@ char* check_cmand_exist_in_dir(t_node *ptr)
     return NULL;
 }
 
+int check_builtin_cmd(t_node *ptr, char **evn_vars)
+{
+    if (ptr->node_type == COMMAND)
+    {
+        if (ft_strcmp(ptr->content.command.args[0], "echo") == 0)
+        {
+            // ft_echo(ptr->content.command.args);
+            return 1;
+        }
+        else if (ft_strcmp(ptr->content.command.args[0], "cd") == 0)
+        {
+            // our_cd(ptr->content.command.args, evn_vars); // cd command that takes care of the cd - and cd ~
+            our_cd(ptr->content.command.args, evn_vars);
+            return 1;
+        }
+        else if (ft_strcmp(ptr->content.command.args[0], "pwd") == 0)
+        {
+            // ft_pwd();
+            return 1;
+        }
+        else if (ft_strcmp(ptr->content.command.args[0], "export") == 0)
+        {
+            // ft_export(ptr->content.command.args, evn_vars);
+            return 1;
+        }
+        else if (ft_strcmp(ptr->content.command.args[0], "unset") == 0)
+        {
+            // ft_unset(ptr->content.command.args, evn_vars);
+            return 1;
+        }
+        else if (ft_strcmp(ptr->content.command.args[0], "env") == 0)
+        {
+            // ft_env(evn_vars);
+            return 1;
+        }
+        else if (ft_strcmp(ptr->content.command.args[0], "exit") == 0)
+        {
+            // ft_exit(ptr->content.command.args);
+            return 1;
+        }
+    }
+    return 0;
+}
 void execute(t_node *ptr, char **evn_vars)
 {
-    char *str = check_cmand_exist_in_dir(ptr);
-   
-   if(str)
+    if(ptr->node_type == COMMAND && !check_builtin_cmd(ptr, evn_vars))
     {
-      if(ptr->node_type == COMMAND)
-      {
-        pid_t pid;
-        int status;
-        pid = fork();
-        if (pid == 0)
+        char *str = check_cmand_exist_in_dir(ptr); // check if the command exists in the directories listed in the PATH environment variable
+        if(str) // if the command exists in at least one directory
         {
-            if (execve(str, ptr->content.command.args, evn_vars) == -1)
+            pid_t pid;
+            int status;
+            pid = fork();
+            if (pid == 0)
             {
-                perror("execv");
+                if (execve(str, ptr->content.command.args, evn_vars) == -1)
+                {
+                    perror("execv");
+                    exit(1);
+                }
+            }
+            else if (pid < 0)
+            {
+                perror("fork");
                 exit(1);
             }
-        }
-        else if (pid < 0)
-        {
-            perror("fork");
-            exit(1);
+            else
+            {
+                waitpid(pid, &status, 0);
+            }
         }
         else
         {
-            waitpid(pid, &status, 0);
+            printf("bash: %s: command not found\n", ptr->content.command.args[0]);
         }
-      }
-      else if(ptr->node_type == PIPE)
-      {
+    }
+    else if(ptr->node_type == PIPE)
+    {
         int fd[2];
         pid_t pid;
         int status;
@@ -80,10 +127,5 @@ void execute(t_node *ptr, char **evn_vars)
             close(fd[1]); // close the write end of the pipe
             execute(ptr->content.pipe.right, evn_vars); //execute the right side of the pipe
         }
-      }
-    }
-    else
-    {
-        printf("bash: %s: command not found\n", ptr->content.command.args[0]);
     }
 }
