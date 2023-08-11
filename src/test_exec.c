@@ -34,12 +34,13 @@ int check_builtin_cmd(t_node *ptr, char **evn_vars)
         else if (ft_strcmp(ptr->content.command.args[0], "cd") == 0)
         {
             // our_cd(ptr->content.command.args, evn_vars); // cd command that takes care of the cd - and cd ~
-            our_cd(ptr->content.command.args, evn_vars);
+            our_cd(&(ptr->content.command), &evn_vars);
+
             return 1;
         }
         else if (ft_strcmp(ptr->content.command.args[0], "pwd") == 0)
         {
-            // ft_pwd();
+            our_pwd(&(ptr->content.command));
             return 1;
         }
         else if (ft_strcmp(ptr->content.command.args[0], "export") == 0)
@@ -49,12 +50,12 @@ int check_builtin_cmd(t_node *ptr, char **evn_vars)
         }
         else if (ft_strcmp(ptr->content.command.args[0], "unset") == 0)
         {
-            // ft_unset(ptr->content.command.args, evn_vars);
+            our_unset(&(ptr->content.command.args), evn_vars);
             return 1;
         }
         else if (ft_strcmp(ptr->content.command.args[0], "env") == 0)
         {
-            // ft_env(evn_vars);
+            our_env(&(ptr->content.command), evn_vars);
             return 1;
         }
         else if (ft_strcmp(ptr->content.command.args[0], "exit") == 0)
