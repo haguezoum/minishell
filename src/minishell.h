@@ -7,6 +7,9 @@
 # include <readline/readline.h>
 # include "get_next_line.h"
 # include "token.h"
+# include <string.h>
+# include <unistd.h>
+#include <sys/wait.h>
 #include <sys/wait.h>
 
 #define PROMPT "\x1B[37mminishell\x1B[31m_gpt\x1B[0m\x1B[33m~>\x1B[0m "
@@ -149,6 +152,11 @@ void print_node(t_node *cmd, int depth);
 void print_tree(t_node *ptr, char **env, int depth);
 int final_parse(t_tree **tree, t_global *token, t_environment *env);
 int our_cd(t_cmd *command, char ***environment);
+int our_pwd(t_cmd *command);
+int our_env(t_cmd *command, char **environment);
+int our_unset(t_cmd *cmd, t_environment **env);
+
+
 
 
 

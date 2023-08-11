@@ -20,7 +20,7 @@ int our_env(t_cmd *command, char **environment)
     else
     {
         // If there are arguments provided after the command, indicate an error
-        write(STDERR_FILENO, "minishell: env: Too many arguments.", 36);
+        write(STDERR_FILENO, "minishell: env: Too many arguments.\n", 36);
         if (check.exit_status != -1)
             check.exit_status = 1;
         return (EXIT_FAILURE);
