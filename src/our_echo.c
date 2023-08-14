@@ -36,7 +36,7 @@ void our_echo(t_cmd *command, t_global *tokenList, char **environment) {
 	}
 
 	// Start the loop to process the remaining arguments after the option (if any)
-	while (command->args[cur_ndex]) {
+	while (command->args[cur_index]) {
 		// Initialize 'args_to_concatenate' variable to keep track of the number of arguments to concatenate
 		args_to_concatenate = 0;
 
@@ -49,7 +49,7 @@ void our_echo(t_cmd *command, t_global *tokenList, char **environment) {
 			if (cur_Token->type == WORD || cur_Token->type == ENV) {
 				// If the token's state is DEFAULT, it means it is not part of a command substitution
 				// or variable expansion. So, we need to check if it's an empty environment variable.
-				if (cur_Token->state == DEFAULT) {
+				if (cur_Token->token_state == DEFAULT) {
 					// If the token is of type ENV and its expanded content is an empty string, reduce 'args_to_concatenate'.
 					if (cur_Token->type == ENV) {
 						if (ft_strcmp(expand_vars(cur_Token->content, environment), "") == 0)
@@ -58,12 +58,12 @@ void our_echo(t_cmd *command, t_global *tokenList, char **environment) {
 				} else {
 					// If the token's state is not DEFAULT, it means it's part of a command substitution
 					// or variable expansion. Move to the next DEFAULT state token in the list and increase 'args_to_concatenate'.
-					while (cur_Token && (cur_Token->state != DEFAULT))
-						cur_Token = cur_Token->next;
+					while (cur_Token && (cur_Token->token_state != DEFAULT))
+						cur_Token = cur_Token->next_token;
 					args_to_concatenate++;
 				}
 			}
-			cur_Token = cur_Token->next; // Move to the next token in the 'tokenList'
+			cur_Token = cur_Token->next_token; // Move to the next token in the 'tokenList'
 		}
 
 
