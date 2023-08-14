@@ -46,6 +46,7 @@ int our_cd(t_cmd *command, char ***environment)
     // Handle cd command with or without arguments
     if (!command->args[1])
     {
+        printf("am here and ! No arguments provided\n");
         // If no arguments are provided, change to the HOME directory
         if (chdir(expand_vars("$HOME", *environment)) != 0)
         {
