@@ -21,84 +21,70 @@ char* check_cmand_exist_in_dir(t_node *ptr)
    
     return NULL;
 }
-int check_builtin_cmd(t_node *ptr) //check if the given command is builtin or not 
+int check_builtin_cmd(t_cmd *ptr) //check if the given command is builtin or not 
 {
-    if (ptr->node_type == COMMAND)
-    {
-        if (ft_strcmp(ptr->content.command.args[0], "echo") == 0)
+        if (ft_strcmp(ptr->args[0], "echo") == 0)
         {
             return 1;
         }
-        else if (ft_strcmp(ptr->content.command.args[0], "cd") == 0)
+        else if (ft_strcmp(ptr->args[0], "cd") == 0)
         {
             return 1;
         }
-        else if (ft_strcmp(ptr->content.command.args[0], "pwd") == 0)
+        else if (ft_strcmp(ptr->args[0], "pwd") == 0)
         {
             return 1;
         }
-        else if (ft_strcmp(ptr->content.command.args[0], "export") == 0)
+        else if (ft_strcmp(ptr->args[0], "export") == 0)
         {
             return 1;
         }
-        else if (ft_strcmp(ptr->content.command.args[0], "unset") == 0)
+        else if (ft_strcmp(ptr->args[0], "unset") == 0)
         {
             return 1;
         }
-        else if (ft_strcmp(ptr->content.command.args[0], "env") == 0)
+        else if (ft_strcmp(ptr->args[0], "env") == 0)
         {
             return 1;
         }
-        else if (ft_strcmp(ptr->content.command.args[0], "exit") == 0)
+        else if (ft_strcmp(ptr->args[0], "exit") == 0)
         {
             return 1;
         }
-    }
     return 0;
 }
-int excute_builtin(t_node *ptr, t_environment *env) //should pass the whole structer t_environment *evn_vars
-{
-    if (ptr->node_type == COMMAND)
-    {
-        if (ft_strcmp(ptr->content.command.args[0], "echo") == 0)
+void excute_builtin(t_cmd *ptr, t_environment *env, t_global *token_list) //should pass the whole structer t_environment *evn_vars
+{   
+        if (ft_strcmp(ptr->args[0], "echo") == 0)
         {
-            our_echo(&(ptr->content.command), env->environment_array);
-            return 1;
+            our_echo(ptr, token_list ,env->environment_array);
         }
-        else if (ft_strcmp(ptr->content.command.args[0], "cd") == 0)
+        else if (ft_strcmp(ptr->args[0], "cd") == 0)
         {
-            our_cd(&(ptr->content.command), &(env->environment_array));
-            return 1;
+            our_cd(ptr, &env->environment_array); // cd command that takes care of the cd $var and the second argument is the structer that contains the env variables
         }
-        else if (ft_strcmp(ptr->content.command.args[0], "pwd") == 0)
+        else if (ft_strcmp(ptr->args[0], "pwd") == 0)
         {
-            // our_pwd(&(ptr->content.command));
-            return 1;
+            our_pwd(ptr);
         }
-        else if (ft_strcmp(ptr->content.command.args[0], "export") == 0)
+        else if (ft_strcmp(ptr->args[0], "export") == 0)
         {
-            // ft_export(ptr->content.command.args, evn_vars);
-            return 1;
+            // our_export();
         }
-        else if (ft_strcmp(ptr->content.command.args[0], "unset") == 0)
+        else if (ft_strcmp(ptr->args[0], "unset") == 0)
         {
-            // our_unset(&(ptr->content.command), evn_vars); // unset command that takes care of the unset $var and the second argument is the structer that contains the env variables
-            return 1;
+            our_unset(ptr, &env); // unset command that takes care of the unset $var and the second argument is the structer that contains the env variables
         }
-        else if (ft_strcmp(ptr->content.command.args[0], "env") == 0)
+        else if (ft_strcmp(ptr->args[0], "env") == 0)
         {
-            // our_env(&(ptr->content.command), evn_vars);
-            return 1;
+            our_env(ptr, env->environment_array);
         }
-        else if (ft_strcmp(ptr->content.command.args[0], "exit") == 0)
+        else if (ft_strcmp(ptr->args[0], "exit") == 0)
         {
-            // ft_exit(ptr->content.command.args);
-            return 1;
+            // our_exit();
         }
-    }
-    return 0;
 }
-void execute(t_node *ptr, char **evn_vars)
+int execute(t_node *ptr, char **evn_vars)
 {
     if(ptr->node_type == COMMAND)
     {
@@ -164,16 +150,16 @@ void execute(t_node *ptr, char **evn_vars)
 }
 
 
-void excution(t_node *ptr, t_environment *evn_vars)
+void excution(t_node *ptr, t_environment *evn_vars, t_global *token_list)
 {
-    if(check_builtin_cmd(ptr))
+    if(check_builtin_cmd(&(ptr->content.command)))
     {
-        printf("builtin\n"); // this is just for testing
-        excute_builtin(ptr, evn_vars); // excute the builtin command
+        //printf("builtin\n"); // this is just for testing
+        excute_builtin(&(ptr->content.command), evn_vars, token_list); // excute the builtin command
     }
     else
     {
-        printf("not builtin\n"); // this is just for testing
+        //printf("not builtin\n"); // this is just for testing
         execute(ptr, evn_vars->environment_array); // excute the command that stored in structer astTree->top
     }
 }
