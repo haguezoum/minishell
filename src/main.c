@@ -59,13 +59,14 @@ void display_prompt(t_environment *env) {
 int main() 
 {
     // Initialize the environment with some sample data
-    char *env_vars[] = {
-        "HOME=/home/user",
-        "PATH=/usr/bin:/bin",
-        "USER=TassGPT",
-        NULL
-    };
-    t_environment *env = create_env_vars(env_vars);
+    // char *env_vars[] = {
+    //     "HOME=/home/user",
+    //     "PATH=/usr/bin:/bin",
+    //     "USER=TassGPT",
+    //     NULL
+    // };
+    extern char **environ;
+    t_environment *env = create_env_vars(environ);
     check.exit_status = 0; // Initialize the exit status to 0
 
     // Enter an infinite loop to continuously display the prompt
