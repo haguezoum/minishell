@@ -55,7 +55,7 @@ void display_prompt(t_environment *env) {
     free(line);
 }
 
-int main() 
+int main()
 {
     // Initialize the environment with some sample data
     char *env_vars[] = {

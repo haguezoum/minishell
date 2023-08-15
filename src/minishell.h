@@ -67,7 +67,7 @@ typedef struct s_environment {
     int count;                        // Count of the total number of environment variables
 } t_environment;
 
-/* 
+/*
     Explanation of the struct members:
     - name: Represents the name of the environment variable. It is a pointer to a character array.
     - data: Represents the data (value) of the environment variable. It is a pointer to a character array.
@@ -143,7 +143,7 @@ t_tree *init_tree(t_tree *structure);
 t_node *init_node(char **cmd_args, char **env, t_rlist *redirections);
 int parse_command_arguments(t_global **token, t_environment *env, t_rlist *redir, char **arguments);
 t_node *build_command_tree(t_global **token, t_environment *env);
-void free_asn_node(t_node *node); 
+void free_asn_node(t_node *node);
 void free_tree(t_node *node);
 void free_redir_list(t_rlist *list);
 t_rlist *parse_redir(t_global **token, t_environment *env, t_rlist *redir_list) ;
@@ -151,8 +151,7 @@ void print_node(t_node *cmd, int depth);
 void print_tree(t_node *ptr, char **env, int depth);
 int final_parse(t_tree **tree, t_global *token, t_environment *env);
 int our_cd(t_cmd *command, char ***environment);
-
-
+t_node *build_command_tree(t_global **token, t_environment *env);
 
 
 
