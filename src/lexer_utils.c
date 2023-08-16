@@ -47,30 +47,27 @@ void free_lexer(t_lexer *lexer) {
 }
 
 
-void print_list(t_lexer *lexer)
-{
-    t_global *token;
+//  void print_list(t_lexer *lexer)
+// {
+//     t_global *token;
 
-    token = lexer->head;
-    while (token)
-    {
-        int i = 0;
-        printf("content: ");
-        while (i < token->size)
-            putchar(token->content[i++]);
-        printf(", size: %i", token->size);
-        printf(", token_state: %i", token->token_state);
-        printf(", type: %i\n", token->type);
+//     token = lexer->head;
+//     while (token)
+//     {
+//         int i = 0;
+//         printf("content: %s\n", token->content);
+//         printf(", size: %i", token->size);
+//         printf(", token_state: %i", token->token_state);
+//         printf(", type: %i\n", token->type);
 
-        token = token->next_token;
-    }
-}
+//         token = token->next_token;
+//     }
+// }
 
 
 
-/*
 
-#include <stdio.h>
+
 
 void print_list(t_lexer *lexer) {
     t_global *token;
@@ -92,4 +89,3 @@ void print_list(t_lexer *lexer) {
 
     printf("\x1b[1;33m╚═════════════╧═════╧═════════════╧══════╝\x1b[0m\n");
 }
-*/
