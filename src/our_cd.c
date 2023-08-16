@@ -77,7 +77,7 @@ int our_cd(t_cmd *command, char ***environment)
 
     // Update PWD and OLDPWD environment variables in the linked list
     t_environment *current_env_elem = env_vars;
-    while (current_env_elem && strcmp(current_env_elem->name, "PWD") != 0)
+    while (current_env_elem && ft_strcmp(current_env_elem->name, "PWD") != 0)
         current_env_elem = current_env_elem->next;
     if (current_env_elem)
     {
@@ -87,7 +87,7 @@ int our_cd(t_cmd *command, char ***environment)
 
     // Update OLDPWD with the previous working directory
     current_env_elem = env_vars;
-    while (current_env_elem && strcmp(current_env_elem->name, "OLDPWD") != 0)
+    while (current_env_elem && ft_strcmp(current_env_elem->name, "OLDPWD") != 0)
         current_env_elem = current_env_elem->next;
     if (current_env_elem)
     {
