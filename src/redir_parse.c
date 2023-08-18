@@ -1,80 +1,74 @@
 #include "minishell.h"
 
-// Function to parse redirections and store them in a linked list
-t_rlist *parse_redir(t_global **token, t_environment *env, t_rlist *redir_list) {
-    // Store the type of the current redirection token
-    enum e_token redir_type = (*token)->type;
-    
-    // Skip tokens until a WORD or ENV token is found
-    while ((*token)->type != WORD && (*token)->type != ENV)
+
+
+// Function to check if the token is of type ENV
+int is_env_var(t_global *token) {
+    return token->type == ENV;
+}
+
+// Function to skip tokens until a WORD or ENV token is found
+void skip_to_word_or_env(t_global **token) {
+    while ((*token)->type != WORD && !is_env_var(*token))
         *token = (*token)->next_token;
-    
-    char *redir_argument;
-    t_relem *redir_element;
+}
 
-    // If the current token is of type ENV and the redirection type is not HERE_DOC
-    if ((*token)->type == ENV && redir_type != HERE_DOC) {
-        // Get the value of the environment variable (skipping the '$' character)
-        redir_argument = store_vars((*token)->content + 1, env);
-        
-        // Check if the environment variable exists, if not, print an error message and return NULL
-        if (!redir_argument) {
-            printf("bash: %s: ambiguous redirect\n", (*token)->content);
-            return NULL;
-        }
-    } else {
-        // If the token is of type WORD or the redirection type is HERE_DOC, simply copy the token's content as the argument
-        redir_argument = ft_strdup((*token)->content);
-    }
-    
-    // Move to the next token in the global token list
-    *token = (*token)->next_token;
+// Function to get the value of an environment variable
+char *get_env_var_value(char *var_name, t_environment *env) {
+    return store_vars(var_name + 1, env);
+}
 
-    // If the redirection type is HERE_DOC
-    if (redir_type == HERE_DOC) {
-        // Open a temporary file to store the contents of the here-document
-        int fd = open("/tmp/.minishell_tmp", O_RDWR | O_CREAT | O_APPEND | O_TRUNC, 0666);
-        
-        // Read lines from the standard input until a line matching the here-document is encountered
-        while (1) {
-            char *line = get_next_line(STDIN_FILENO);
-            if (line == NULL || ft_strncmp(line, redir_argument, ft_strlen(redir_argument)) == 0) {
+// Function to read lines from standard input until a matching line is encountered
+char *read_until_match(char *match, t_environment *env) {
+    char *line = NULL;
+    int fd = open("/tmp/.minishell_tmp", O_RDWR | O_CREAT | O_APPEND | O_TRUNC, 0666);
+
+    while (1) {
+        line = get_next_line(STDIN_FILENO);
+        if (line == NULL || ft_strncmp(line, match, ft_strlen(match)) == 0) {
+            free(line);
+            break;
+        } else {
+            if (ft_strchr(line, '$') != NULL) {
+                char *expanded_line = expand_vars(line, env->environment_array);
                 free(line);
-                break;
-            } else {
-                // If the line contains environment variables, expand them before writing to the temporary file
-                if (ft_strchr(line, '$') != NULL) {
-                    char *expanded_line = expand_vars(line, env->environment_array);
-                    free(line);
-                    line = expanded_line;
-                }
-                write(fd, line, ft_strlen(line));
-                free(line);
+                line = expanded_line;
             }
+            write(fd, line, ft_strlen(line));
+            free(line);
         }
-        free(redir_argument);
-
-        // Create a new t_relem element to store the here-document redirection details
-        redir_element = ft_calloc(1, sizeof(t_relem));
-        if (!redir_element)
-            return NULL;
-
-        // Set the argument as the path to the temporary file and the type as HERE_DOC
-        redir_element->argument = ft_strdup("/tmp/.minishell_tmp");
-        redir_element->type = HERE_DOC;
-    } else {
-        // For other redirection types, create a new t_relem element
-        redir_element = ft_calloc(1, sizeof(t_relem));
-        if (!redir_element) {
-            free(redir_argument);
-            return NULL;
-        }
-        // Set the argument and type based on the token and redirection type
-        redir_element->argument = redir_argument;
-        redir_element->type = redir_type;
     }
 
-    // Add the new t_relem element to the redir_list linked list
+    return ft_strdup("/tmp/.minishell_tmp");
+}
+
+// Function to create a redirection element for HERE_DOC type
+t_relem *create_here_doc_element(char *match, t_environment *env) {
+    char *path = read_until_match(match, env);
+    t_relem *element = ft_calloc(1, sizeof(t_relem));
+    if (!element) {
+        free(path);
+        return NULL;
+    }
+    element->argument = path;
+    element->type = HERE_DOC;
+    return element;
+}
+
+// Function to create a redirection element for non-HERE_DOC type
+t_relem *create_non_here_doc_element(enum e_token redir_type, char *argument) {
+    t_relem *element = ft_calloc(1, sizeof(t_relem));
+    if (!element) {
+        free(argument);
+        return NULL;
+    }
+    element->argument = argument;
+    element->type = redir_type;
+    return element;
+}
+
+// Function to add a redirection element to the redir_list
+t_rlist *add_redir_element(t_rlist *redir_list, t_relem *redir_element) {
     if (!redir_list->first) {
         redir_list->first = redir_element;
     } else {
@@ -82,8 +76,74 @@ t_rlist *parse_redir(t_global **token, t_environment *env, t_rlist *redir_list) 
     }
     redir_list->last = redir_element;
     redir_list->total++;
-
-    // Return the updated redir_list
     return redir_list;
 }
+
+
+char *parse_redir_argument_value(t_global **token, t_environment *env, enum e_token redir_type) {
+    char *redir_argument = NULL;
+
+    if (is_env_var(*token) && redir_type != HERE_DOC) {
+        redir_argument = get_env_var_value((*token)->content, env);
+        if (!redir_argument) {
+            printf("bash: %s: ambiguous redirect\n", (*token)->content);
+            return NULL;
+        }
+    } else {
+        redir_argument = ft_strdup((*token)->content);
+    }
+
+    char **args = ft_split(redir_argument, ' '); // Split the redir_argument into an array of strings
+    char *first_arg = NULL;
+
+    if (args && args[0]) {
+        first_arg = ft_strdup(args[0]);
+    }
+
+    // Free the memory used by the array of strings
+    for (int i = 0; args && args[i]; i++) {
+        free(args[i]);
+    }
+    free(args);
+
+    free(redir_argument); // Free the original redir_argument
+
+    return first_arg;
+}
+
+
+
+t_relem *create_redir_element(enum e_token redir_type, char *redir_argument) {
+    t_relem *element = ft_calloc(1, sizeof(t_relem));
+    if (!element) {
+        free(redir_argument);
+        return NULL;
+    }
+    element->argument = redir_argument;
+    element->type = redir_type;
+    return element;
+}
+
+t_rlist *parse_redir(t_global **token, t_environment *env, t_rlist *redir_list) {
+    // Get the type of the current redirection token
+    enum e_token redir_type = (*token)->type;
+
+    // Skip tokens until a WORD or ENV token is found
+    skip_to_word_or_env(token);
+
+    // Parse the redirection argument value
+    char *redir_argument_value = parse_redir_argument_value(token, env, redir_type);
+    if (!redir_argument_value)
+        return NULL;
+
+    // Create a redirection element based on the type
+    t_relem *redir_element = create_redir_element(redir_type, redir_argument_value);
+    if (!redir_element) {
+        return NULL;
+    }
+
+    // Add the redirection element to the redir_list
+    return add_redir_element(redir_list, redir_element);
+}
+
 
