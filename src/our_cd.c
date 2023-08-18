@@ -46,7 +46,6 @@ int our_cd(t_cmd *command, char ***environment)
     // Handle cd command with or without arguments
     if (!command->args[1])
     {
-        printf("am here and ! No arguments provided\n");
         // If no arguments are provided, change to the HOME directory
         if (chdir(expand_vars("$HOME", *environment)) != 0)
         {
@@ -77,7 +76,7 @@ int our_cd(t_cmd *command, char ***environment)
 
     // Update PWD and OLDPWD environment variables in the linked list
     t_environment *current_env_elem = env_vars;
-    while (current_env_elem && ft_strcmp(current_env_elem->name, "PWD") != 0)
+    while (current_env_elem && strcmp(current_env_elem->name, "PWD") != 0)
         current_env_elem = current_env_elem->next;
     if (current_env_elem)
     {
@@ -87,7 +86,7 @@ int our_cd(t_cmd *command, char ***environment)
 
     // Update OLDPWD with the previous working directory
     current_env_elem = env_vars;
-    while (current_env_elem && ft_strcmp(current_env_elem->name, "OLDPWD") != 0)
+    while (current_env_elem && strcmp(current_env_elem->name, "OLDPWD") != 0)
         current_env_elem = current_env_elem->next;
     if (current_env_elem)
     {
@@ -125,4 +124,3 @@ int our_cd(t_cmd *command, char ***environment)
     check.exit_status = 0; // Set exit status to indicate success
     return 0; // Return success code
 }
-
