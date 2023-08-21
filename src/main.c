@@ -41,8 +41,8 @@ void display_prompt(t_environment *env) {
         // Create AST tree and parse the input
         t_tree *astTree = init_tree(NULL);
         final_parse(&astTree, lexerObj->head, env); // call the function that parse the input and store it in the astTree
-        excution(astTree->top, env, lexerObj->head); // call the function that execute the command that stored in structure astTree->top
-        // execute(astTree->top, env->environment_array); // call the fucntion that excute the command that stored in structer astTree->top
+        //excution(astTree->top, env, lexerObj->head); // call the function that execute the command that stored in structure astTree->top
+        execute_tree(astTree->top, env, lexerObj->head); // call the fucntion that excute the command that stored in structer astTree->top
         // Free the AST tree
         free_ast_tree(astTree); // Use the new function to free the AST tree
     } else {

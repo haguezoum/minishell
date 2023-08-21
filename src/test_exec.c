@@ -84,82 +84,92 @@ void excute_builtin(t_cmd *ptr, t_environment *env, t_global *token_list) //shou
             // our_exit();
         }
 }
-int execute(t_node *ptr, char **evn_vars)
+void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)
 {
-    if(ptr->node_type == COMMAND)
+    
+    pid_t pid;
+    int status;
+
+    if(check_builtin_cmd(&(ptr->content.command))) // check if the command is builtin or not
     {
-        char *str = check_cmand_exist_in_dir(ptr); // check if the command exists in the directories listed in the PATH environment variable
-        if(str) // if the command exists in at least one directory
+        excute_builtin(&(ptr->content.command), evn_vars, token_list);
+    }
+    else
+    {    //excute external command
+        
+        int fd[2];
+        pipe(fd);
+        char *str = check_cmand_exist_in_dir(ptr); // check if the command exists in the directories listed in the PATH environment variable 
+        if(str) // if the command exists in at least one directory then fork and execute the command
         {
-            pid_t pid;
-            int status;
             pid = fork();
             if (pid == 0)
             {
-                if (execve(str, ptr->content.command.args, evn_vars) == -1)
-                {
-                    perror("execv");
-                    exit(1);
-                }
+                // child proccess
+                execve(str, ptr->content.command.args, evn_vars->environment_array);
+                free(str);  // free the string that contains the path of the command
             }
             else if (pid < 0)
-            {
+            { 
+                //error in forking
                 perror("fork");
                 exit(1);
             }
             else
             {
-                waitpid(pid, &status, 0);
+                // parent proccess
+                // printf("waiting ...\n");
+                waitpid(pid, &status, 0); // wait for the child process to finish
             }
         }
-        else
+        else // if the command does not exist in any directory then print error message
         {
             printf("bash: %s: command not found\n", ptr->content.command.args[0]);
-        }
-    }
-    else if(ptr->node_type == PIPE)
-    {
-        int fd[2];
-        pid_t pid;
-        int status;
-        pipe(fd);
-        pid = fork();
-        if (pid == 0)
-        {
-            // child proccess
-            dup2(fd[1], 1); // redirect stdout to the write end of the pipe
-            close(fd[0]); // close the read end of the pipe
-            close(fd[1]); // close the write end of the pipe
-            execute(ptr->content.pipe.left, evn_vars); // execute the left side of the pipe
-            exit(0); // exit the child process
-        }
-        else if (pid < 0)
-        {
-            perror("fork");
-            exit(1);
-        }
-        else
-        {
-            waitpid(pid, &status, 0); // wait for the child process to finish
-            dup2(fd[0], 0); // redirect stdin to the read end of the pipe
-            close(fd[0]); // close the read end of the pipe
-            close(fd[1]); // close the write end of the pipe
-            execute(ptr->content.pipe.right, evn_vars); //execute the right side of the pipe
-        }
+            //free str  // free the string that contains the path of the command
+        } 
+        //free str  // free the string that contains the path of the command
     }
 }
 
-
-void excution(t_node *ptr, t_environment *evn_vars, t_global *token_list)
+void run_pipe(t_node *ptr, t_environment *evn_vars, t_global *token_list, int fd[2])
 {
-    if(check_builtin_cmd(&(ptr->content.command)))
+    pid_t l_pid, r_pid;
+    int status;
+    l_pid = fork();
+    if (l_pid == 0)
     {
-        //printf("builtin\n"); // this is just for testing
-        excute_builtin(&(ptr->content.command), evn_vars, token_list); // excute the builtin command
+        // child proccess
+        dup2(fd[1], 1); // redirect the output of the left side of the pipe to the input of the right side of the pipe
+        close(fd[0]); // close the input of the left side of the pipe
+        execute_tree(ptr->content.pipe.left, evn_vars, token_list); // execute the left side of the pipe
+        close(fd[1]); // close the output of the left side of the pipe
+        exit(0);
+    }
+    r_pid = fork();
+    if(r_pid == 0)
+    {
+        dup2(fd[0], 0); // redirect the input of the right side of the pipe to the output of the left side of the pipe
+        close(fd[1]); // close the output of the right side of the pipe
+        execute_tree(ptr->content.pipe.right, evn_vars, token_list); // execute the left side of the pipe
+        close(fd[0]); // close the input of the right side of the pipe
+        exit(0);
+    }
+    close(fd[0]); // close the input of the right side of the pipe
+    close(fd[1]); // close the output of the right side of the pipe
+    waitpid(l_pid, &status, 0); // wait for the child process to finish
+    waitpid(r_pid, &status, 0); // wait for the child process to finish
+}
+int execute_tree(t_node *ptr, t_environment *evn_vars, t_global *token_list) // call the functiom from main to execute the command that stored in structer astTree->top->content.command.args[0]
+{
+    if(ptr->node_type == COMMAND)
+    {
+        exec_cmd(ptr, evn_vars, token_list); // excute the command that stored in structer astTree->top->content.command.args[0]
     }
     else
     {
-        //printf("not builtin\n"); // this is just for testing
-        execute(ptr, evn_vars->environment_array); // excute the command that stored in structer astTree->top
+        int fd[2];
+        pipe(fd); // create a pipe for the left and right side of the pipe
+        run_pipe(ptr, evn_vars, token_list , fd);
     }
+    return 0;
 }

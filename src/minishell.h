@@ -154,11 +154,9 @@ int our_cd(t_cmd *command, char ***environment);
 int our_pwd(t_cmd *command);
 int our_env(t_cmd *command, char **environment);
 int our_unset(t_cmd *cmd, t_environment **env);
-// void execute(t_node *ptr, char **evn_vars);
-void excution(t_node *ptr, t_environment *evn_vars, t_global *tokenList);
 void our_echo(t_cmd *command, t_global *tokenList, char **environment);
+void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *tokenList);
 t_node *build_command_tree(t_global **token, t_environment *env);
-
-
+int execute_tree(t_node *ptr, t_environment *evn_vars, t_global *token_list);
 
 #endif
