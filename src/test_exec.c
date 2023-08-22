@@ -97,9 +97,7 @@ void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)
     else
     {    //excute external command
         
-        int fd[2];
-        pipe(fd);
-        char *str = check_cmand_exist_in_dir(ptr); // check if the command exists in the directories listed in the PATH environment variable 
+        char *str = check_cmand_exist_in_dir(ptr); // check if the command exists in the directories listed in the PATH environment variable
         if(str) // if the command exists in at least one directory then fork and execute the command
         {
             pid = fork();
@@ -107,9 +105,9 @@ void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)
             {
                 // child proccess
                 execve(str, ptr->content.command.args, evn_vars->environment_array);
-                free(str);  // free the string that contains the path of the command
+                // free(str);  // free the string that contains the path of the command
             }
-            else if (pid < 0)
+            else if (pid == -1)
             { 
                 //error in forking
                 perror("fork");
@@ -118,7 +116,6 @@ void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)
             else
             {
                 // parent proccess
-                // printf("waiting ...\n");
                 waitpid(pid, &status, 0); // wait for the child process to finish
             }
         }
@@ -131,26 +128,33 @@ void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)
     }
 }
 
-void run_pipe(t_node *ptr, t_environment *evn_vars, t_global *token_list, int fd[2])
+void run_pipe(t_node *ptr, t_environment *evn_vars, t_global *token_list)
 {
     pid_t l_pid, r_pid;
     int status;
+    int fd[2];
+    if (pipe(fd) == -1) {
+        perror("pipe");
+        return;
+    }
     l_pid = fork();
     if (l_pid == 0)
     {
         // child proccess
-        dup2(fd[1], 1); // redirect the output of the left side of the pipe to the input of the right side of the pipe
+        dup2(fd[1], STDOUT_FILENO); // redirect the output of the left side of the pipe to the input of the right side of the pipe
         close(fd[0]); // close the input of the left side of the pipe
         execute_tree(ptr->content.pipe.left, evn_vars, token_list); // execute the left side of the pipe
+        // printf("left\n");
         close(fd[1]); // close the output of the left side of the pipe
         exit(0);
     }
     r_pid = fork();
     if(r_pid == 0)
     {
-        dup2(fd[0], 0); // redirect the input of the right side of the pipe to the output of the left side of the pipe
+        dup2(fd[0], STDIN_FILENO); // redirect the input of the right side of the pipe to the output of the left side of the pipe
         close(fd[1]); // close the output of the right side of the pipe
         execute_tree(ptr->content.pipe.right, evn_vars, token_list); // execute the left side of the pipe
+        // printf("right\n");
         close(fd[0]); // close the input of the right side of the pipe
         exit(0);
     }
@@ -167,9 +171,10 @@ int execute_tree(t_node *ptr, t_environment *evn_vars, t_global *token_list) // 
     }
     else
     {
-        int fd[2];
-        pipe(fd); // create a pipe for the left and right side of the pipe
-        run_pipe(ptr, evn_vars, token_list , fd);
+        // int fd[2];
+        // pipe(fd); // create a pipe for the left and right side of the pipe
+        printf("pipe\n");
+        run_pipe(ptr, evn_vars, token_list); // run the pipe
     }
     return 0;
 }
