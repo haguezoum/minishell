@@ -141,20 +141,21 @@ void run_pipe(t_node *ptr, t_environment *evn_vars, t_global *token_list)
     if (l_pid == 0)
     {
         // child proccess
+        printf("Right but into left fork %s\n", ptr->content.pipe.left->content.command.args[0]);
+        
         dup2(fd[1], STDOUT_FILENO); // redirect the output of the left side of the pipe to the input of the right side of the pipe
         close(fd[0]); // close the input of the left side of the pipe
-        execute_tree(ptr->content.pipe.left, evn_vars, token_list); // execute the left side of the pipe
-        // printf("left\n");
+        execute_tree(ptr->content.pipe.right, evn_vars, token_list); // execute the left side of the pipe
         close(fd[1]); // close the output of the left side of the pipe
         exit(0);
     }
     r_pid = fork();
     if(r_pid == 0)
     {
+        printf("Right but into left fork%s\n", ptr->content.pipe.right->content.command.args[0]);
         dup2(fd[0], STDIN_FILENO); // redirect the input of the right side of the pipe to the output of the left side of the pipe
         close(fd[1]); // close the output of the right side of the pipe
-        execute_tree(ptr->content.pipe.right, evn_vars, token_list); // execute the left side of the pipe
-        // printf("right\n");
+        execute_tree(ptr->content.pipe.left, evn_vars, token_list); // execute the left side of the pipe
         close(fd[0]); // close the input of the right side of the pipe
         exit(0);
     }
@@ -171,9 +172,6 @@ int execute_tree(t_node *ptr, t_environment *evn_vars, t_global *token_list) // 
     }
     else
     {
-        // int fd[2];
-        // pipe(fd); // create a pipe for the left and right side of the pipe
-        printf("pipe\n");
         run_pipe(ptr, evn_vars, token_list); // run the pipe
     }
     return 0;
