@@ -37,7 +37,7 @@ char *parse_quoted_argument(t_global **token, t_environment *env) {
             free(expanded);
         } else {
             // If the token is not an environment variable, add its content to the current argument string
-            argument = ft_strjoin(argument, (*token)->content);
+            argument = ft_strjoin(argument, (*token)->content); // add the content of the token to the argument
             *token = (*token)->next_token;
         }
     }
