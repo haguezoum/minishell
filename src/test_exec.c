@@ -103,7 +103,21 @@ void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)
             pid = fork();
             if (pid == 0)
             {
-                // child proccess
+                t_relem *tmp = ptr->content.command.redirections->first;
+                while (tmp) {
+                    if (tmp->type == REDIR_OUT) 
+                    {
+                        int fd = open(tmp->argument, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+                        dup2(fd, STDOUT_FILENO);
+                        close(fd);
+                    }
+                    else if (tmp->type == REDIR_IN) {
+                        int fd = open(tmp->argument, O_RDONLY);
+                        dup2(fd, STDIN_FILENO);
+                        close(fd);
+                    }
+                    tmp = tmp->next;
+                }
                 execve(str, ptr->content.command.args, evn_vars->environment_array);
                 // free(str);  // free the string that contains the path of the command
             }
@@ -172,6 +186,7 @@ int execute_tree(t_node *ptr, t_environment *evn_vars, t_global *token_list) // 
     }
     else
     {
+        printf("command %s\n", ptr->content.command.args[0]);
         run_pipe(ptr, evn_vars, token_list); // run the pipe
     }
     return 0;
