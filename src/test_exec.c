@@ -89,6 +89,7 @@ void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)
     
     pid_t pid;
     int status;
+    int fd;
 
     if(check_builtin_cmd(&(ptr->content.command))) // check if the command is builtin or not
     {
@@ -110,10 +111,11 @@ void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)
                     while (tmp) {
                         if (tmp->type == REDIR_OUT) // if the redirection is output then redirect the output > to the file
                         {
-                            int fd = open(tmp->argument, O_CREAT | O_WRONLY  | O_TRUNC, 0644);
-                            if (fd != -1)
-                                dup2(fd, 1);
-                            // close(fd);
+                            fd = open(tmp->argument, O_CREAT | O_WRONLY  | O_TRUNC, 0644);
+                            if (fd < 0)
+                                dprintf(2, "erorooorororo\n");
+                            dup2(fd, 1);
+                            close(fd);
                         }
                         // else if (tmp->type == REDIR_IN) {
                         //     int fd = open(tmp->argument, O_RDONLY);
@@ -123,8 +125,12 @@ void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)
                         tmp = tmp->next;
                     }
                 }
-                printf("command %s\n", ptr->content.command.args[0]);
-                execve(str, ptr->content.command.args, evn_vars->environment_array);
+                // printf("command %s\n", ptr->content.command.args[0]);
+                // for (int i = 0; ptr->content.command.args[i]; i++)
+                //     dprintf(2, "args: %s\n", ptr->content.command.args[i]);
+                // char *arr[] = {"/bin/ls", NULL};
+                // execve("/bin/ls", arr, evn_vars->environment_array);
+                // dprintf(2, "lsdklkdlskdsd\n");
                 // free(str);  // free the string that contains the path of the command
             }
             else if (pid < 0)
@@ -161,7 +167,7 @@ void run_pipe(t_node *ptr, t_environment *evn_vars, t_global *token_list)
     if (l_pid == 0)
     {
         // child proccess
-        printf("Right but into left fork %s\n", ptr->content.pipe.left->content.command.args[0]);
+        // printf("Right but into left fork %s\n", ptr->content.pipe.left->content.command.args[0]);
         
         dup2(fd[1], STDOUT_FILENO); // redirect the output of the left side of the pipe to the input of the right side of the pipe
         close(fd[0]); // close the input of the left side of the pipe
@@ -172,7 +178,7 @@ void run_pipe(t_node *ptr, t_environment *evn_vars, t_global *token_list)
     r_pid = fork();
     if(r_pid == 0)
     {
-        printf("Right but into left fork%s\n", ptr->content.pipe.right->content.command.args[0]);
+        // printf("Right but into left fork%s\n", ptr->content.pipe.right->content.command.args[0]);
         dup2(fd[0], STDIN_FILENO); // redirect the input of the right side of the pipe to the output of the left side of the pipe
         close(fd[1]); // close the output of the right side of the pipe
         execute_tree(ptr->content.pipe.left, evn_vars, token_list); // execute the left side of the pipe
@@ -192,7 +198,6 @@ int execute_tree(t_node *ptr, t_environment *evn_vars, t_global *token_list) // 
     }
     else
     {
-        printf("command %s\n", ptr->content.command.args[0]);
         run_pipe(ptr, evn_vars, token_list); // run the pipe
     }
     return 0;
