@@ -117,21 +117,36 @@ void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)
                             dup2(fd, 1);
                             close(fd);
                         }
-                        // else if (tmp->type == REDIR_IN) {
-                        //     int fd = open(tmp->argument, O_RDONLY);
-                        //     dup2(fd, STDIN_FILENO);
-                        //     close(fd);
-                        // }
+                        else if (tmp->type == REDIR_IN)
+                        {
+                            int acc = access(tmp->argument, F_OK);
+                            if(acc == -1)
+                            {
+                                printf("bash: %s: No such file or directory\n", tmp->argument);
+                                exit(1);
+                            }
+                            int fd = open(tmp->argument, O_RDONLY);
+                            dup2(fd, STDIN_FILENO);
+                            close(fd);
+                        }
+                        else if(tmp->type == DREDIR_OUT)
+                        {
+                            fd = open(tmp->argument, O_CREAT | O_WRONLY  | O_APPEND, 0644);
+                            dup2(fd, 1);
+                            close(fd);
+                        }
+                        else if(tmp->type == HERE_DOC)
+                        {
+                            char *line = NULL;
+                            int fd = open(tmp->argument, O_RDONLY, 0644);
+                            // close(fd);
+                            dup2(fd, STDIN_FILENO);
+                            close(fd);
+                        }
                         tmp = tmp->next;
                     }
                 }
-                // printf("command %s\n", ptr->content.command.args[0]);
-                // for (int i = 0; ptr->content.command.args[i]; i++)
-                //     dprintf(2, "args: %s\n", ptr->content.command.args[i]);
-                // char *arr[] = {"/bin/ls", NULL};
-                // execve("/bin/ls", arr, evn_vars->environment_array);
-                // dprintf(2, "lsdklkdlskdsd\n");
-                // free(str);  // free the string that contains the path of the command
+                execve(str, ptr->content.command.args, evn_vars->environment_array);
             }
             else if (pid < 0)
             { 
