@@ -96,32 +96,38 @@ void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)
     }
     else
     {    //excute external command
-        
+        int stdin = dup(0);
+        int stdout = dup(1);
         char *str = check_cmand_exist_in_dir(ptr); // check if the command exists in the directories listed in the PATH environment variable
         if(str) // if the command exists in at least one directory then fork and execute the command
         {
             pid = fork();
             if (pid == 0)
             {
-                t_relem *tmp = ptr->content.command.redirections->first;
-                while (tmp) {
-                    if (tmp->type == REDIR_OUT) 
-                    {
-                        int fd = open(tmp->argument, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-                        dup2(fd, STDOUT_FILENO);
-                        close(fd);
+                if(ptr->content.command.redirections) // if the command has redirections then redirect the input and output
+                {
+                    t_relem *tmp = ptr->content.command.redirections->first;
+                    while (tmp) {
+                        if (tmp->type == REDIR_OUT) // if the redirection is output then redirect the output > to the file
+                        {
+                            int fd = open(tmp->argument, O_CREAT | O_WRONLY  | O_TRUNC, 0644);
+                            if (fd != -1)
+                                dup2(fd, 1);
+                            // close(fd);
+                        }
+                        // else if (tmp->type == REDIR_IN) {
+                        //     int fd = open(tmp->argument, O_RDONLY);
+                        //     dup2(fd, STDIN_FILENO);
+                        //     close(fd);
+                        // }
+                        tmp = tmp->next;
                     }
-                    else if (tmp->type == REDIR_IN) {
-                        int fd = open(tmp->argument, O_RDONLY);
-                        dup2(fd, STDIN_FILENO);
-                        close(fd);
-                    }
-                    tmp = tmp->next;
                 }
+                printf("command %s\n", ptr->content.command.args[0]);
                 execve(str, ptr->content.command.args, evn_vars->environment_array);
                 // free(str);  // free the string that contains the path of the command
             }
-            else if (pid == -1)
+            else if (pid < 0)
             { 
                 //error in forking
                 perror("fork");
