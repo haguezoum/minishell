@@ -81,7 +81,7 @@ void excute_builtin(t_cmd *ptr, t_environment *env, t_global *token_list) //shou
         }
         else if (ft_strcmp(ptr->args[0], "exit") == 0)
         {
-            // our_exit();
+            our_exit(ptr, env->environment_array);
         }
 }
 void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)

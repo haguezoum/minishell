@@ -158,5 +158,6 @@ void our_echo(t_cmd *command, t_global *tokenList, char **environment);
 void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *tokenList);
 t_node *build_command_tree(t_global **token, t_environment *env);
 int execute_tree(t_node *ptr, t_environment *evn_vars, t_global *token_list);
+int our_exit(t_cmd *command, char **environment);
 
 #endif
