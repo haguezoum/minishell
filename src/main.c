@@ -8,18 +8,6 @@ void free_ast_tree(t_tree *tree) {
     free_tree(tree->top);
     free(tree);
 }
-void printf_command_type(t_node *ptr) // call the functiom from main to execute the command that stored in structer astTree->top->content.command.args[0]
-{
-    if(ptr->node_type == COMMAND)
-    {
-        printf("%s\n", ptr->content.command.args[0]);
-    }
-    if(ptr->node_type == PIPE)
-    {
-        printf_command_type(ptr->content.pipe.left);
-        printf_command_type(ptr->content.pipe.right);
-    }
-}//------------------------
 
 void display_prompt(t_environment *env) {
     // Display the prompt and read user input
