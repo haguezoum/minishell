@@ -16,7 +16,13 @@ char *expand_env_in_quotes(t_global **token, t_environment *env) {
 
     return expanded_argument;
 }
-
+char * join_content(char *argument, char *content, int size) { // join the content of the token to the argument
+    char *tmp = ft_strndup(content, size);
+    char *tmp2 = ft_strjoin(argument, tmp);
+    free(tmp);
+    free(argument);
+    return tmp2;
+}
 // Function to parse a quoted argument and expand environment variables
 char *parse_quoted_argument(t_global **token, t_environment *env) {
     char *argument = NULL;
@@ -31,13 +37,13 @@ char *parse_quoted_argument(t_global **token, t_environment *env) {
         if (!argument)
             argument = ft_strdup("");
 
-        char *expanded = expand_env_in_quotes(token, env);
+        char *expanded = expand_env_in_quotes(token, env); // Expand environment variables inside quotes
         if (expanded) {
             argument = ft_strjoin(argument, expanded);
             free(expanded);
         } else {
             // If the token is not an environment variable, add its content to the current argument string
-            argument = ft_strjoin(argument, (*token)->content); // add the content of the token to the argument
+            argument = join_content(argument, (*token)->content, (*token)->size); // join the content of the token to the argument
             *token = (*token)->next_token;
         }
     }
