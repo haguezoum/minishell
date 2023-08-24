@@ -1,28 +1,46 @@
 #include "minishell.h"
 
+void remove_double_quotes(char *input) {
+    char *src = input;
+    char *dst = input;
 
-// Function to parse and expand an environment variable inside quotes
+    while (*src) {
+        if (*src != '\"') {
+            *dst = *src;
+            dst++;
+        }
+        src++;
+    }
+    *dst = '\0';
+}
+
+// Function to parse and expand an environment variable inside double quotes
 char *expand_env_in_quotes(t_global **token, t_environment *env) {
     char *expanded_argument = NULL;
 
     if ((*token)->type == ENV && (*token)->token_state == IN_DOUBLE_QUOTES) {
+        remove_double_quotes((*token)->content);
         char *expanded = store_vars((*token)->content + 1, env);
         if (expanded) {
-            expanded_argument = ft_strdup(expanded);
-            free(expanded);
+            expanded_argument = expanded;
+            (*token) = (*token)->next_token;
         }
-        (*token) = (*token)->next_token;
     }
 
     return expanded_argument;
 }
-char * join_content(char *argument, char *content, int size) { // join the content of the token to the argument
+
+
+char *join_content(char *argument, char *content, int size) {
     char *tmp = ft_strndup(content, size);
-    char *tmp2 = ft_strjoin(argument, tmp);
+    char *result = ft_strjoin(argument, tmp);
     free(tmp);
-    free(argument);
-    return tmp2;
+    // Don't free(argument) here, as you still need to return it
+    return result;
 }
+
+
+
 // Function to parse a quoted argument and expand environment variables
 char *parse_quoted_argument(t_global **token, t_environment *env) {
     char *argument = NULL;
@@ -37,15 +55,20 @@ char *parse_quoted_argument(t_global **token, t_environment *env) {
         if (!argument)
             argument = ft_strdup("");
 
-        char *expanded = expand_env_in_quotes(token, env); // Expand environment variables inside quotes
-        if (expanded) {
-            argument = ft_strjoin(argument, expanded);
-            free(expanded);
+        if ((*token)->type == ENV && (*token)->token_state == IN_DOUBLE_QUOTES) {
+            // Use the expand_env_in_quotes function to expand environment variables
+            char *expanded = expand_env_in_quotes(token, env);
+            if (expanded) {
+                argument = join_content(argument, expanded, strlen(expanded)); // join the content of the token to the argument
+                free(expanded);
+            } else {
+                argument = join_content(argument, (*token)->content, (*token)->size); // join the content of the token to the argument
+            }
         } else {
-            // If the token is not an environment variable, add its content to the current argument string
             argument = join_content(argument, (*token)->content, (*token)->size); // join the content of the token to the argument
-            *token = (*token)->next_token;
         }
+
+        *token = (*token)->next_token;
     }
 
     if (*token) {
@@ -54,6 +77,7 @@ char *parse_quoted_argument(t_global **token, t_environment *env) {
 
     return argument;
 }
+
 
 int parse_command_arguments(t_global **token, t_environment *env, t_rlist *redir, char **arguments) {
     int i = 0;
