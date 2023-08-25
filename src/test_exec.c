@@ -2,7 +2,7 @@
 
 /**
  * Searches for a given command in the directories listed in the PATH environment variable.
- * 
+ *
  * @return 0 if the command is found in at least one directory, otherwise returns -1.
  */
 char* check_cmand_exist_in_dir(t_node *ptr)
@@ -18,10 +18,10 @@ char* check_cmand_exist_in_dir(t_node *ptr)
         }
        i++;
     }
-   
+
     return NULL;
 }
-int check_builtin_cmd(t_cmd *ptr) //check if the given command is builtin or not 
+int check_builtin_cmd(t_cmd *ptr) //check if the given command is builtin or not
 {
         if (ft_strcmp(ptr->args[0], "echo") == 0)
         {
@@ -54,7 +54,7 @@ int check_builtin_cmd(t_cmd *ptr) //check if the given command is builtin or not
     return 0;
 }
 void excute_builtin(t_cmd *ptr, t_environment *env, t_global *token_list) //should pass the whole structer t_environment *evn_vars
-{   
+{
         if (ft_strcmp(ptr->args[0], "echo") == 0)
         {
             our_echo(ptr, token_list ,env->environment_array);
@@ -69,7 +69,7 @@ void excute_builtin(t_cmd *ptr, t_environment *env, t_global *token_list) //shou
         }
         else if (ft_strcmp(ptr->args[0], "export") == 0)
         {
-            // our_export();
+            our_export(ptr, env);
         }
         else if (ft_strcmp(ptr->args[0], "unset") == 0)
         {
@@ -81,12 +81,12 @@ void excute_builtin(t_cmd *ptr, t_environment *env, t_global *token_list) //shou
         }
         else if (ft_strcmp(ptr->args[0], "exit") == 0)
         {
-            our_exit(ptr, env->environment_array);
+            our_exit(ptr);
         }
 }
 void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)
 {
-    
+
     pid_t pid;
     int status;
     int fd;
@@ -149,7 +149,7 @@ void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)
                 execve(str, ptr->content.command.args, evn_vars->environment_array);
             }
             else if (pid < 0)
-            { 
+            {
                 //error in forking
                 perror("fork");
                 exit(1);
@@ -164,7 +164,7 @@ void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)
         {
             printf("bash: %s: command not found\n", ptr->content.command.args[0]);
             //free str  // free the string that contains the path of the command
-        } 
+        }
         //free str  // free the string that contains the path of the command
     }
 }
@@ -183,7 +183,7 @@ void run_pipe(t_node *ptr, t_environment *evn_vars, t_global *token_list)
     {
         // child proccess
         // printf("Right but into left fork %s\n", ptr->content.pipe.left->content.command.args[0]);
-        
+
         dup2(fd[1], STDOUT_FILENO); // redirect the output of the left side of the pipe to the input of the right side of the pipe
         close(fd[0]); // close the input of the left side of the pipe
         execute_tree(ptr->content.pipe.right, evn_vars, token_list); // execute the left side of the pipe

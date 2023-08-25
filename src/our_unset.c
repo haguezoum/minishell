@@ -18,16 +18,16 @@ void update_environment_array(t_environment *env) {
         while (current_env_elem) {
             // Calculate the length needed for the entry (name + '=' + data + '\0')
             size_t entry_length = strlen(current_env_elem->name) + strlen(current_env_elem->data) + 2;
-            
+
             // Allocate memory for the entry
             env->environment_array[i] = (char *)malloc(entry_length);
-            
+
             if (env->environment_array[i]) {
                 // Copy the name and data to the entry
                 strcpy(env->environment_array[i], current_env_elem->name);
                 strcat(env->environment_array[i], "=");
                 strcat(env->environment_array[i], current_env_elem->data);
-                
+
                 current_env_elem = current_env_elem->next; // Move to the next environment element
                 i++; // Move to the next index
             } else {

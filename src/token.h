@@ -40,7 +40,7 @@ typedef struct s_lexer {
     int count;
 } t_lexer;
 
-// lexer_utils.c : 
+// lexer_utils.c :
 
 t_lexer *init_lexer(t_lexer *lexer);
 t_global *new_token(char *content, int size, enum e_token type, enum e_state token_state);
@@ -48,7 +48,7 @@ void add_token(t_lexer *lexer, t_global *token);
 void free_lexer(t_lexer *lexer);
 void print_list(t_lexer *lexer);
 
-// lexer.c : 
+// lexer.c :
 
 void handle_single_quotes(t_lexer *lexer, char *line, int i, enum e_state *state);
 void handle_double_quotes(t_lexer *lexer, char *line, int i, enum e_state *state);
