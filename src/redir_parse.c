@@ -86,7 +86,7 @@ char *parse_redir_argument_value(t_global **token, t_environment *env, enum e_to
     if (is_env_var(*token) && redir_type != HERE_DOC) {
         redir_argument = get_env_var_value((*token)->content, env);
         if (!redir_argument) {
-            printf("bash: %s: ambiguous redirect\n", (*token)->content);
+            printf("minishell: %s: ambiguous redirect\n", (*token)->content);
             return NULL;
         }
     } else {

@@ -1,15 +1,60 @@
 #include "minishell.h"
 
+<<<<<<< HEAD
 /**
  * Searches for a given command in the directories listed in the PATH environment variable.
  *
  * @return 0 if the command is found in at least one directory, otherwise returns -1.
  */
+=======
+void herdoc(char *match, t_environment *env) {
+    char *line = NULL;
+    char *path = "/tmp/.minishell_tmp";
+    // unlink(path);
+    int fd = open(path, O_RDWR | O_CREAT | O_APPEND | O_TRUNC, 0666);
+
+    while (1)
+    {
+        line = readline("herdoc>");
+        if (line == NULL || ft_strncmp(line, match, ft_strlen(match)) == 0)
+        {
+            free(line);
+            break;
+        }
+        else
+        {
+            if (ft_strchr(line, '$') != NULL)
+            {
+                char *expanded_line = expand_vars(line, env->environment_array);
+                free(line);
+                line = expanded_line;
+            }
+            write(fd, line, ft_strlen(line));
+            write(fd, "\n", 1);
+            free(line);
+        }
+    }
+    close(fd);
+    fd = open(path, O_RDONLY);
+    dup2(fd, STDIN_FILENO);
+    close(fd);
+    unlink(path);
+}
+
+>>>>>>> 4f4857853fec258d14df53d279bc83451dba987d
 char* check_cmand_exist_in_dir(t_node *ptr)
 {
     char *str = getenv("PATH");
     int i = 0;
     char **path = ft_split(str, ':');
+    if(!path)
+    {
+        return NULL;
+    }
+    if(access(ptr->content.command.args[0], F_OK) == 0)
+    {
+        return ptr->content.command.args[0];
+    }
     while (path[i])
     {
         if(access(ft_strjoin(ft_strjoin(path[i],"/"), ptr->content.command.args[0]), F_OK) == 0)
@@ -102,50 +147,49 @@ void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)
         char *str = check_cmand_exist_in_dir(ptr); // check if the command exists in the directories listed in the PATH environment variable
         if(str) // if the command exists in at least one directory then fork and execute the command
         {
+            if(ptr->content.command.redirections) // if the command has redirections then redirect the input and output
+            {
+                t_relem *tmp = ptr->content.command.redirections->first;
+                while (tmp) {
+                    if (tmp->type == REDIR_OUT) // if the redirection is output then redirect the output > to the file
+                    {
+                        fd = open(tmp->argument, O_CREAT | O_WRONLY  | O_TRUNC, 0644);
+                        if (fd < 0)
+                            dprintf(2, "erorooorororo\n");
+                        dup2(fd, 1);
+                        close(fd);
+                    }
+                    else if (tmp->type == REDIR_IN)
+                    {
+                        int acc = access(tmp->argument, F_OK);
+                        if(acc == -1)
+                        {
+                            printf("minishell: %s: No such file or directory\n", tmp->argument);
+                            exit(1);
+                        }
+                        int fd = open(tmp->argument, O_RDONLY);
+                        dup2(fd, STDIN_FILENO);
+                        close(fd);
+                    }
+                    else if(tmp->type == DREDIR_OUT)
+                    {
+                        fd = open(tmp->argument, O_CREAT | O_WRONLY  | O_APPEND, 0644);
+                        dup2(fd, 1);
+                        close(fd);
+                    }
+                    else if(tmp->type == HERE_DOC)
+                    {
+                        // printf("argument %s \n", tmp->argument);
+                        herdoc(tmp->argument, evn_vars);
+                    }
+                    tmp = tmp->next;
+                }
+            }
+            int fd_in = dup(0);
+            int fd_out = dup(1);
             pid = fork();
             if (pid == 0)
             {
-                if(ptr->content.command.redirections) // if the command has redirections then redirect the input and output
-                {
-                    t_relem *tmp = ptr->content.command.redirections->first;
-                    while (tmp) {
-                        if (tmp->type == REDIR_OUT) // if the redirection is output then redirect the output > to the file
-                        {
-                            fd = open(tmp->argument, O_CREAT | O_WRONLY  | O_TRUNC, 0644);
-                            if (fd < 0)
-                                dprintf(2, "erorooorororo\n");
-                            dup2(fd, 1);
-                            close(fd);
-                        }
-                        else if (tmp->type == REDIR_IN)
-                        {
-                            int acc = access(tmp->argument, F_OK);
-                            if(acc == -1)
-                            {
-                                printf("bash: %s: No such file or directory\n", tmp->argument);
-                                exit(1);
-                            }
-                            int fd = open(tmp->argument, O_RDONLY);
-                            dup2(fd, STDIN_FILENO);
-                            close(fd);
-                        }
-                        else if(tmp->type == DREDIR_OUT)
-                        {
-                            fd = open(tmp->argument, O_CREAT | O_WRONLY  | O_APPEND, 0644);
-                            dup2(fd, 1);
-                            close(fd);
-                        }
-                        else if(tmp->type == HERE_DOC)
-                        {
-                            char *line = NULL;
-                            int fd = open(tmp->argument, O_RDONLY, 0644);
-                            // close(fd);
-                            dup2(fd, STDIN_FILENO);
-                            close(fd);
-                        }
-                        tmp = tmp->next;
-                    }
-                }
                 execve(str, ptr->content.command.args, evn_vars->environment_array);
             }
             else if (pid < 0)
@@ -153,22 +197,24 @@ void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)
                 //error in forking
                 perror("fork");
                 exit(1);
+
             }
             else
             {
                 // parent proccess
+                dup2(fd_in, STDIN_FILENO);
+                dup2(fd_out, STDOUT_FILENO);
                 waitpid(pid, &status, 0); // wait for the child process to finish
             }
         }
         else // if the command does not exist in any directory then print error message
         {
-            printf("bash: %s: command not found\n", ptr->content.command.args[0]);
+            printf("minishell: %s: command not found\n", ptr->content.command.args[0]);
             //free str  // free the string that contains the path of the command
         }
         //free str  // free the string that contains the path of the command
     }
 }
-
 void run_pipe(t_node *ptr, t_environment *evn_vars, t_global *token_list)
 {
     pid_t l_pid, r_pid;
