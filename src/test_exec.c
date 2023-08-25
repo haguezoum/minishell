@@ -1,43 +1,39 @@
 #include "minishell.h"
 
-void herdoc(t_node *ptr, t_environment *evn_vars, t_global *token_list)
-{
-    pid_t pid;
-    int status;
-    int fd[2];
-    if (pipe(fd) == -1) {
-        perror("pipe");
-        return;
-    }
-    pid = fork();
-    if (pid == 0)
-    {
-        // child proccess
-        // printf("Right but into left fork %s\n", ptr->content.pipe.left->content.command.args[0]);
-        
-        dup2(fd[1], STDOUT_FILENO); // redirect the output of the left side of the pipe to the input of the right side of the pipe
-        close(fd[0]); // close the input of the left side of the pipe
-        execute_tree(ptr->content.pipe.right, evn_vars, token_list); // execute the left side of the pipe
-        close(fd[1]); // close the output of the left side of the pipe
-        exit(0);
-    }
-    else if (pid < 0)
-    { 
-        //error in forking
-        perror("fork");
-        exit(1);
+void herdoc(char *match, t_environment *env) {
+    char *line = NULL;
+    char *path = "/tmp/.minishell_tmp";
+    // unlink(path);
+    int fd = open(path, O_RDWR | O_CREAT | O_APPEND | O_TRUNC, 0666);
 
-    }
-    else
+    while (1) 
     {
-        // parent proccess
-        dup2(fd[0], STDIN_FILENO); // redirect the input of the right side of the pipe to the output of the left side of the pipe
-        close(fd[1]); // close the output of the right side of the pipe
-        waitpid(pid, &status, 0); // wait for the child process to finish
+        line = readline("herdoc>");
+        if (line == NULL || ft_strncmp(line, match, ft_strlen(match)) == 0)
+        {
+            free(line);
+            break;
+        }
+        else
+        {
+            if (ft_strchr(line, '$') != NULL)
+            {
+                char *expanded_line = expand_vars(line, env->environment_array);
+                free(line);
+                line = expanded_line;
+            }
+            write(fd, line, ft_strlen(line));
+            write(fd, "\n", 1);
+            free(line);
+        }
     }
-    close(fd[0]); // close the input of the right side of the pipe
-    close(fd[1]); // close the output of the right side of the pipe
-}                  
+    close(fd);
+    fd = open(path, O_RDONLY);
+    dup2(fd, STDIN_FILENO);
+    close(fd);
+    unlink(path);
+}   
+      
 char* check_cmand_exist_in_dir(t_node *ptr)
 {
     char *str = getenv("PATH");
@@ -175,7 +171,8 @@ void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)
                     }
                     else if(tmp->type == HERE_DOC)
                     {
-                        //herdoc place
+                        // printf("argument %s \n", tmp->argument);
+                        herdoc(tmp->argument, evn_vars);
                     }
                     tmp = tmp->next;
                 }
