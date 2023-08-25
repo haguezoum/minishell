@@ -12,7 +12,7 @@
 #include <sys/wait.h>
 #include <sys/wait.h>
 
-#define MAX_ARGUMENTS 20
+
 
 #define PROMPT "\x1B[37mminishell\x1B[31m_gpt\x1B[0m\x1B[33m~>\x1B[0m "
 
