@@ -1,12 +1,5 @@
 #include "minishell.h"
 
-<<<<<<< HEAD
-/**
- * Searches for a given command in the directories listed in the PATH environment variable.
- *
- * @return 0 if the command is found in at least one directory, otherwise returns -1.
- */
-=======
 void herdoc(char *match, t_environment *env) {
     char *line = NULL;
     char *path = "/tmp/.minishell_tmp";
@@ -41,7 +34,6 @@ void herdoc(char *match, t_environment *env) {
     unlink(path);
 }
 
->>>>>>> 4f4857853fec258d14df53d279bc83451dba987d
 char* check_cmand_exist_in_dir(t_node *ptr)
 {
     char *str = getenv("PATH");
