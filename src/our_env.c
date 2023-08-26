@@ -28,3 +28,28 @@ int our_env(t_cmd *command, char **environment)
     return (EXIT_SUCCESS); // Return success
 }
 
+// int our_env(t_cmd *command, t_environment *env)
+// {
+//     // Check if there are no arguments after the command
+//     if (!command->args[1])
+//     {
+//         t_environment *tmp = env->next;
+//         // Iterate through the environment variables and print those that have an '=' character
+//         while (tmp)
+//         {
+//             // Check if the environment variable contains '='
+//             if (strchr(tmp->name, '='))
+//                 printf("%s\n", tmp->name); // Print the environment variable
+//             tmp = tmp->next;
+//         }
+//     }
+//     else
+//     {
+//         // If there are arguments provided after the command, indicate an error
+//         write(STDERR_FILENO, "minishell: env: Too many arguments.\n", 36);
+//         if (check.exit_status != -1)
+//             check.exit_status = 1;
+//         return (EXIT_FAILURE);
+//     }
+//     return (EXIT_SUCCESS); // Return success
+// }

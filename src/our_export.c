@@ -1,4 +1,4 @@
-#include "minishell.h"
+    #include "minishell.h"
 
 // Function to check if a character is a valid environment variable name character
 int is_valid_env_var_char(char c) {

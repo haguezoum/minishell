@@ -1,93 +1,128 @@
 #include "minishell.h"
 
-void update_environment_array(t_environment *env) {
-    // Free the existing environment array
-    if (env->environment_array) {
-        for (int i = 0; i < env->count; i++) {
-            free(env->environment_array[i]); // Free the memory of each entry
-        }
-        free(env->environment_array); // Free the memory of the array itself
-    }
 
-    // Create a new environment array with updated variables
-    env->environment_array = (char **)malloc((env->count + 1) * sizeof(char *));
-    if (env->environment_array) {
-        t_environment *current_env_elem = env; // Point to the current environment element
-        int i = 0; // Index for the new environment array
 
-        while (current_env_elem) {
-            // Calculate the length needed for the entry (name + '=' + data + '\0')
-            size_t entry_length = strlen(current_env_elem->name) + strlen(current_env_elem->data) + 2;
 
-            // Allocate memory for the entry
-            env->environment_array[i] = (char *)malloc(entry_length);
-
-            if (env->environment_array[i]) {
-                // Copy the name and data to the entry
-                strcpy(env->environment_array[i], current_env_elem->name);
-                strcat(env->environment_array[i], "=");
-                strcat(env->environment_array[i], current_env_elem->data);
-
-                current_env_elem = current_env_elem->next; // Move to the next environment element
-                i++; // Move to the next index
-            } else {
-                // Handle memory allocation failure
-                for (int j = 0; j < i; j++) {
-                    free(env->environment_array[j]); // Free previously allocated entries
-                }
-                free(env->environment_array); // Free the array itself
-                env->environment_array = NULL; // Reset the environment array pointer
-                break; // Exit the loop
-            }
-        }
-        env->environment_array[i] = NULL; // Set the last element to NULL to terminate the array
-    }
-}
-
-int our_unset(t_cmd *cmd, t_environment **env)
+t_environment *find_elem(t_environment *env, char *key)
 {
-    int i = 1; // Start from the first argument (skip the command itself)
-    check.exit_status = EXIT_SUCCESS; // Initialize the exit status as success
+	t_environment *tmp;
 
-    while (cmd->args[i])
-    {
-        t_environment *current = *env; // Point to the current environment element
-        t_environment *previous = NULL; // Point to the previous environment element
-
-        char *name = cmd->args[i]; // Get the name of the variable to unset
-
-        while (current && strcmp(current->name, name) != 0)
-        {
-            previous = current; // Keep track of the previous element
-            current = current->next; // Move to the next environment element
-        }
-
-        if (current)
-        {
-            if (previous)
-                previous->next = current->next; // Link the previous element to the next
-            else
-                *env = current->next; // If no previous, update the environment pointer
-            if (current->next)
-                current->next->prev = previous; // Update the prev pointer of the next element
-            (*env)->count--; // Decrement the environment count
-            free(current->name); // Free the memory of the variable name
-            free(current->data); // Free the memory of the variable data
-            free(current); // Free the memory of the environment element
-        }
-
-        if (name && !ft_isalpha(name[0]))
-        {
-            write(2, "minishell: unset: `", 19); // Print the error message header
-            write(2, name, strlen(name));   // Print the invalid identifier
-            write(2, "`: not a valid identifier\n", 27); // Print the error message footer
-            check.exit_status = EXIT_FAILURE; // Set the exit status to failure
-        }
-
-        i++; // Move to the next argument
-    }
-
-    update_environment_array(*env); // Update the environment array
-    return (check.exit_status); // Return the exit status
+	tmp = env->next;
+	while (tmp && strcmp(tmp->name, key) != 0)
+		tmp = tmp->next;
+	return tmp;
 }
 
+
+void delete_elem(t_environment *env, t_environment *elem)
+{
+    printf("Deleting [%s]\n", env->data);
+    printf("key: %s val: %s\n", elem->name, elem->data);
+	if (elem && elem->next)
+		elem->next->prev = elem->prev;
+	if (elem && elem->prev)
+		elem->prev->next = elem->next;
+	env->count--;
+
+	free(elem->name);
+	free(elem->data);
+	free(elem);
+}
+// void del_env_elem(t_environment *env, t_environment *elem)
+// {
+//     printf("Before deletion: elem=%p, elem->prev=%p, elem->next=%p\n", (void *)elem, (void *)(elem->prev), (void *)(elem->next));
+
+//     if (elem && elem->next)
+//         elem->next->prev = elem->prev;
+//     if (elem && elem->prev)
+//         elem->prev->next = elem->next;
+
+//     printf("After updating pointers: elem->prev=%p, elem->next=%p\n", (void *)(elem->prev), (void *)(elem->next));
+
+//     env->count--;
+
+//     free(elem->name);
+//     free(elem->data);
+//     free(elem);
+// }
+
+void del_env(t_environment *env)
+{
+	t_environment *tmp;
+
+	tmp = env->next;
+	while (tmp)
+	{
+		t_environment *next = tmp->next;
+		free(tmp->name);
+		free(tmp->data);
+		free(tmp);
+		tmp = next;
+	}
+	free(env);
+}
+
+// char	**convert_array(t_environment *env)
+// {
+// 	t_environment	*tmp;
+// 	char			**arr;
+// 	int				i;
+
+// 	i = 0;
+// 	tmp = env->next; // Assuming the head of the linked list is represented by a sentinel node
+// 	arr = ft_calloc(env->count + 1, sizeof(char *));
+// 	if (arr)
+// 	{
+// 		while (i < env->count)
+// 		{
+// 			arr[i] = ft_strjoin(env->name, "=");
+// 			if (env->data)
+// 			{
+// 				arr[i] = ft_strjoin(arr[i], env->data);
+// 			}
+// 			env = env->next;
+// 			i++;
+// 		}
+// 		arr[i] = NULL;
+// 	}
+// 	return (arr);
+// }
+
+
+void main_unset(char *args, t_environment *env_vars)
+{
+    t_environment *elem;
+
+    elem = NULL;
+    if (args && !(ft_isalpha(args[0]) || args[0] == '_') && strlen(args) > 1)
+    {
+        printf("minishell: unset: `%s`: not a valid identifier\n", args);
+        check.exit_status = EXIT_FAILURE;
+    }
+    else
+    {
+        elem = find_elem(env_vars, args);
+        if (elem)
+            delete_elem(env_vars, elem);
+    }
+}
+
+
+int our_unset(t_cmd *cmd, t_environment *ev)
+{
+	// t_environment *env;
+	int i;
+
+	i = 1;
+	// env = NULL;
+	// env = create_env_vars(*ev);
+	check.exit_status = EXIT_SUCCESS;
+	while (cmd->args[i])
+	{
+		main_unset(cmd->args[i], ev);
+		i++;
+	}
+	// *ev = convert_array(env);
+	// del_env(env);
+	return check.exit_status;
+}
