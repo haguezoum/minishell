@@ -5,33 +5,35 @@ void herdoc(char *match, t_environment *env) {
     char *path = "/tmp/.minishell_tmp";
     // unlink(path);
     int fd = open(path, O_RDWR | O_CREAT | O_APPEND | O_TRUNC, 0666);
-
     while (1)
     {
-        line = readline("herdoc>");
+        line = readline(">");
         if (line == NULL || ft_strncmp(line, match, ft_strlen(match)) == 0)
         {
             free(line);
             break;
         }
         else
-        {
-            if (ft_strchr(line, '$') != NULL)
-            {
+        { 
+            char *line_to_write = line;
+            
+            if (ft_strchr(line, '$') != NULL) {
                 char *expanded_line = expand_vars(line, env->environment_array);
-                free(line);
-                line = expanded_line;
+                line_to_write = expanded_line;
             }
-            write(fd, line, ft_strlen(line));
+            
+            write(fd, line_to_write, ft_strlen(line_to_write));
             write(fd, "\n", 1);
-            free(line);
+            
+            if (line_to_write != line) {
+                free(line_to_write);
+            }
         }
     }
-    close(fd);
-    fd = open(path, O_RDONLY);
     dup2(fd, STDIN_FILENO);
-    close(fd);
-    unlink(path);
+    // close(fd);
+    // while(1);
+    // unlink(path);
 }
 
 char* check_cmand_exist_in_dir(t_node *ptr)
@@ -90,6 +92,7 @@ int check_builtin_cmd(t_cmd *ptr) //check if the given command is builtin or not
         }
     return 0;
 }
+
 void excute_builtin(t_cmd *ptr, t_environment *env, t_global *token_list) //should pass the whole structer t_environment *evn_vars
 {
         if (ft_strcmp(ptr->args[0], "echo") == 0)
@@ -106,7 +109,49 @@ void excute_builtin(t_cmd *ptr, t_environment *env, t_global *token_list) //shou
         }
         else if (ft_strcmp(ptr->args[0], "export") == 0)
         {
-            our_export(ptr, env);
+            if (!ptr->args[1]) {
+                t_environment *tmp = env->next;
+                while (tmp) {
+                    if (tmp->data) {
+                        printf("declare -x %s=\"%s\"\n", tmp->name, tmp->data);
+                    }
+                    else
+                        printf("%s\n", tmp->name);
+                    tmp = tmp->next;
+                }
+                return ;
+            }
+            // printf("%s\n", ptr->args[0]);
+            // exit(0);
+            // if (!ptr->args[2])
+            //     ptr->args[2] = strdup("abc");
+            printf("ptr->args[1] : %s\n", ptr->args[1]);
+            printf("ptr->args[2] : %s\n", ptr->args[2]);
+            if(!ptr->args[2])
+            {
+                char *es = ft_strchr(ptr->args[1], '=');
+                if (!es)
+                {
+                    printf("es : %s\n", es);
+                    our_export(ptr->args[1], env);
+                    return ;
+                }
+                char *arg2 = ft_strdup(es + 1);
+                char *arg1 = ft_substr(ptr->args[1], 0, ft_strlen(ptr->args[1]) - ft_strlen(es));
+                printf("es : %s\n", es);
+                printf("arg1 : %s\n", arg1);
+                printf("arg2 : %s\n", arg2);
+                char *str = ft_strjoin(arg1, "=");
+                str = ft_strjoin(str, arg2);
+                printf("str : %s\n", str);
+                our_export(str, env);
+            }
+            else
+            {
+                char *str = strcat(ptr->args[1], ptr->args[2]);
+                our_export(str, env);
+            }
+            
         }
         else if (ft_strcmp(ptr->args[0], "unset") == 0)
         {
@@ -114,13 +159,14 @@ void excute_builtin(t_cmd *ptr, t_environment *env, t_global *token_list) //shou
         }
         else if (ft_strcmp(ptr->args[0], "env") == 0)
         {
-            our_env(ptr, env->environment_array);
+            our_env(ptr, env);
         }
         else if (ft_strcmp(ptr->args[0], "exit") == 0)
         {
             our_exit(ptr);
         }
 }
+
 void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)
 {
 
