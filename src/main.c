@@ -23,7 +23,7 @@ void display_prompt(t_environment *env) {
         // Check if the input line contains only spaces or tabs
         // Return from the loop and display a new prompt
         free(line);
-        return;
+        return ;
     }
 
     // Add non-empty input to the command history
@@ -36,19 +36,19 @@ void display_prompt(t_environment *env) {
     // print_list(lexerObj);
 
     // Perform syntax check
-    // int syntax_result = check_command_syntax(lexerObj);
-    // if (syntax_result == 0) {
+    int syntax_result = check_command_syntax(lexerObj);
+    if (syntax_result == 0) {
         // Create AST tree and parse the input
         t_tree *astTree = init_tree(NULL);
         final_parse(&astTree, lexerObj->head, env); // call the function that parse the input and store it in the astTree
         execute_tree(astTree->top, env, lexerObj->head); // call the fucntion that excute the command that stored in structer astTree->top
         // print_node(astTree->top, 0);
         free_ast_tree(astTree); // Use the new function to free the AST tree
-    // }
-    // else
-    // {
-    //     printf("Syntax error in the input\n");
-    // }
+    }
+    else
+    {
+        printf("Syntax error in the input\n");
+    }
     // Free the lexer object after parsing
     free_lexer(lexerObj);
     // Free the memory allocated by readline
