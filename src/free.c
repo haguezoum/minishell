@@ -45,7 +45,9 @@ void free_tree(t_node *node) {
 void free_redir_list(t_rlist *list) {
     t_relem *tmp = list->first;
     while (tmp) {
-        free(tmp->argument);
+        t_relem *next = tmp->next;
+        if (tmp->argument)
+            free(tmp->argument);
         free(tmp);
         tmp = tmp->next;
     }
