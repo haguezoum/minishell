@@ -20,7 +20,7 @@ t_global *skip_whitespace(t_global *current_token, int direction) {
 //   - type: The token type to check.
 // Returns: 1 if the token type is an operator, 0 otherwise.
 int is_operator(enum e_token type) {
-    return (type == PIPE_LINE || type == REDIR_IN || type == REDIR_OUT || type == DREDIR_OUT);
+    return (type == PIPE_LINE || type == REDIR_IN || type == REDIR_OUT || type == DREDIR_OUT || type == HERE_DOC);
 }
 
 // Function to check if a token type is a valid word (e.g., word or environment variable).
