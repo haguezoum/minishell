@@ -1,4 +1,4 @@
-CFLAGS =   -fsanitize=address
+CFLAGS =   # -Wall -Wextra -Werror
 CC = gcc -g
 RM = rm -rf
 SRC = main.c libft_utils.c lexer_utils.c lexer.c check_syntax.c parser.c env.c  get_next_line.c just_for_print.c  free.c redir_parse.c init_tree.c parse_utils.c test_exec.c \
