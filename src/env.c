@@ -1,10 +1,10 @@
-#include "minishell.h"
+#include "./includes/minishell.h"
 
 // Function to create environment variables from the given environment array
 t_environment *create_env_vars(char **environment_array) {
     // Allocate memory for the t_environment structure and initialize it to zero
     t_environment *env = ft_calloc(sizeof(t_environment), 1);
-    
+
     // Check if the memory allocation was successful. If not, return NULL.
     if (!env)
         return NULL;
@@ -16,7 +16,7 @@ t_environment *create_env_vars(char **environment_array) {
     env->prev = NULL;
     env->environment_array = environment_array;
     env->count = 0;
-    
+
     // Initialize the exit status to 0
     check.exit_status = 0;
 
@@ -30,16 +30,16 @@ t_environment *create_env_vars(char **environment_array) {
 
         // Find the position of '=' character in the line
         index = ft_strchr(line, '=');
-        
+
         // Allocate memory for the new t_environment element
         t_environment *elem = ft_calloc(sizeof(t_environment), 1);
-        
+
         // If '=' is found in the line, it means the line contains a name=value pair
         if (index != NULL) {
             // Extract the name and value parts of the environment variable
             env_search = ft_substr(line, 0, index - line);
             value = ft_strdup(index + 1);
-            
+
             // Check if memory allocation was successful. If not, free the allocated memory and continue to the next line.
             if (!env_search || !value || !elem) {
                 free(env_search);
@@ -103,10 +103,10 @@ char *expand_vars(char *line, char **environment_array) {
     int i = 0;
     int j = 0;
     char *value;
-    
+
     // Allocate initial memory for the expanded string
     char *res = malloc(1024);
-    
+
     // Check if memory allocation was successful. If not, return NULL.
     if (!res) {
         // Failed to allocate memory
@@ -129,7 +129,7 @@ char *expand_vars(char *line, char **environment_array) {
                 }
                 // Allocate memory for the environment variable name
                 char *env_search = malloc(env_search_len + 1);
-                
+
                 // Check if memory allocation was successful. If not, free the allocated memory and return NULL.
                 if (!env_search) {
                     // Failed to allocate memory
@@ -139,7 +139,7 @@ char *expand_vars(char *line, char **environment_array) {
                 // Copy the environment variable name from the original string
                 strncpy(env_search, &line[i - env_search_len], env_search_len);
                 env_search[env_search_len] = '\0';
-                
+
                 // Search for the environment variable in the environment_array
                 value = NULL;
                 int k = 0;

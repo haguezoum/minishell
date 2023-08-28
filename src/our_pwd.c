@@ -1,7 +1,16 @@
-#include "minishell.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   our_pwd.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/08/28 23:45:25 by aet-tass          #+#    #+#             */
+/*   Updated: 2023/08/28 23:45:26 by aet-tass         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "./includes/minishell.h"
 
 int our_pwd(t_cmd *command)
 {

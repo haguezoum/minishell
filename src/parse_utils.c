@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "./includes/minishell.h"
 
 
 // // Function to parse and expand an environment variable inside quotes
@@ -180,7 +180,7 @@ int parse_command_arguments(t_global **token, t_environment *env, t_rlist *redir
                 i++;
             }
             (*token) = (*token)->next_token;
-        } else if ((*token)->type == DOUBLE_QUOTE || (*token)->type == QUOTE) {
+        } else if ((*token)->type == DQUOTE || (*token)->type == SQUOTE) {
             if (!ignore_arguments) {
                 arguments[i] = parse_quoted_argument(token, env);
                 if (arguments[i]) {

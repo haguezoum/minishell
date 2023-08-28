@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "./includes/minishell.h"
 
 // Function to display error message for chdir failures
 void display_chdir_error(const char *path)

@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "./includes/minishell.h"
 
 // int our_exit(t_cmd *command, char **environment)
 // {
@@ -23,7 +23,6 @@
 //     }
 //     return (EXIT_SUCCESS); // Return success
 // }
-#include "minishell.h"
 
 #include <unistd.h>
 // Function to convert an integer to a string

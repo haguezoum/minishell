@@ -1,4 +1,4 @@
-    #include "minishell.h"
+    #include "./includes/minishell.h"
 
 // Function to check if a character is a valid environment variable name character
 int is_valid_env_var_char(char c) {
@@ -66,11 +66,11 @@ char *get_key(char *arg)
     char *name = NULL;
     char *equal_sign = ft_strchr(arg, '=');
 
-    if (equal_sign) 
+    if (equal_sign)
     {
         name = ft_strndup(arg, equal_sign - arg);
     }
-    else 
+    else
     {
         name = ft_strdup(arg);
     }
@@ -83,7 +83,7 @@ char *get_value(char *arg)
 {
     char *data = NULL;
     char *equal_sign = ft_strchr(arg, '=');
-    if (equal_sign) 
+    if (equal_sign)
     {
         data = ft_strdup(equal_sign + 1); // allocate memory for data and copy it from equal_sign + 1
     }
@@ -113,15 +113,15 @@ char *get_value(char *arg)
 //     return NULL;
 // }
 // Implementation of our_export
-int our_export(char *command, t_environment *env) 
+int our_export(char *command, t_environment *env)
 {
     int exit_status = EXIT_SUCCESS;
 
     // If no arguments, print all environment variables
-    if (!command) 
+    if (!command)
     {
         t_environment *tmp = env->next;
-        while (tmp) 
+        while (tmp)
         {
             if (tmp->data)
             {
@@ -135,32 +135,32 @@ int our_export(char *command, t_environment *env)
         return exit_status;
     }
 
-        char *arg = command; //->args[i]; 
+        char *arg = command; //->args[i];
         char *name = NULL;
         char *data = NULL;
-        
+
         name = get_key(arg);
         data = get_value(arg);
         // Check if the name is a valid environment variable name
-        if (name && !is_valid_env_var_name(name)) 
+        if (name && !is_valid_env_var_name(name))
         {
             fprintf(stderr, "minishell: export: `%s': not a valid identifier\n", arg);
             exit_status = EXIT_FAILURE;
             if (data)
                 free(data);
         }
-        else 
+        else
         {
             // Update or create the environment variable
-            if (data) 
+            if (data)
             {
                 printf("......\n");
-                if (!update_env_var(env, name, data)) 
+                if (!update_env_var(env, name, data))
                 {
                     perror("minishell: export");
                     exit_status = EXIT_FAILURE;
                 }
-                else 
+                else
                 {
                     if (name) {
                         update_env_var(env, name, data);
@@ -169,10 +169,10 @@ int our_export(char *command, t_environment *env)
                     //     printf("env: %s\n", env->environment_array[i]);
                 }
                 free(data);
-            } 
-            else 
+            }
+            else
             {
-                if (!update_env_var(env, name, "")) 
+                if (!update_env_var(env, name, ""))
                 {
                     perror("minishell: export");
                     exit_status = EXIT_FAILURE;

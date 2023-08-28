@@ -1,5 +1,5 @@
-#include <stdio.h>
-#include "minishell.h"
+
+#include "./includes/minishell.h"
 // Define ANSI escape codes for colors
 #define ANSI_COLOR_RESET   "\x1b[0m"
 #define ANSI_COLOR_CYAN    "\x1b[36m"

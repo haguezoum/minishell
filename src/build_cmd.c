@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "./includes/minishell.h"
 
 // Function to build the command tree (AST) based on the token list
 t_node *build_command_tree(t_global **token, t_environment *env) {
@@ -19,10 +19,10 @@ t_node *build_command_tree(t_global **token, t_environment *env) {
     while (tmp && tmp->type != PIPE_LINE) {
         if (tmp->type == WORD || tmp->type == ENV) {
             arg_index++;
-        } else if (tmp->type == DOUBLE_QUOTE || tmp->type == QUOTE ||
+        } else if (tmp->type == DQUOTE || tmp->type == SQUOTE ||
                    tmp->type == REDIR_IN || tmp->type == REDIR_OUT ||
                    tmp->type == DREDIR_OUT || tmp->type == HERE_DOC) {
-            if (tmp->type == DOUBLE_QUOTE || tmp->type == QUOTE) {
+            if (tmp->type == DQUOTE || tmp->type == SQUOTE) {
                 // Skip tokens until the end of the quotes
                 tmp = tmp->next_token;
                 while (tmp && tmp->type != tmp->type)

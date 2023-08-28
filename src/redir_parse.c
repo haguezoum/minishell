@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "./includes/minishell.h"
 
 
 
@@ -19,41 +19,41 @@ char *get_env_var_value(char *var_name, t_environment *env) {
 }
 
 // Function to read lines from standard input until a matching line is encountered
-char *read_until_match(char *match, t_environment *env) {
-    char *line = NULL;
-    int fd = open("/tmp/.minishell_tmp", O_RDWR | O_CREAT | O_APPEND | O_TRUNC, 0666);
+// char *read_until_match(char *match, t_environment *env) {
+//     char *line = NULL;
+//     int fd = open("/tmp/.minishell_tmp", O_RDWR | O_CREAT | O_APPEND | O_TRUNC, 0666);
 
-    while (1) {
-        line = get_next_line(STDIN_FILENO);
-        if (line == NULL || ft_strncmp(line, match, ft_strlen(match)) == 0) {
-            free(line);
-            break;
-        } else {
-            if (ft_strchr(line, '$') != NULL) {
-                char *expanded_line = expand_vars(line, env->environment_array);
-                free(line);
-                line = expanded_line;
-            }
-            write(fd, line, ft_strlen(line));
-            free(line);
-        }
-    }
+//     while (1) {
+//         line = get_next_line(STDIN_FILENO);
+//         if (line == NULL || ft_strncmp(line, match, ft_strlen(match)) == 0) {
+//             free(line);
+//             break;
+//         } else {
+//             if (ft_strchr(line, '$') != NULL) {
+//                 char *expanded_line = expand_vars(line, env->environment_array);
+//                 free(line);
+//                 line = expanded_line;
+//             }
+//             write(fd, line, ft_strlen(line));
+//             free(line);
+//         }
+//     }
 
-    return ft_strdup("/tmp/.minishell_tmp");
-}
+//     return ft_strdup("/tmp/.minishell_tmp");
+// }
 
 // Function to create a redirection element for HERE_DOC type
-t_relem *create_here_doc_element(char *match, t_environment *env) {
-    char *path = read_until_match(match, env);
-    t_relem *element = ft_calloc(1, sizeof(t_relem));
-    if (!element) {
-        free(path);
-        return NULL;
-    }
-    element->argument = path;
-    element->type = HERE_DOC;
-    return element;
-}
+// t_relem *create_here_doc_element(char *match, t_environment *env) {
+//     char *path = read_until_match(match, env);
+//     t_relem *element = ft_calloc(1, sizeof(t_relem));
+//     if (!element) {
+//         free(path);
+//         return NULL;
+//     }
+//     element->argument = path;
+//     element->type = HERE_DOC;
+//     return element;
+// }
 
 // Function to create a redirection element for non-HERE_DOC type
 t_relem *create_non_here_doc_element(enum e_token redir_type, char *argument) {

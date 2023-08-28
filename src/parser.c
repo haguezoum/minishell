@@ -1,6 +1,4 @@
-#include "minishell.h"
-#include <string.h>
-#include <ctype.h>
+#include "./includes/minishell.h"
 
 
 // Function to handle building a command node from tokens.

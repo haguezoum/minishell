@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "./includes/minishell.h"
 
 void herdoc(char *match, t_environment *env) {
     char *line = NULL;
@@ -14,17 +14,17 @@ void herdoc(char *match, t_environment *env) {
             break;
         }
         else
-        { 
+        {
             char *line_to_write = line;
-            
+
             if (ft_strchr(line, '$') != NULL) {
                 char *expanded_line = expand_vars(line, env->environment_array);
                 line_to_write = expanded_line;
             }
-            
+
             write(fd, line_to_write, ft_strlen(line_to_write));
             write(fd, "\n", 1);
-            
+
             if (line_to_write != line) {
                 free(line_to_write);
             }
@@ -151,7 +151,7 @@ void excute_builtin(t_cmd *ptr, t_environment *env, t_global *token_list) //shou
                 char *str = strcat(ptr->args[1], ptr->args[2]);
                 our_export(str, env);
             }
-            
+
         }
         else if (ft_strcmp(ptr->args[0], "unset") == 0)
         {

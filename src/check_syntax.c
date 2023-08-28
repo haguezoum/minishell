@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "./includes/minishell.h"
 
 // Function to skip over white spaces in the token list in a given direction.
 // Parameters:
@@ -36,7 +36,7 @@ int is_valid_word(enum e_token type) {
 //   - type: The token type to check.
 // Returns: 1 if the token type is a valid character, 0 otherwise.
 int is_valid_char(enum e_token type) {
-    return (type == WHITE_SPACE || type == NEW_LINE || type == QUOTE || type == DOUBLE_QUOTE ||
+    return (type == WHITE_SPACE || type == NEW_LINE || type == SQUOTE || type == DQUOTE ||
             type == ESCAPE || is_operator(type) || is_valid_word(type));
 }
 
@@ -129,7 +129,7 @@ int check_command_syntax(t_lexer *lexer) {
                 return syntax_error("unexpected token `newline'");
             has_operator = 0;
             has_command = 0;
-        } else if (current_token->type == DOUBLE_QUOTE || current_token->type == QUOTE) {
+        } else if (current_token->type == DQUOTE || current_token->type == SQUOTE) {
             // Check for unclosed quotes and update the current token accordingly.
             t_global *quote = check_unclosed_quotes(&current_token, current_token->type);
             if (!quote)

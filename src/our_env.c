@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "./includes/minishell.h"
 
 // int our_env(t_cmd *command, char **environment)
 // {

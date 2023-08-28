@@ -1,6 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include "minishell.h"
+#include "./includes/minishell.h"
 
 
 
@@ -32,7 +30,7 @@ void display_prompt(t_environment *env) {
     }
 
     // Call the lexer function
-    t_lexer *lexerObj = lexer(line);
+    t_lexer *lexerObj = tokenizer(line);
     // print_list(lexerObj);
 
     // Perform syntax check
