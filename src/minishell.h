@@ -14,7 +14,7 @@
 
 
 
-#define PROMPT "\x1B[37mminishell\x1B[31m_gpt\x1B[0m\x1B[33m~>\x1B[0m "
+#define PROMPT "minishell$ "
 
 
 
@@ -155,7 +155,8 @@ int final_parse(t_tree **tree, t_global *token, t_environment *env);
 int our_cd(t_cmd *command, char ***environment);
 int our_pwd(t_cmd *command);
 // int our_env(t_cmd *command, t_environment *environment);
-int our_env(t_cmd *command, char **environment);
+// int our_env(t_cmd *command, char **environment);
+int our_env(t_cmd *command, t_environment *env);
 int our_unset(t_cmd *cmd, t_environment *env);
 // int our_unset(t_cmd *cmd, char ***ev);
 void our_echo(t_cmd *command, t_global *tokenList, char **environment);
@@ -164,6 +165,6 @@ t_node *build_command_tree(t_global **token, t_environment *env);
 int execute_tree(t_node *ptr, t_environment *evn_vars, t_global *token_list);
 // int our_exit(t_cmd *command, char **environment);
 void our_exit(t_cmd *command);
-int our_export(t_cmd *command, t_environment *env);
+int our_export(char *command, t_environment *env);
 
 #endif
