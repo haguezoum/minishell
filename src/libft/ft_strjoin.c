@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/09 00:34:41 by aet-tass          #+#    #+#             */
-/*   Updated: 2022/10/18 19:50:56 by aet-tass         ###   ########.fr       */
+/*   Created: 2023/08/29 02:19:52 by haguezou          #+#    #+#             */
+/*   Updated: 2023/08/29 04:50:22 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,5 +38,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	while (s2[i])
 		new_str[j++] = s2[i++];
 	new_str[j] = '\0';
+    free((void *)s1);
 	return (new_str);
 }
