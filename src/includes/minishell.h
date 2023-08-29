@@ -166,5 +166,17 @@ int execute_tree(t_node *ptr, t_environment *evn_vars, t_global *token_list);
 // int our_exit(t_cmd *command, char **environment);
 void our_exit(t_cmd *command);
 int our_export(char *command, t_environment *env);
+// executipn part
+
+int redirout(char *argument);
+int redirin(char *argument);
+int derdir(char *argument);
+int herdoc(char *match, t_environment *env);
+void execute_left_child(t_node *left_node, int pipe_fd[2], t_environment *evn_vars, t_global *token_list);
+void execute_right_child(t_node *right_node, int pipe_fd[2], t_environment *evn_vars, t_global *token_list);
+int check_builtin_cmd(t_cmd *ptr);
+void excute_builtin(t_cmd *ptr, t_environment *env, t_global *token_list);
+void execute_external_command(t_node *ptr, t_environment *evn_vars);
+char* check_cmand_exist_in_dir(t_node *ptr);
 
 #endif
