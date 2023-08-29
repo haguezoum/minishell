@@ -6,7 +6,7 @@
 /*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 00:50:46 by haguezou          #+#    #+#             */
-/*   Updated: 2023/08/29 20:09:26 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/08/29 20:33:41 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ char* check_cmand_exist_in_dir(t_node *ptr)
 }
 int redirection(t_relem *tmp , t_environment *evn_vars)
 {
-    printf("redirection\n");
     int fd;
     if (tmp->type == REDIR_OUT)
     {
