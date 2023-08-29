@@ -62,22 +62,18 @@ int	tokenize_redirection(t_lexer *lexer, char *line, int i, enum e_state *state)
 // process_elements.c :
 
 
-int	process_regular_word(t_lexer *lexer, char *line, int start, int end,
-		enum e_state *state);
-int	process_single_quote(t_lexer *lexer, char *line, int i, enum e_state *state);
-int	process_double_quote(t_lexer *lexer, char *line, int i, enum e_state *state);
-int	process_dollar_sign(t_lexer *lexer, char *line, int i, enum e_state *state);
-int	process_regular_word_or_quote(t_lexer *lexer, char *line, int i,
-		enum e_state *state);
+void process_quotes(t_lexer *lexer, char *line, int *i, enum e_state *state);
+void process_word(t_lexer *lexer, char *line, int start, int end, enum e_state *state);
+int process_dollar_sign(t_lexer *lexer, char *line, int i, enum e_state *state);
+void process_word_tokenization(t_lexer *lexer, char *line, int *i, enum e_state *state);
+void process_redirection(t_lexer *lexer, char *line, int *i, enum e_state *state);
+
 
 // tokenizer.c :
 
 int	is_whitespace(char c);
-int	tokenize_regular_word(t_lexer *lexer, char *line, int start, int end,
-		enum e_state *state);
-int	tokenize_single_character(t_lexer *lexer, char *line, int index,
-		enum e_state *state);
-int	tokenize_lexeme(t_lexer *lexer, char *line, int i, enum e_state *state);
+void handle_special_characters(t_lexer *lexer, char *line, int *i, enum e_state *state);
+int tokenize_lexeme(t_lexer *lexer, char *line, int i, enum e_state *state);
 t_lexer	*tokenizer(char *line);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 22:40:51 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/08/28 23:37:10 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/08/29 04:38:15 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,51 +17,42 @@ int	is_whitespace(char c)
 	return (c == ' ' || c == '\t' || c == '\v' || c == '\r' || c == '\f'
 		|| c == '\n');
 }
-int	tokenize_regular_word(t_lexer *lexer, char *line, int start, int end,
-		enum e_state *state)
-{
-	if (*state != DEFAULT)
-	{
-		add_token(lexer, new_token(line + start, end - start, WORD, *state));
-		*state = DEFAULT;
-	}
-	add_token(lexer, new_token(line + start, end - start, WORD, *state));
-	return (end);
+void handle_special_characters(t_lexer *lexer, char *line, int *i, enum e_state *state) {
+    if (ft_strchr("<>|", line[*i])) {
+        add_token(lexer, new_token(line + *i, 1, line[*i], *state));
+        (*i)++;
+    } else if (is_whitespace(line[*i])) {
+        add_token(lexer, new_token(line + *i, 1, WHITE_SPACE, *state));
+        (*i)++;
+    }
 }
-int	tokenize_single_character(t_lexer *lexer, char *line, int index,
-		enum e_state *state)
-{
-	add_token(lexer, new_token(line + index, 1, line[index], *state));
-	return (index + 1);
+int tokenize_lexeme(t_lexer *lexer, char *line, int i, enum e_state *state) {
+    if (line[i] == '\'' || line[i] == '\"')
+        process_quotes(lexer, line, &i, state);
+    else if (line[i] == '$')
+	{
+        if (ft_strchr(" \t\v\r\f\n=<>|", line[i + 1]))
+		{
+            add_token(lexer, new_token(line + i, 1, WORD, *state));
+            i++;
+        }
+		else
+            i = process_dollar_sign(lexer, line, i, state);
+    }
+	 else if (ft_strchr("<>|", line[i]) || is_whitespace(line[i]))
+        handle_special_characters(lexer, line, &i, state);
+    else
+        process_word_tokenization(lexer, line, &i, state);
+    process_redirection(lexer, line, &i, state);
+    if ((*state == IN_DOUBLE_QUOTES && line[i] == '\"') || (*state == IN_SINGLE_QUOTES && line[i] == '\''))
+	{
+        *state = DEFAULT;
+        add_token(lexer, new_token(line + i, 1, line[i], *state));
+        i++;
+    }
+    return (i);
 }
 
-int	tokenize_lexeme(t_lexer *lexer, char *line, int i, enum e_state *state)
-{
-	if (line[i] == '\'')
-	{
-		return (process_dollar_sign(lexer, line, i, state));
-	}
-	else if (line[i] == '\"')
-	{
-		return (process_dollar_sign(lexer, line, i, state));
-	}
-	else if (line[i] == '$')
-	{
-		return (process_dollar_sign(lexer, line, i, state));
-	}
-	else if (ft_strchr("<>|", line[i]))
-	{
-		return (tokenize_single_character(lexer, line, i, state));
-	}
-	else if (is_whitespace(line[i]))
-	{
-		return (tokenize_single_character(lexer, line, i, state));
-	}
-	else
-	{
-		return (process_regular_word_or_quote(lexer, line, i, state));
-	}
-}
 
 t_lexer	*tokenizer(char *line)
 {

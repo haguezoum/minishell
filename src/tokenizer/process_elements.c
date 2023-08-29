@@ -6,70 +6,67 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 23:04:22 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/08/28 23:28:45 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/08/29 04:36:05 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	process_regular_word(t_lexer *lexer, char *line, int start, int end,
-		enum e_state *state)
-{
-	if (*state != DEFAULT)
-	{
-		add_token(lexer, new_token(line + start, end - start, WORD, *state));
-		*state = DEFAULT;
-	}
-	add_token(lexer, new_token(line + start, end - start, WORD, *state));
-	return (end);
+void process_quotes(t_lexer *lexer, char *line, int *i, enum e_state *state) {
+    if (line[*i] == '\'') {
+        handle_single_quotes(lexer, line, *i, state);
+    } else if (line[*i] == '\"') {
+        handle_double_quotes(lexer, line, *i, state);
+    }
+    (*i)++;
 }
 
-int	process_single_quote(t_lexer *lexer, char *line, int i, enum e_state *state)
-{
-	handle_single_quotes(lexer, line, i, state);
-	return (i + 1);
+void process_word(t_lexer *lexer, char *line, int start, int end, enum e_state *state) {
+    if (*state == IN_SINGLE_QUOTES || *state == IN_DOUBLE_QUOTES) {
+        add_token(lexer, new_token(line + start, end - start, WORD, *state));
+    } else {
+        add_token(lexer, new_token(line + start, end - start, WORD, DEFAULT));
+    }
 }
 
-int	process_double_quote(t_lexer *lexer, char *line, int i, enum e_state *state)
-{
-	handle_double_quotes(lexer, line, i, state);
-	return (i + 1);
+int process_dollar_sign(t_lexer *lexer, char *line, int i, enum e_state *state) {
+    enum e_state dollar_state = *state;
+
+    if (ft_strchr(" \t\v\r\f\n=<>|", line[i + 1])) {
+        add_token(lexer, new_token(line + i, 1, WORD, dollar_state));
+        return i + 1;
+    } else {
+        int end = tokenize_env_variable(lexer, line, i, state);
+        *state = dollar_state;
+        return end;
+    }
 }
 
-int	process_dollar_sign(t_lexer *lexer, char *line, int i, enum e_state *state)
-{
-	if (ft_strchr(" \t\v\r\f\n=<>|", line[i + 1]))
-	{
-		add_token(lexer, new_token(line + i, 1, WORD, *state));
-		return (i + 1);
-	}
-	else
-	{
-		return (tokenize_env_variable(lexer, line, i, state));
-	}
+
+
+
+void process_word_tokenization(t_lexer *lexer, char *line, int *i, enum e_state *state) {
+    int j = *i;
+    while (line[*i] && !ft_strchr(" \t\v\r\f\n\'\"<>|$", line[*i])) {
+        if (*state == DEFAULT && (line[*i] == '\'' || line[*i] == '\"')) {
+            if (line[*i] == '\"') {
+                *state = IN_DOUBLE_QUOTES;
+            } else if (line[*i] == '\'') {
+                *state = IN_SINGLE_QUOTES;
+            }
+            process_word(lexer, line, j, *i, state);
+            j = *i + 1;
+        }
+        (*i)++;
+    }
+    process_word(lexer, line, j, *i, state);
 }
-
-int	process_regular_word_or_quote(t_lexer *lexer, char *line, int i,
-		enum e_state *state)
-{
-	int	start;
-
-	start = i;
-	while (line[i] && !ft_strchr(" \t\v\r\f\n\'\"<>|$", line[i]))
-	{
-		if ((*state == DEFAULT) && (line[i] == '\'' || line[i] == '\"'))
-		{
-			if (line[i] == '\"')
-			{
-				*state = IN_DOUBLE_QUOTES;
-			}
-			else if (line[i] == '\'')
-			{
-				*state = IN_SINGLE_QUOTES;
-			}
-			return (tokenize_regular_word(lexer, line, start, i, state));
-		}
-		i++;
-	}
-	return (process_regular_word(lexer, line, start, i, state));
+void process_redirection(t_lexer *lexer, char *line, int *i, enum e_state *state) {
+    if (line[*i] == '<' && line[*i + 1] == '<') {
+        add_token(lexer, new_token(line + *i, 2, HERE_DOC, *state));
+        (*i) += 2;
+    } else if (line[*i] == '>' && line[*i + 1] == '>') {
+        add_token(lexer, new_token(line + *i, 2, DREDIR_OUT, *state));
+        (*i) += 2;
+    }
 }

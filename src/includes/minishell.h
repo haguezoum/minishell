@@ -48,7 +48,6 @@ t_global *check_unclosed_quotes(t_global **current_token, enum e_token type);
 int check_command_syntax(t_lexer *lexer);
 
 
-/*
 typedef struct s_environment {
     char *name;
     char *data;
@@ -57,113 +56,157 @@ typedef struct s_environment {
     char **environment_array;
     int count;
 } t_environment;
-*/
-
-// t_environment: Represents the environment linked list and its array representation
-typedef struct s_environment {
-    char *name;                       // Pointer to the name of the environment variable
-    char *data;                       // Pointer to the data (value) of the environment variable
-    struct s_environment *next;       // Pointer to the next environment variable in the list
-    struct s_environment *prev;       // Pointer to the previous environment variable in the list
-    char **environment_array;         // Array representation of the environment variables
-    int count;                        // Count of the total number of environment variables
-} t_environment;
-
-/*
-    Explanation of the struct members:
-    - name: Represents the name of the environment variable. It is a pointer to a character array.
-    - data: Represents the data (value) of the environment variable. It is a pointer to a character array.
-    - next: Represents the pointer to the next environment variable in the linked list.
-    - prev: Represents the pointer to the previous environment variable in the linked list.
-    - environment_array: Represents the array representation of the environment variables.
-    - count: Represents the total count of environment variables stored in the list.
-*/
-
-/*
-    This struct is designed to store environment variables in a linked list.
-    The linked list allows for easy addition, removal, and manipulation of environment variables.
-    The environment_array member is used to provide a convenient array representation of the environment variables, which can be useful in certain situations where an array is more suitable than a linked list.
-    The count member keeps track of the total number of environment variables stored in the list.
-*/
-
-t_environment *create_env_vars(char **tab);
-char *store_vars(char *key, t_environment *env);
-char *expand_vars(char *line, char **env);
 
 
+// create_env.c :
+
+
+t_environment *allocate_environment_element(char *name, char *data);
+void extract_name_and_value(char *line, char **name, char **value);
+void add_environment_element(t_environment *env, t_environment *elem);
+void process_environment_line(char *line, t_environment *env);
+t_environment *create_env_vars(char **environment_array);
+
+// process_env.c :
+
+char *store_vars(char *search, t_environment *env);
+int get_env_search_len(char *line, int *i);
+char *get_env_search(char *line, int i, int env_search_len);
+char *find_env_value(char *env_search, char **environment_array);
+void append_to_result(char *res, int *j, char *value);
+
+// final_expand.c :
+
+char *expand_dollar(char *line, int *i, char **environment_array);
+char *allocate_initial_memory();
+char *expand_vars(char *line, char **environment_array);
 
 /*------------------------------------------------------------------------------------*/
 
-// Define a struct for a linked list of redirection elements
+
 typedef struct s_rlist {
-    struct s_relem *first; // Pointer to the first element in the list
-    struct s_relem *last;  // Pointer to the last element in the list
-    int total;             // Total number of elements in the list
+    struct s_relem *first;
+    struct s_relem *last;
+    int total;
 } t_rlist;
 
 // Define the struct for the AST node
 struct s_node {
-    enum n_type {           // Enum representing node types
-        COMMAND,            // Command node - represents a command in the shell
-        PIPE,               // Pipe node - represents a pipe between commands
+    enum n_type {
+        COMMAND,
+        PIPE,
     } node_type;
     union u_node_content {
-        struct s_pipe {     // Struct for a pipe node
-            t_node *left; // Pointer to the left node of the pipe
-            t_node *right; // Pointer to the right node of the pipe
+        struct s_pipe {
+            t_node *left;
+            t_node *right;
         } pipe;
-        struct s_cmd {      // Struct for a command node
-            char **args;     // Array of command arguments
-            char **env;      // Array of environment variables
-            struct fd_type { // Struct for file descriptors
-                int input;    // Input file descriptor
-                int output;   // Output file descriptor
+        struct s_cmd {
+            char **args;
+            char **env;
+            struct fd_type {
+                int input;
+                int output;
             } fd;
-            t_rlist *redirections; // Pointer to a list of redirections
+            t_rlist *redirections;
         } command;
     } content;
 };
 
-// Define a struct for a single redirection element
 struct s_relem {
-    char *argument;     // Argument of the redirection - represents the file or target
-    enum e_token type;  // Type of the redirection - represents the type of redirection
-    struct s_relem *next; // Pointer to the next redirection element in the list
+    char *argument;
+    enum e_token type;
+    struct s_relem *next;
 };
 
 typedef struct s_relem t_relemt;
 typedef struct s_node t_tree_node;
 
-// Typedef for the AST struct
+
 typedef struct s_tree {
-    t_tree_node *top;   // Pointer to the top node of the AST
+    t_tree_node *top;
 } t_tree;
 
+int	check_redir(enum e_token type);
+// initialize.c :
 
-
-t_tree *init_tree(t_tree *structure);
+t_tree *init_tree(t_tree *structure_tree);
 t_node *init_node(char **cmd_args, char **env, t_rlist *redirections);
-int parse_command_arguments(t_global **token, t_environment *env, t_rlist *redir, char **arguments);
-t_node *build_command_tree(t_global **token, t_environment *env);
+t_rlist *initialize_redir_list();
+void clean_up(t_rlist *redir_list, char **arguments);
+
+
+//free.c
+
 void free_asn_node(t_node *node);
 void free_tree(t_node *node);
 void free_redir_list(t_rlist *list);
+
+// parse_utils_1.c :
+
+void remove_double_quotes(char *input);
+char *expand_env_in_quotes(t_global **token, t_environment *env);
+char *join_content(char *argument, char *content, int size);
+char *parse_quoted_argument(t_global **token, t_environment *env);
+
+// parse_utils_2.c :
+
+int is_env_var(t_global *token);
+void skip_to_word_or_env(t_global **token);
+char *get_env_var_value(char *var_name, t_environment *env);
+int is_whitespace_tokene(t_global *token);
+void skip_whitespace_tokene(t_global **token);
+
+// parse_utils_3.c :
+
+t_global *skip_tokens_until(t_global *token, int target_type);
+int count_quoted_arguments(t_global *token, int quote_type);
+
+// build_cmd.c :
+
+int count_arguments(t_global *token);
+char **build_arguments_array(int size);
+int parse_arguments(t_global **token, t_environment *env, t_rlist *redir_list, char **arguments);
+t_node *create_new_node(char **arguments, char **environment_array, t_rlist *redir_list);
+t_node *build_command_tree(t_global **token, t_environment *env);
+
+
+
+// parse_cmd.c :
+
+void handle_regular_argument(t_global **token, char **arguments, int *i, int *ignore_arguments);
+void handle_quoted_argument(t_global **token, t_environment *env, char **arguments, int *i, int *ignore_arguments);
+void handle_env_argument(t_global **token, t_environment *env, char **arguments, int *i, int *ignore_arguments);
+void handle_other_token(t_global **token, t_environment *env, t_rlist *redir, int *ignore_arguments);
+int parse_command_arguments(t_global **token, t_environment *env, t_rlist *redir, char **arguments);
+
+
+// parse_redir.c :
+
 t_rlist *parse_redir(t_global **token, t_environment *env, t_rlist *redir_list) ;
-void print_node(t_node *cmd, int depth);
-void print_tree(t_node *ptr, char **env, int depth);
+// final_parse.c :
+
+t_node *build_command_node(t_global **token, t_environment *env);
+t_node *create_pipe_node(t_node *left_child, t_node *right_child);
+t_global *skip_tokens_until_pipe_line(t_global *token);
+t_node *add_command_to_tree(t_node *left_child, t_node *right_child);
 int final_parse(t_tree **tree, t_global *token, t_environment *env);
+
+
+
+
+
+
+// void print_node(t_node *cmd, int depth);
+// void print_tree(t_node *ptr, char **env, int depth);
+
 int our_cd(t_cmd *command, char ***environment);
 int our_pwd(t_cmd *command);
-// int our_env(t_cmd *command, t_environment *environment);
-// int our_env(t_cmd *command, char **environment);
 int our_env(t_cmd *command, t_environment *env);
 int our_unset(t_cmd *cmd, t_environment *env);
-// int our_unset(t_cmd *cmd, char ***ev);
 void our_echo(t_cmd *command, t_global *tokenList, char **environment);
 void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *tokenList);
-t_node *build_command_tree(t_global **token, t_environment *env);
 int execute_tree(t_node *ptr, t_environment *evn_vars, t_global *token_list);
-// int our_exit(t_cmd *command, char **environment);
 void our_exit(t_cmd *command);
 int our_export(char *command, t_environment *env);
 

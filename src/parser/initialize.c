@@ -1,5 +1,26 @@
-#include "./includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   initialize.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/08/29 08:01:28 by aet-tass          #+#    #+#             */
+/*   Updated: 2023/08/29 19:27:08 by aet-tass         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include "../includes/minishell.h"
+
+t_rlist *initialize_redir_list() {
+    t_rlist *redir_list = calloc(1, sizeof(t_rlist));
+    return redir_list;
+}
+
+void clean_up(t_rlist *redir_list, char **arguments) {
+    free_redir_list(redir_list);
+    free(arguments);
+}
 
 // Function to initialize the tree
 // This function takes a pointer to a t_tree structure (which represents the tree) as an argument
@@ -52,4 +73,3 @@ t_node *init_node(char **cmd_args, char **env, t_rlist *redirections) {
     // Return the pointer to the initialized tree node.
     return node;
 }
-
