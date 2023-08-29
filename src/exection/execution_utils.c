@@ -30,7 +30,7 @@ void execute_right_child(t_node *right_node, int pipe_fd[2], t_environment *evn_
     exit(0);
 }
 
-int check_builtin_cmd(t_cmd *ptr) //check if the given command is builtin or not
+int check_builtin_cmd(t_cmd *ptr)
 {
         if (ft_strcmp(ptr->args[0], "echo") == 0)
             return 1;
