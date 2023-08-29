@@ -5,16 +5,13 @@ SRC = main.c libft_utils.c tokenizer/lexer_utils.c tokenizer/tokenizer.c\
  tokenizer/process_elements.c tokenizer/handle_elements.c\
  check_syntax.c  expand/create_env.c\
   expand/process_env.c expand/final_expand.c just_for_print.c\
-    free.c    test_exec.c \
+    free.c \
  our_cd.c our_pwd.c our_env.c our_unset.c our_echo.c \
    our_exit.c our_export.c\
   parser/build_cmd.c parser/final_parser.c parser/initialize.c parser/parse_cmd.c\
-  parser/parse_utils_1.c  parser/parse_utils_2.c  parser/parse_utils_3.c parser/redir_parse.c
-
-#SRC = main.c libft_utils.c tokenizer/lexer_utils.c tokenizer/tokenizer.c tokenizer/process_elements.c tokenizer/handle_elements.c\
- check_syntax.c parser.c env.c just_for_print.c  free.c redir_parse.c init_tree.c parse_utils.c \
- our_cd.c our_pwd.c our_env.c our_unset.c our_echo.c build_cmd.c our_exit.c our_export.c \
- exection/derdir_inout.c exection/redir_inout.c exection/execution.c  exection/execution_utils.c exection/builtin_utils.c
+  parser/parse_utils_1.c  parser/parse_utils_2.c  parser/parse_utils_3.c parser/redir_parse.c \
+  exection/derdir_inout.c exection/redir_inout.c exection/execution.c  exection/execution_utils.c exection/builtin_utils.c
+ 
 OBJ = ${SRC:.c=.o}
 LIBS = -lreadline
 
