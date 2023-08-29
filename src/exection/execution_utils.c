@@ -58,45 +58,7 @@ void excute_builtin(t_cmd *ptr, t_environment *env, t_global *token_list)
         else if (ft_strcmp(ptr->args[0], "pwd") == 0)
             our_pwd(ptr);
         else if (ft_strcmp(ptr->args[0], "export") == 0)
-        {
-            if (!ptr->args[1]) {
-                t_environment *tmp = env->next;
-                while (tmp) 
-                {
-                    if (tmp->data) 
-                    {
-                        printf("declare -x %s=\"%s\"\n", tmp->name, tmp->data);
-                    }
-                    else
-                        printf("%s\n", tmp->name);
-                    tmp = tmp->next;
-                }
-                return ;
-            }
-            // printf("ptr->args[1] : %s\n", ptr->args[1]);
-            // printf("ptr->args[2] : %s\n", ptr->args[2]);
-            if(!ptr->args[2])
-            {
-                char *es = ft_strchr(ptr->args[1], '=');
-                if (!es)
-                {
-                    printf("es : %s\n", es);
-                    our_export(ptr->args[1], env);
-                    return ;
-                }
-                char *arg2 = ft_strdup(es + 1);
-                char *arg1 = ft_substr(ptr->args[1], 0, ft_strlen(ptr->args[1]) - ft_strlen(es));
-                char *str = ft_strjoin(arg1, "=");
-                str = ft_strjoin(str, arg2);
-                our_export(str, env);
-            }
-            else
-            {
-                char *str = strcat(ptr->args[1], ptr->args[2]);
-                our_export(str, env);
-            }
-
-        }
+            export(ptr, env);
         else if (ft_strcmp(ptr->args[0], "unset") == 0)
             our_unset(ptr, env);
         else if (ft_strcmp(ptr->args[0], "env") == 0)
