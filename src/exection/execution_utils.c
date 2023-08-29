@@ -49,7 +49,7 @@ int check_builtin_cmd(t_cmd *ptr)
     return 0;
 }
 
-void excute_builtin(t_cmd *ptr, t_environment *env, t_global *token_list) //should pass the whole structer t_environment *evn_vars
+void excute_builtin(t_cmd *ptr, t_environment *env, t_global *token_list)
 {
         if (ft_strcmp(ptr->args[0], "echo") == 0)
             our_echo(ptr, token_list ,env->environment_array);
