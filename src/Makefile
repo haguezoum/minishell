@@ -2,8 +2,9 @@ CFLAGS =   # -Wall -Wextra -Werror
 CC = gcc -g
 RM = rm -rf
 SRC = main.c libft_utils.c tokenizer/lexer_utils.c tokenizer/tokenizer.c tokenizer/process_elements.c tokenizer/handle_elements.c\
- check_syntax.c parser.c env.c just_for_print.c  free.c redir_parse.c init_tree.c parse_utils.c test_exec.c \
- our_cd.c our_pwd.c our_env.c our_unset.c our_echo.c build_cmd.c our_exit.c our_export.c
+ check_syntax.c parser.c env.c just_for_print.c  free.c redir_parse.c init_tree.c parse_utils.c \
+ our_cd.c our_pwd.c our_env.c our_unset.c our_echo.c build_cmd.c our_exit.c our_export.c \
+ exection/derdir_inout.c exection/redir_inout.c exection/test_exec.c  exection/execution_utils.c
 OBJ = ${SRC:.c=.o}
 LIBS = -lreadline
 
