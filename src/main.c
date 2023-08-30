@@ -68,7 +68,7 @@ int main()
     signal(SIGQUIT, SIG_IGN);
 
     while (1) {
-        display_prompt(env); // Just call display_prompt without the astTree parameter
+        display_prompt(env);
     }
 
     // You may choose to free the environment elements here if needed
