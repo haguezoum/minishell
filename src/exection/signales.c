@@ -23,5 +23,5 @@ void	handel_signal(int sig)
 void	exit_signal(void)
 {
 	ft_putstr_fd("\n", 1);
-	ft_putstr_fd("\033[1;32mminishell$ \033[0m", 1);
+	ft_putstr_fd("minishell$ ", 1);
 }
