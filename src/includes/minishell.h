@@ -12,7 +12,7 @@
 # include <unistd.h>
 # include <unistd.h>
 
-# define PROMPT "\033[1;32mminishell$ \033[0m"
+# define PROMPT "minishell$ "
 
 typedef struct s_node		t_node;
 typedef struct s_cmd		t_cmd;
