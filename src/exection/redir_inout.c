@@ -12,38 +12,40 @@
 
 #include "../includes/minishell.h"
 
-int redirout(char *argument)
+int	redirout(char *argument)
 {
-    int exit_status = EXIT_SUCCESS;
-    int fd;
+	int	exit_status;
+	int	fd;
 
-    fd = open(argument, O_CREAT | O_WRONLY  | O_TRUNC, 0644);
-    if (fd < 0)
-        ft_putstr_fd("Error in opening file", 2);
-    dup2(fd, 1);
-    close(fd);
-    return (exit_status);
+	exit_status = EXIT_SUCCESS;
+	fd = open(argument, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	if (fd < 0)
+		ft_putstr_fd("Error in opening file", 2);
+	dup2(fd, 1);
+	close(fd);
+	return (exit_status);
 }
 
-int redirin(char *argument)
+int	redirin(char *argument)
 {
-    int exit_status = EXIT_SUCCESS;
-    int fd;
-    int access;
-    
-    access = open(argument, O_RDONLY);
-    if (access < 0)
-    {
-        ft_putstr_fd("minishell: ", 2);
-        ft_putstr_fd(argument, 2);
-        ft_putstr_fd(": No such file or directory\n", 2);
-        exit_status = EXIT_FAILURE;
-        return (exit_status);
-    }
-    fd = open(argument, O_RDONLY);
-    if (fd < 0)
-        ft_putstr_fd("Error in opening file", 2);
-    dup2(fd, 0);
-    close(fd);
-    return (exit_status);
+	int	exit_status;
+	int	fd;
+	int	access;
+
+	exit_status = EXIT_SUCCESS;
+	access = open(argument, O_RDONLY);
+	if (access < 0)
+	{
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(argument, 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+		exit_status = EXIT_FAILURE;
+		return (exit_status);
+	}
+	fd = open(argument, O_RDONLY);
+	if (fd < 0)
+		ft_putstr_fd("Error in opening file", 2);
+	dup2(fd, 0);
+	close(fd);
+	return (exit_status);
 }
