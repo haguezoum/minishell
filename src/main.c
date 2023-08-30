@@ -60,6 +60,13 @@ int main()
     check.exit_status = 0; // Initialize the exit status to 0
 
     // Enter an infinite loop to continuously display the prompt
+    struct sigaction sa;
+
+    sa.sa_handler = &handel_signal;
+    sa.sa_flags = SA_RESTART;
+    sigaction(SIGINT, &sa, NULL);
+    signal(SIGQUIT, SIG_IGN);
+
     while (1) {
         display_prompt(env); // Just call display_prompt without the astTree parameter
     }
