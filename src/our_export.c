@@ -154,7 +154,6 @@ int our_export(char *command, t_environment *env)
             // Update or create the environment variable
             if (data)
             {
-                printf("......\n");
                 if (!update_env_var(env, name, data))
                 {
                     perror("minishell: export");
