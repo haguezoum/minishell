@@ -256,4 +256,5 @@ void						execute_external_command(t_node *ptr,
 char						*check_cmand_exist_in_dir(t_node *ptr);
 void						export(t_cmd *ptr, t_environment *env);
 void						handel_signal(int sig);
+int							implement_herdocument(char *match, t_environment *env);
 #endif
