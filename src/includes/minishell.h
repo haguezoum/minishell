@@ -10,7 +10,6 @@
 # include <string.h>
 # include <sys/wait.h>
 # include <unistd.h>
-# include <unistd.h>
 
 # define PROMPT "minishell$ "
 
