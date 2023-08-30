@@ -223,4 +223,5 @@ void excute_builtin(t_cmd *ptr, t_environment *env, t_global *token_list);
 void execute_external_command(t_node *ptr, t_environment *evn_vars);
 char* check_cmand_exist_in_dir(t_node *ptr);
 void export(t_cmd *ptr, t_environment *env);
+void handel_signal(int sig);
 #endif
