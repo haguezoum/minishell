@@ -15,7 +15,7 @@
 
 
 
-#define PROMPT "minishell$ "
+#define PROMPT "\033[1;32mminishell$ \033[0m"
 
 
 
