@@ -1,6 +1,6 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
-# include "../libft/libft.h"
+// # include "../libft/libft.h"
 # include "../tokenizer/token.h"
 # include <limits.h>
 # include <readline/history.h>
@@ -10,6 +10,8 @@
 # include <string.h>
 # include <sys/wait.h>
 # include <unistd.h>
+#include "../malloc/ft_malloc.h"
+#include <fcntl.h>
 
 # define PROMPT "minishell$ "
 
@@ -256,4 +258,18 @@ char						*check_cmand_exist_in_dir(t_node *ptr);
 void						export(t_cmd *ptr, t_environment *env);
 void						handel_signal(int sig);
 int							implement_herdocument(char *match, t_environment *env);
+void 	free_double_pointer(char **ptr);
+void	*ft_calloc(size_t count, size_t size);
+char	*ft_itoa(int n);
+char	*ft_strdup(const char *s1);
+char	**ft_split(char const *s, char c);
+char	*ft_strjoin(char *s1, char *s2);
+size_t	ft_strlen(const char *str);
+void	ft_bzero(void *string, size_t n);
+int	ft_strncmp(const char *s1, const char *s2, size_t n);
+char	*ft_strchr(const char *str, int c);
+void	ft_putstr_fd(char *s, int fd);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
+int	ft_isalnum(int c);
+int	ft_isalpha(int ch);
 #endif

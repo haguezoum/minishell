@@ -1,5 +1,5 @@
 CFLAGS =   # -Wall -Wextra -Werror
-CC = gcc
+CC = gcc -g
 RM = rm -rf
 SRC = main.c libft_utils.c tokenizer/lexer_utils.c tokenizer/tokenizer.c\
  tokenizer/process_elements.c tokenizer/handle_elements.c\
@@ -11,7 +11,8 @@ SRC = main.c libft_utils.c tokenizer/lexer_utils.c tokenizer/tokenizer.c\
   parser/build_cmd.c parser/final_parser.c parser/initialize.c parser/parse_cmd.c\
   parser/parse_utils_1.c  parser/parse_utils_2.c  parser/parse_utils_3.c parser/redir_parse.c \
   exection/derdir_inout.c exection/redir_inout.c exection/execution.c  exection/execution_utils.c exection/builtin_utils.c \
-  exection/signales.c
+  exection/signales.c memory_utils.c \
+  malloc/ft_malloc.c malloc/misc_functions.c malloc/misc_functions2.c 
  
 OBJ = ${SRC:.c=.o}
 LIBS = -lreadline
@@ -19,18 +20,15 @@ LIBS = -lreadline
 all: minishell
 
 minishell: $(OBJ)
-	@make -C libft
-	$(CC) $(CFLAGS) $(OBJ) libft/libft.a $(LIBS) -o minishell
+	$(CC) $(CFLAGS) $(OBJ) $(LIBS) -o minishell
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	@make clean -C libft
 	@$(RM) $(OBJ)
 
 fclean: clean
-	@make fclean -C libft
 	@$(RM) minishell
 
 re: fclean all
