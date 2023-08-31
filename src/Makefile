@@ -11,8 +11,7 @@ SRC = main.c libft_utils.c tokenizer/lexer_utils.c tokenizer/tokenizer.c\
   parser/build_cmd.c parser/final_parser.c parser/initialize.c parser/parse_cmd.c\
   parser/parse_utils_1.c  parser/parse_utils_2.c  parser/parse_utils_3.c parser/redir_parse.c \
   exection/derdir_inout.c exection/redir_inout.c exection/execution.c  exection/execution_utils.c exection/builtin_utils.c \
-  exection/signales.c memory_utils.c \
-  malloc/ft_malloc.c malloc/misc_functions.c malloc/misc_functions2.c 
+  exection/signales.c memory_utils.c 
  
 OBJ = ${SRC:.c=.o}
 LIBS = -lreadline

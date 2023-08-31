@@ -65,7 +65,7 @@ int handle_change_directory(const char *path, char ***environment) {
     char current_working_dir[PATH_MAX];
     getcwd(current_working_dir, PATH_MAX);
 
-    return current_working_dir;
+    return 0;
 }
 
 // Handle updating PWD and OLDPWD environment variables

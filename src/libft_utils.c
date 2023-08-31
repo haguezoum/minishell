@@ -49,7 +49,7 @@ char	*ft_strndup(char *s1, int n)
 
 	i = 0;
 	s1_len = ft_strlen(s1);
-	copy = ft_malloc(sizeof(char) * (s1_len + 1), NULL, ALLOC, NULL);
+	copy = malloc(sizeof(char) * (s1_len + 1));
 	if (!copy)
 		return (NULL);
 	while (s1[i] && i < n)
@@ -59,7 +59,6 @@ char	*ft_strndup(char *s1, int n)
 	}
 	copy[i] = '\0';
 
-	// ft_malloc(0, NULL, FREE_ALL, NULL);
 	return (copy); // Add this line to return the allocated copy.
 }
 
@@ -67,7 +66,7 @@ void	*ft_calloc(size_t count, size_t size)
 {
 	void	*ptr;
 
-	ptr = ft_malloc(count * size, NULL, ALLOC, NULL);
+	ptr = malloc(count * size);
 	if (ptr == NULL)
 		return (ptr);
 	ft_bzero(ptr, count * size);
@@ -105,7 +104,7 @@ char	*ft_itoa(int n)
 	char	*str;
 
 	i = ft_len(n);
-	str = (char *)ft_malloc(sizeof(char) * (i + 1), NULL, ALLOC, NULL);
+	str = (char *)malloc(sizeof(char) * (i + 1));
 	if (!str)
 		return (NULL);
 	str[i] = '\0';
@@ -148,7 +147,7 @@ char	**ft_split(char const *s, char c)
 
 	i = 0;
 	j = 0;
-	dest = ft_malloc(sizeof(char *) * (count_words(s, c) + 1), NULL, ALLOC, NULL);
+	dest = malloc(sizeof(char *) * (count_words(s, c) + 1));
 	if (!dest)
 		return (NULL);
 	while (j < count_words(s, c))
@@ -174,7 +173,7 @@ char	*ft_strdup(const char *s1)
 	char	*str;
 	int		i;
 
-	str = (char *)ft_malloc(sizeof(char) * (ft_strlen(s1) + 1), NULL, ALLOC, NULL);
+	str = (char *)malloc(sizeof(char) * (ft_strlen(s1) + 1));
 	i = 0;
 	if (!str)
 		return (NULL);
@@ -196,10 +195,10 @@ char	*ft_strjoin(char *s1, char *s2)
 
 	if (!s1)
 	{
-		s1 = ft_malloc(1, NULL, ALLOC, NULL);
+		s1 = malloc(1);
 		s1[0] = '\0';
 	}
-	new_str = ft_malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1), NULL, ALLOC, NULL);
+	new_str = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
 	if (new_str == NULL)
 		return (NULL);
 	i = 0;
@@ -265,7 +264,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	i = 0;
 	if (!s)
 		return (NULL);
-	new_str = (char *)ft_malloc(len + 1, NULL, ALLOC, NULL);
+	new_str = (char *)malloc(len + 1);
 	if (!new_str)
 		return (NULL);
 	if (start <= ft_strlen(s))
