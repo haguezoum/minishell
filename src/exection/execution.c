@@ -6,11 +6,36 @@
 /*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 00:50:46 by haguezou          #+#    #+#             */
-/*   Updated: 2023/08/30 17:10:47 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/08/31 22:24:12 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+char	*ft_strjoin2(char *s1, char *s2)
+{
+	char	*new_str;
+	size_t	i;
+	size_t	j;
+
+	if (!s1)
+	{
+		s1 = malloc(1);
+		s1[0] = '\0';
+	}
+	new_str = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	if (new_str == NULL)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (s1[i])
+			new_str[j++] = s1[i++];
+	i = 0;
+	while (s2[i])
+		new_str[j++] = s2[i++];
+	new_str[j] = '\0';
+	return (new_str);
+}
 
 char	*check_cmand_exist_in_dir(t_node *ptr)
 {
@@ -29,14 +54,19 @@ char	*check_cmand_exist_in_dir(t_node *ptr)
 		return (ptr->content.command.args[0]);
 	while (path[i])
 	{
-		tmp = ft_strjoin(ft_strjoin(path[i], "/"),
-				ptr->content.command.args[0]);
+		char *tst = ft_strjoin2(path[i], "/");
+		tmp = ft_strjoin2(tst, ptr->content.command.args[0]);
+		free(tst);
 		if (access(tmp, F_OK) == 0)
 		{
+			free_double_pointer(path);
 			return (tmp);
 		}
+		free(tmp);
 		i++;
 	}
+	free_double_pointer(path);
+	// free_double_pointer(path);
 	return (NULL);
 }
 

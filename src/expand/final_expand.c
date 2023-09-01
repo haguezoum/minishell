@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   final_expand.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 04:55:39 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/08/29 04:56:41 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/08/31 22:46:50 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ char *expand_vars(char *line, char **environment_array) {
             }
         }
     }
-
     res[j] = '\0';
-    return ft_strdup(res);
+    return (res);
 }

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   libft_utils.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/09/01 23:46:05 by haguezou          #+#    #+#             */
+/*   Updated: 2023/09/01 23:46:05 by haguezou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "./includes/minishell.h"
 
 int ft_strcmp(const char *s1, const char *s2)
@@ -185,7 +197,25 @@ char	*ft_strdup(const char *s1)
 	str[i] = '\0';
 	return (str);
 }
+//---------------------	
 
+char	*ft_strtrim(char const *s1, char const *set)
+{
+	char	*cast_s1;
+	char	*final_str;
+	size_t	len_s1;
+
+	if (!s1 || !set)
+		return (NULL);
+	cast_s1 = (char *)s1;
+	while (*cast_s1 && ft_strchr(set, *cast_s1))
+		cast_s1++;
+	len_s1 = ft_strlen(cast_s1);
+	while (len_s1 && ft_strchr(set, cast_s1[len_s1]))
+		len_s1--;
+	final_str = ft_substr(cast_s1, 0, len_s1 + 1);
+	return (final_str);
+}
 // ft_strjoin.c -------------------
 char	*ft_strjoin(char *s1, char *s2)
 {

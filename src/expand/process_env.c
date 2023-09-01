@@ -3,23 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   process_env.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 04:54:45 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/08/29 04:55:22 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/08/31 23:52:23 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
 char *store_vars(char *search, t_environment *env) {
+    search = ft_strtrim(search, " \t"); // libft
     t_environment *tmp = env->next;
     if (ft_strcmp(search, "?") == 0 || ft_strcmp(search, "?\n") == 0) {
         return ft_itoa(check.exit_status);
     }
-
     while (tmp) {
-        if (strcmp(tmp->name, search) == 0) {
+        if (ft_strcmp(tmp->name, search) == 0) {
             return ft_strdup(tmp->data);
         }
         tmp = tmp->next;

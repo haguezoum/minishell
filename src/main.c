@@ -69,6 +69,7 @@ int main()
 
     while (1) {
         display_prompt(env);
+        system("leaks -q minishell");
     }
 
     // You may choose to free the environment elements here if needed

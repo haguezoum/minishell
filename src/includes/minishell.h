@@ -235,7 +235,7 @@ void						exec_cmd(t_node *ptr, t_environment *evn_vars,
 int							execute_tree(t_node *ptr, t_environment *evn_vars,
 								t_global *token_list);
 void						our_exit(t_cmd *command);
-int							our_export(char *command, t_environment *env);
+int							our_export(char *command, t_environment *env, int quote);
 // executipn part
 
 int							redirout(char *argument);
@@ -271,4 +271,5 @@ void	ft_putstr_fd(char *s, int fd);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 int	ft_isalnum(int c);
 int	ft_isalpha(int ch);
+char	*ft_strtrim(char const *s1, char const *set);
 #endif

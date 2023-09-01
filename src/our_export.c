@@ -1,64 +1,57 @@
-    #include "./includes/minishell.h"
+#include "includes/minishell.h"
 
-// Function to check if a character is a valid environment variable name character
 int is_valid_env_var_char(char c) {
-    return ft_isalnum(c) || c == '_'; // Checks if the character is alphanumeric or an underscore
+    return ft_isalnum(c) || c == '_';
 }
 
-// Function to check if a string is a valid environment variable name
-int is_valid_env_var_name(char *str) {
+int is_valid_env_var_name(char *str) 
+{
+    int i;
+    
+    i = 0;
     if (!str || !is_valid_env_var_char(str[0]))
-        return 0; // Returns 0 if the string is empty or the first character is invalid
-
-    for (int i = 1; str[i]; i++) {
+        return 0;
+    while(str[i])
+    {
         if (!is_valid_env_var_char(str[i]))
-            return 0; // Returns 0 if any character other than valid ones is found
-    }
-
-    return 1; // Returns 1 if the string is a valid environment variable name
+            return 0;
+        i++;
+    } 
+    return 1;
 }
 
-// Function to update or create a new environment variable
 int update_env_var(t_environment *env, char *name, char *data) {
     t_environment *tmp = env->next;
 
-    // printf("name: %s\n", name);
-    // printf("data: %s\n", data);
-    // printf("env->count: %d\n", env->count);
-    // printf("env->environment_array: %s\n", env->environment_array[0]);
-    // Search for the existing environment variable
-    // exit(0);
     while (tmp) {
         if (ft_strcmp(tmp->name, name) == 0) {
-            // Update the existing variable's value
             free(tmp->data);
             tmp->data = ft_strdup(data);
             return 1; // Variable updated
         }
         tmp = tmp->next;
     }
-
-    // If not found, create a new variable
     t_environment *new_var = ft_calloc(1,sizeof(t_environment));
     if (!new_var)
-        return 0; // Memory allocation error
-
+        return 0;
     new_var->name = ft_strdup(name);
     new_var->data = ft_strdup(data);
-
-    // Add the new variable to the linked list
     t_environment *tail = env->next;
-    if (!tail) {
+    if (!tail) 
+    {
         env->next = new_var;
         new_var->prev = env;
-    } else {
+    } 
+    else 
+    {
         while (tail->next)
             tail = tail->next;
         tail->next = new_var;
         new_var->prev = tail;
     }
-    env->count++; // Increment the count of environment variables
-    return 1; // Variable added
+    env->count++;
+    // free(name);
+    return 1;
 }
 
 char *get_key(char *arg)
@@ -85,101 +78,118 @@ char *get_value(char *arg)
     char *equal_sign = ft_strchr(arg, '=');
     if (equal_sign)
     {
-        data = ft_strdup(equal_sign + 1); // allocate memory for data and copy it from equal_sign + 1
+        data = ft_strdup(equal_sign + 1);
     }
-    return data;
+    return (data);
 }
-// char *get_value(char *arg)
-// {
-//     char *equal_sign = strchr(arg, '=');
-//     if (equal_sign)
-//     {
-//         char *value_start = equal_sign + 1;
 
-//         // Check if the value is enclosed in double quotes
-//         if (*value_start == '\"')
-//         {
-//             char *value_end = strchr(value_start + 1, '\"');
-//             if (value_end)
-//             {
-//                 return strndup(value_start + 1, value_end - value_start - 1);
-//             }
-//         }
-//         else
-//         {
-//             return strdup(value_start);
-//         }
-//     }
-//     return NULL;
-// }
-// Implementation of our_export
-int our_export(char *command, t_environment *env)
+//-----------------
+void print_all_variables(t_environment *env) {
+    t_environment *tmp = env->next;
+    while (tmp) {
+        if (tmp->data) {
+            printf("%s=%s\n", tmp->name, tmp->data);
+        } else {
+            printf("%s", tmp->name);
+        }
+        tmp = tmp->next;
+    }
+}
+
+void print_export_error(const char *arg) {
+    char *error_msg = "minishell: export: ";
+    char *not_valid_msg = ": not a valid identifier\n";
+    write(STDERR_FILENO, error_msg, strlen(error_msg));
+    write(STDERR_FILENO, arg, strlen(arg));
+    write(STDERR_FILENO, not_valid_msg, strlen(not_valid_msg));
+}
+
+void handle_invalid_env_var(char *arg, int *exit_status, char *data) {
+    print_export_error(arg);
+    *exit_status = EXIT_FAILURE;
+    if (data)
+        free(data);
+}
+
+void handle_valid_env_var(char *name, char *data, t_environment *env, int *exit_status) 
+{
+    if (data) 
+    {
+        printf("....\n");
+        if (!update_env_var(env, name, data))
+        {
+            printf("-----------------\n");
+            perror("minishell: export");
+            *exit_status = EXIT_FAILURE;
+            return ;
+        }
+        else 
+        {
+            printf("-------0-0-0-0-0---------\n");
+            if (name) 
+            {
+                printf("data: %s\n", data);
+                printf("name: %s\n", name);
+                update_env_var(env, name, data);// <<<<<<<<<<<<<<<<<<<
+                printf("%p\n", data);
+            }
+        }
+    }
+    else
+    {
+        data = ft_strdup(""); // Set data to empty string
+        if (!update_env_var(env, name, data)) 
+        {
+            perror("minishell: export");
+            *exit_status = EXIT_FAILURE;
+        }
+    }
+    
+}
+
+int our_export(char *command, t_environment *env, int quote) 
 {
     int exit_status = EXIT_SUCCESS;
 
-    // If no arguments, print all environment variables
-    if (!command)
-    {
-        t_environment *tmp = env->next;
-        while (tmp)
-        {
-            if (tmp->data)
-            {
-                printf("%s=%s\n", tmp->name, tmp->data );
-                // printf("%s\n", tmp->data);
-            }
-            else
-                printf("%s", tmp->name);
-            tmp = tmp->next;
-        }
+    if (!command) {
+        print_all_variables(env);
         return exit_status;
     }
+    char *arg = command;
+    char *name = get_key(arg);
+    char *data = get_value(arg);
 
-        char *arg = command; //->args[i];
-        char *name = NULL;
-        char *data = NULL;
-
-        name = get_key(arg);
-        data = get_value(arg);
-        // Check if the name is a valid environment variable name
-        if (name && !is_valid_env_var_name(name))
+    if (name && !is_valid_env_var_name(name)) 
+    {
+        free(name);
+        // free(arg);
+        handle_invalid_env_var(arg, &exit_status, data);
+    }
+    else 
+    {
+        // printf("command add: %p\n", command);
+        // printf("command val: %s\n", command);
+        handle_valid_env_var(name, data, env, &exit_status);
+        // free
+        printf(">>>>>>>>data %s\n", data);
+        printf(">>>>>>>>data %p\n", data);
+        printf(">>>>>>>>arg %p\n", arg);
+        printf(">>>>>>>>command %p\n", arg);
+        printf(">>>>>>>>name %p\n", name);
+        if(quote == 1)
         {
-            fprintf(stderr, "minishell: export: `%s': not a valid identifier\n", arg);
-            exit_status = EXIT_FAILURE;
-            if (data)
-                free(data);
+            printf("with quote\n");
+            // free(data);
+            // free(name);
+            free(arg);
         }
         else
         {
-            // Update or create the environment variable
-            if (data)
-            {
-                if (!update_env_var(env, name, data))
-                {
-                    perror("minishell: export");
-                    exit_status = EXIT_FAILURE;
-                }
-                else
-                {
-                    if (name) {
-                        update_env_var(env, name, data);
-                    }
-                    // for (int i = 0; env->environment_array[i]; i++)
-                    //     printf("env: %s\n", env->environment_array[i]);
-                }
-                free(data);
-            }
-            else
-            {
-                if (!update_env_var(env, name, ""))
-                {
-                    perror("minishell: export");
-                    exit_status = EXIT_FAILURE;
-                }
-            }
+            printf("without quote\n");
+            free(data);
+            free(name);
+            // free(arg);
         }
-    //    i++;
-    // }
-
+    }
     return exit_status;
 }

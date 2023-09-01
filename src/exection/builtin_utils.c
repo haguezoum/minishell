@@ -6,7 +6,7 @@
 /*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 17:56:26 by haguezou          #+#    #+#             */
-/*   Updated: 2023/08/30 15:52:09 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/02 00:19:09 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,19 @@ void	export_utils(t_cmd *ptr, t_environment *env, char *arg)
 	es = ft_strchr(arg, '=');
 	if (!es)
 	{
-		our_export(arg, env);
+		our_export(arg, env, 1);
+		// free(arg);
+		printf("str val = %s\n", str);
+		printf("str drs = %p\n", str);
 		return ;
 	}
 	arg2 = ft_strdup(es + 1);
 	arg1 = ft_substr(arg, 0, ft_strlen(arg) - ft_strlen(es));
 	str = ft_strjoin(arg1, "=");
 	str = ft_strjoin(str, arg2);
-	our_export(str, env);
+	free(arg2);
+	our_export(str, env, 0);
+	// free(str);
 }
 
 void	export(t_cmd *ptr, t_environment *env)
@@ -51,11 +56,17 @@ void	export(t_cmd *ptr, t_environment *env)
 		}
 		return ;
 	}
-	if (!ptr->args[2])
+	if (!ptr->args[2]) 
+	{
+		printf(" [without quotes] \n");
 		export_utils(ptr, env, ptr->args[1]);
+	}
 	else
 	{
+		printf(" [with quotes] \n");
 		str = ft_strjoin(ptr->args[1], ptr->args[2]);
-		our_export(str, env);
+		free(ptr->args[2]);
+		our_export(str, env, 1);
+		// free(str);
 	}
 }
