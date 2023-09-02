@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 19:01:51 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/08/29 19:33:52 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/02 17:13:19 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,3 +37,8 @@ int count_quoted_arguments(t_global *token, int quote_type)
     return arg_index;
 }
 
+int	check_redir(enum e_token type)
+{
+	return (type == REDIR_IN || type == REDIR_OUT
+		|| type == DREDIR_OUT || type == HERE_DOC);
+}

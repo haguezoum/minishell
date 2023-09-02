@@ -24,18 +24,18 @@ void free_asn_node(t_node *node) {
 
 
 void free_tree(t_node *node) {
-    if (!node) // Handle the case where the node is NULL
+    if (!node)
         return;
-
     if (node->node_type == COMMAND) {
         int i = 0;
-        while (node->content.command.args[i]) {
+        while (node->content.command.args[i] ) {
             free(node->content.command.args[i]);
             i++;
         }
         free(node->content.command.args);
         free_redir_list(node->content.command.redirections);
-    } else if (node->node_type == PIPE) {
+    }
+    else if (node->node_type == PIPE) {
         free_tree(node->content.pipe.right);
         free_tree(node->content.pipe.left);
     }
@@ -54,3 +54,15 @@ void free_redir_list(t_rlist *list) {
     free(list);
 }
 
+void free_double_pointer(char **ptr)
+{
+    int i;
+
+    i = 0;
+    while (ptr[i])
+    {
+        free(ptr[i]);
+        i++;
+    }
+    free(ptr);
+}

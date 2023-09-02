@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
+/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 08:54:06 by haguezou          #+#    #+#             */
-/*   Updated: 2023/08/31 23:28:29 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/02 22:34:53 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,18 +76,23 @@ void	execute_external_command(t_node *ptr, t_environment *evn_vars)
 	char	*str;
 
 	str = check_cmand_exist_in_dir(ptr);
-	if (str)
+	if (str && strcmp(str, getenv("PWD")) && strcmp(str, getenv("HOME")))
 	{
 		pid = fork();
-		if (pid == 0)
+		if (pid == 0) {
 			execve(str, ptr->content.command.args, evn_vars->environment_array);
+			perror("execve");
+			exit (EXIT_FAILURE);
+		}
 		else if (pid < 0)
 			perror("fork");
 		else
 			waitpid(pid, &status, 0);
+		free(str);
 	}
 	else
+	{
 		printf("minishell: %s: command not found\n",
 			ptr->content.command.args[0]);
-	free(str);
+	}
 }

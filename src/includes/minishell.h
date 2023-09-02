@@ -224,18 +224,30 @@ int							final_parse(t_tree **tree, t_global *token,
 // void print_node(t_node *cmd, int depth);
 // void print_tree(t_node *ptr, char **env, int depth);
 
-int							our_cd(t_cmd *command, char ***environment);
-int							our_pwd(t_cmd *command);
-int							our_env(t_cmd *command, t_environment *env);
-int							our_unset(t_cmd *cmd, t_environment *env);
-void						our_echo(t_cmd *command, t_global *tokenList,
-								char **environment);
-void						exec_cmd(t_node *ptr, t_environment *evn_vars,
-								t_global *tokenList);
-int							execute_tree(t_node *ptr, t_environment *evn_vars,
-								t_global *token_list);
-void						our_exit(t_cmd *command);
-int							our_export(char *command, t_environment *env, int quote);
+// export_utils.c :
+int is_valid_env_var_char(char c);
+int is_valid_env_var_name(char *str);
+int update_env_var(t_environment *env, char *name, char *data);
+char *get_key(char *arg);
+char *get_value(char *arg);
+int our_export(char *command, t_environment *env, int quote);
+void export(t_cmd *ptr, t_environment *env);
+
+// cd_utils.c :
+void display_chdir_error(const char *path);
+int change_directory(const char *path, char ***environment);
+int our_cd(t_cmd *command, char ***environment);
+
+int our_pwd(t_cmd *command);
+int our_env(t_cmd *command, t_environment *env);
+int our_unset(t_cmd *cmd, t_environment *env);
+void our_echo(t_cmd *command, t_global *tokenList, char **environment);
+void our_exit(t_cmd *command);
+void exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *tokenList);
+int execute_tree(t_node *ptr, t_environment *evn_vars, t_global *token_list);
+
+
+
 // executipn part
 
 int							redirout(char *argument);
@@ -257,6 +269,10 @@ char						*check_cmand_exist_in_dir(t_node *ptr);
 void						export(t_cmd *ptr, t_environment *env);
 void						handel_signal(int sig);
 int							implement_herdocument(char *match, t_environment *env);
+
+
+
+
 void 	free_double_pointer(char **ptr);
 void	*ft_calloc(size_t count, size_t size);
 char	*ft_itoa(int n);

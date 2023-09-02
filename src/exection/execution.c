@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
+/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 00:50:46 by haguezou          #+#    #+#             */
-/*   Updated: 2023/08/31 22:24:12 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/02 22:32:07 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,22 +51,26 @@ char	*check_cmand_exist_in_dir(t_node *ptr)
 	if (!path)
 		return (NULL);
 	if (access(ptr->content.command.args[0], F_OK) == 0)
+	{
+		free_double_pointer(path);
 		return (ptr->content.command.args[0]);
+	}
 	while (path[i])
 	{
+		printf("pth: %s\n", path[i]);
 		char *tst = ft_strjoin2(path[i], "/");
 		tmp = ft_strjoin2(tst, ptr->content.command.args[0]);
 		free(tst);
 		if (access(tmp, F_OK) == 0)
 		{
 			free_double_pointer(path);
+			// free(tmp);
 			return (tmp);
 		}
 		free(tmp);
 		i++;
 	}
 	free_double_pointer(path);
-	// free_double_pointer(path);
 	return (NULL);
 }
 

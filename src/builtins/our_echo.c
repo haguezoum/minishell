@@ -1,13 +1,18 @@
-#include "./includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   our_echo.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/09/02 17:04:10 by aet-tass          #+#    #+#             */
+/*   Updated: 2023/09/02 17:13:03 by aet-tass         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 
-int	check_redir(enum e_token type)
-{
-	return (type == REDIR_IN || type == REDIR_OUT
-		|| type == DREDIR_OUT || type == HERE_DOC);
-}
+#include "../includes/minishell.h"
 
-// Function to check if an argument is a valid option '-n'
 int check_option(char *arg) {
     int next_index = 1;
 
@@ -18,7 +23,6 @@ int check_option(char *arg) {
     return (arg[next_index] == '\0');
 }
 
-// Function to concatenate arguments based on the value of 'args_to_concatenate'
 void concatenate_arguments(char **args, int cur_index, int args_to_concatenate) {
     while (++args_to_concatenate > 0 && args[cur_index + args_to_concatenate]) {
         char *temp = ft_strjoin(args[cur_index], args[cur_index + args_to_concatenate]);
@@ -43,9 +47,6 @@ void process_arguments(t_cmd *command, t_global *tokenList, char **environment) 
     }
 }
 
-
-
-// Function to handle the '-n' option
 void handle_option_n(int *hasOptionN, char **args, int *cur_index) {
     if (args[*cur_index] && args[*cur_index][0] == '-' && check_option(args[*cur_index])) {
         *hasOptionN = 1;
@@ -59,28 +60,23 @@ void our_echo(t_cmd *command, t_global *tokenList, char **environment) {
     int first_arg = 1;
     int has_option_n = 0;
 
-    // Handle the -n option
-    while (command->args[cur_index] && check_option(command->args[cur_index])) {
+    while (command->args[cur_index] && check_option(command->args[cur_index]))
+    {
         has_option_n = 1;
         cur_index++;
     }
 
-    // Print the arguments
-    while (command->args[cur_index]) {
+    while (command->args[cur_index])
+    {
         if (!first_arg) {
             write(STDOUT_FILENO, " ", 1);
-        } else {
-            first_arg = 0;
         }
-
+        else
+            first_arg = 0;
         write(STDOUT_FILENO, command->args[cur_index], strlen(command->args[cur_index]));
         cur_index++;
     }
-
-    // Print newline if -n option not used
-    if (!has_option_n) {
+    if (!has_option_n)
         write(STDOUT_FILENO, "\n", 1);
-    }
-
     check.exit_status = EXIT_SUCCESS;
 }
