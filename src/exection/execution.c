@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 00:50:46 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/02 22:32:07 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/02 22:57:03 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ char	*check_cmand_exist_in_dir(t_node *ptr)
 	}
 	while (path[i])
 	{
-		printf("pth: %s\n", path[i]);
 		char *tst = ft_strjoin2(path[i], "/");
 		tmp = ft_strjoin2(tst, ptr->content.command.args[0]);
 		free(tst);
