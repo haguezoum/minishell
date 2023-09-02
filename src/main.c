@@ -40,6 +40,7 @@ void display_prompt(t_environment *env) {
         t_tree *astTree = init_tree(NULL);
         final_parse(&astTree, lexerObj->head, env); // call the function that parse the input and store it in the astTree
         execute_tree(astTree->top, env, lexerObj->head); // call the fucntion that excute the command that stored in structer astTree->top
+        
         // print_node(astTree->top, 0);
         free_ast_tree(astTree); // Use the new function to free the AST tree
     }
@@ -69,7 +70,7 @@ int main()
 
     while (1) {
         display_prompt(env);
-        system("leaks -q minishell");
+        // system("leaks -q minishell");
     }
 
     // You may choose to free the environment elements here if needed

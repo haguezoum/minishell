@@ -1,5 +1,5 @@
 CFLAGS =   #-fsanitize=address -g # -Wall -Wextra -Werror 
-CC = gcc -g
+CC = cc 
 RM = rm -rf
 SRC = main.c libft_utils.c tokenizer/lexer_utils.c tokenizer/tokenizer.c\
  tokenizer/process_elements.c tokenizer/handle_elements.c\

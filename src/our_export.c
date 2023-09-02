@@ -123,17 +123,17 @@ void handle_valid_env_var(char *name, char *data, t_environment *env, int *exit_
             *exit_status = EXIT_FAILURE;
             return ;
         }
-        else 
-        {
-            // printf("-------0-0-0-0-0---------\n");
-            if (name) 
-            {
-                // printf("data: %s\n", data);
-                // printf("name: %s\n", name);
-                update_env_var(env, name, data);// <<<<<<<<<<<<<<<<<<<
-                // printf("%p\n", data);
-            }
-        }
+        // else 
+        // {
+        //     // printf("-------0-0-0-0-0---------\n");
+        //     if (name) 
+        //     {
+        //         // printf("data: %s\n", data);
+        //         // printf("name: %s\n", name);
+        //         update_env_var(env, name, data);// <<<<<<<<<<<<<<<<<<<
+        //         // printf("%p\n", data);
+        //     }
+        // }
     }
     else
     {
@@ -143,6 +143,7 @@ void handle_valid_env_var(char *name, char *data, t_environment *env, int *exit_
             perror("minishell: export");
             *exit_status = EXIT_FAILURE;
         }
+        free(data);
     }
     
 }
@@ -150,11 +151,6 @@ void handle_valid_env_var(char *name, char *data, t_environment *env, int *exit_
 int our_export(char *command, t_environment *env, int quote) 
 {
     int exit_status = EXIT_SUCCESS;
-
-    if (!command) {
-        print_all_variables(env);
-        return exit_status;
-    }
     char *arg ;
     char *name;
     char *data;
@@ -162,38 +158,30 @@ int our_export(char *command, t_environment *env, int quote)
     arg = command;
     name = get_key(arg);
     data = get_value(arg);
+
+    if (!command) 
+    {
+        print_all_variables(env);
+        return exit_status;
+    }
     if (name && !is_valid_env_var_name(name)) 
     {
         free(name);
-        // free(arg);
         handle_invalid_env_var(arg, &exit_status, data);
     }
     else 
     {
         handle_valid_env_var(name, data, env, &exit_status);
-        if(quote == 1)
+        if(quote == 0)
         {
-            // printf("with quote\n");
-            // printf("wo data %s",data);
-            // printf("wo name %s",name);
-        }
-        else if(quote == 0)
-        {
-            // printf(" Without quote\n");
-            // printf("W data %s",data);
-            // printf("W name %s",name);
             free(data);
             free(name);
-            // free(arg);
         }
         else if(quote == -1)
         {
-            // printf("witout = \n");
-            // printf("W= arg %s => %p\n", arg, arg);
-            // printf("W= data %s => %p\n",data, data);
-            // printf("W= name %s => %p\n",name, name);
             free(name);
         }
+        
     }
     return exit_status;
 }
