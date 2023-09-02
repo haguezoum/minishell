@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process_env.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 04:54:45 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/02 22:44:46 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/02 22:53:57 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ char *store_vars(char *search, t_environment *env) {
         }
         tmp = tmp->next;
     }
-
+    free(search);
     return NULL;
 }
 
