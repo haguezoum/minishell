@@ -6,7 +6,7 @@
 /*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 00:50:46 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/02 22:57:03 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/03 19:21:39 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int	redirection(t_relem *tmp, t_environment *evn_vars)
 	}
 	else if (tmp->type == HERE_DOC)
 	{
-		if (implement_herdocument(tmp->argument, evn_vars))
+		if (herdoc(tmp->argument, evn_vars))
 			return (1);
 	}
 	return (0);
