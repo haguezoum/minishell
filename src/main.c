@@ -59,7 +59,6 @@ int main()
 
     while (1) {
         display_prompt(env);
-        system("leaks -q minishell");
     }
 
     return 0;

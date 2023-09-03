@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
+/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 00:50:46 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/02 22:57:03 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/03 19:05:38 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int	redirection(t_relem *tmp, t_environment *evn_vars)
 	}
 	else if (tmp->type == HERE_DOC)
 	{
-		if (implement_herdocument(tmp->argument, evn_vars))
+		if (herdoc(tmp->argument, evn_vars))
 			return (1);
 	}
 	return (0);
@@ -117,8 +117,9 @@ void	exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)
 			tmp = tmp->next;
 		}
 	}
-	if (check_builtin_cmd(&(ptr->content.command)))
+	if (check_builtin_cmd(&(ptr->content.command))) {
 		excute_builtin(&(ptr->content.command), evn_vars, token_list);
+	}
 	else
 		execute_external_command(ptr, evn_vars);
 	dup2(stdin, STDIN_FILENO);

@@ -12,134 +12,137 @@
 
 #include "../includes/minishell.h"
 
-void    handle_regular_argument(t_global **token, char **arguments, int *i,
-        int *ignore_arguments)
+void	handle_regular_argument(t_global **token, char **arguments, int *i,
+		int *ignore_arguments)
 {
-    if (!(*ignore_arguments))
-    {
-        arguments[*i] = ft_strndup((*token)->content, (*token)->size);
-        (*i)++;
-    }
-    *token = (*token)->next_token;
+	if (!(*ignore_arguments))
+	{
+		arguments[*i] = ft_strndup((*token)->content, (*token)->size);
+		(*i)++;
+	}
+	*token = (*token)->next_token;
 }
 
-void    handle_quoted_argument(t_global **token, t_environment *env,
-        char **arguments, int *i, int *ignore_arguments)
+void	handle_quoted_argument(t_global **token, t_environment *env,
+		char **arguments, int *i, int *ignore_arguments)
 {
-    if (!(*ignore_arguments))
-    {
-        arguments[*i] = parse_quoted_argument(token, env);
-        if (arguments[*i])
-        {
-            (*i)++;
-        }
-    }
-    else
-    {
-        *token = (*token)->next_token;
-    }
+	if (!(*ignore_arguments))
+	{
+		arguments[*i] = parse_quoted_argument(token, env);
+		if (arguments[*i])
+		{
+			(*i)++;
+		}
+	}
+	else
+	{
+		*token = (*token)->next_token;
+	}
 }
 
-void    ft_free_split(char **split)
+void	ft_free_split(char **split)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (split[i])
-    {
-        free(split[i]);
-        i++;
-    }
-    free(split);
+	i = 0;
+	while (split[i])
+	{
+		free(split[i]);
+		i++;
+	}
+	free(split);
 }
 
-void    handle_env_argument(t_global **token, t_environment *env,
-        char **arguments, int *i, int *ignore_arguments)
+void	handle_env_argument(t_global **token, t_environment *env,
+		char **arguments, int *i, int *ignore_arguments)
 {
-    if (!(*ignore_arguments))
-    {
-        char **split = ft_split((*token)->content, '$');
-        int j = 0;
-        while (split[j])
-        {
-            char *first_line = ft_strtrim(split[j], " ");
-            char *line = ft_strtrim(first_line, "\"");
-            free(first_line);
-            arguments[*i] = store_vars(line, env);
-            free(line);
-            if (arguments[*i])
-            {
-                (*i)++;
-            }
-            j++;
-        }
+	char	**split;
+	int		j;
+	char	*first_line;
+	char	*line;
 
-        j = 0;
-        while (split[j])
-        {
-            *token = (*token)->next_token;
-            j++;
-        }
-        if (*token)
-            *token = (*token)->next_token;
-        ft_free_split(split);
-    }
+	if (!(*ignore_arguments))
+	{
+		split = ft_split((*token)->content, '$');
+		j = 0;
+		while (split[j])
+		{
+			first_line = ft_strtrim(split[j], " ");
+			line = ft_strtrim(first_line, "\"");
+			free(first_line);
+			arguments[*i] = store_vars(line, env);
+			free(line);
+			if (arguments[*i])
+			{
+				(*i)++;
+			}
+			j++;
+		}
+		j = 0;
+		while (split[j])
+		{
+			*token = (*token)->next_token;
+			j++;
+		}
+		if (*token)
+			*token = (*token)->next_token;
+		ft_free_split(split);
+	}
 }
 
-
-void    handle_other_token(t_global **token, t_environment *env, t_rlist *redir,
-        int *ignore_arguments)
+void	handle_other_token(t_global **token, t_environment *env, t_rlist *redir,
+		int *ignore_arguments)
 {
-    enum e_token    type;
+	enum e_token	type;
 
-    type = (*token)->type;
-    if (check_redir(type))
-    {
-        *ignore_arguments = 1;
-        if (!parse_redir(token, env, redir))
-        {
-            return ;
-        }
-    }
-    else
-    {
-        *token = (*token)->next_token;
-    }
+	type = (*token)->type;
+	if (check_redir(type))
+	{
+		*ignore_arguments = 1;
+		if (!parse_redir(token, env, redir))
+		{
+			return ;
+		}
+	}
+	else
+	{
+		*token = (*token)->next_token;
+	}
 }
-int    parse_command_arguments(t_global **token, t_environment *env,
-        t_rlist *redir, char **arguments)
+int	parse_command_arguments(t_global **token, t_environment *env,
+		t_rlist *redir, char **arguments)
 {
-    int                i;
-    int                ignore_arguments;
-    enum e_token    first_type;
+	int				i;
+	int				ignore_arguments;
+	enum e_token	first_type;
 
-    i = 0;
-    ignore_arguments = 0;
-    first_type = (*token)->type;
-    if (check_redir(first_type))
-    {
-        if (!parse_redir(token, env, redir))
-        {
-            return (EXIT_FAILURE);
-        }
-    }
-    while (*token && (*token)->type != PIPE_LINE)
-    {
-        if (is_whitespace_tokene(*token))
-            skip_whitespace_tokene(token);
-        else if ((*token)->type == WORD)
-            handle_regular_argument(token, arguments, &i, &ignore_arguments);
-        else if ((*token)->type == ENV)
-        {
-            handle_env_argument(token, env, arguments, &i, &ignore_arguments);
-            break ;
-        }
-        else if ((*token)->type == SQUOTE || (*token)->type == DQUOTE)
-            handle_quoted_argument(token, env, arguments, &i,
-                    &ignore_arguments);
-        else
-            handle_other_token(token, env, redir, &ignore_arguments);
-    }
-    arguments[i] = NULL;
-    return (EXIT_SUCCESS);
+	i = 0;
+	ignore_arguments = 0;
+	first_type = (*token)->type;
+	if (check_redir(first_type))
+	{
+		if (!parse_redir(token, env, redir))
+		{
+			return (EXIT_FAILURE);
+		}
+	}
+	while (*token && (*token)->type != PIPE_LINE)
+	{
+		if (is_whitespace_tokene(*token))
+			skip_whitespace_tokene(token);
+		else if ((*token)->type == WORD)
+			handle_regular_argument(token, arguments, &i, &ignore_arguments);
+		else if ((*token)->type == ENV)
+		{
+			handle_env_argument(token, env, arguments, &i, &ignore_arguments);
+			break ;
+		}
+		else if ((*token)->type == SQUOTE || (*token)->type == DQUOTE)
+			handle_quoted_argument(token, env, arguments, &i,
+					&ignore_arguments);
+		else
+			handle_other_token(token, env, redir, &ignore_arguments);
+	}
+	arguments[i] = NULL;
+	return (EXIT_SUCCESS);
 }

@@ -12,34 +12,27 @@
 
 #include "../includes/minishell.h"
 
-int our_pwd(t_cmd *command)
+int	our_pwd(t_cmd *command)
 {
-    char *directory_path;
+	char	*directory_path;
 
-    (void)command;
-
-    directory_path = (char *)malloc(PATH_MAX);
-
-    if (!directory_path)
-    {
-        perror("minishell: pwd: malloc");
-        check.exit_status = EXIT_FAILURE;
-        return (-1);
-    }
-
-    if (getcwd(directory_path, PATH_MAX) == NULL)
-    {
-        perror("minishell: pwd: ");
-        free(directory_path);
-        check.exit_status = EXIT_FAILURE;
-        return (-1);
-    }
-
-    printf("%s\n", directory_path);
-
-    free(directory_path);
-
-    check.exit_status = EXIT_SUCCESS;
-    return (EXIT_SUCCESS);
+	(void)command;
+	directory_path = (char *)malloc(PATH_MAX);
+	if (!directory_path)
+	{
+		perror("minishell: pwd: malloc");
+		check.exit_status = EXIT_FAILURE;
+		return (-1);
+	}
+	if (getcwd(directory_path, PATH_MAX) == NULL)
+	{
+		perror("minishell: pwd: ");
+		free(directory_path);
+		check.exit_status = EXIT_FAILURE;
+		return (-1);
+	}
+	printf("%s\n", directory_path);
+	free(directory_path);
+	check.exit_status = EXIT_SUCCESS;
+	return (EXIT_SUCCESS);
 }
-
