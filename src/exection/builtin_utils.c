@@ -6,7 +6,7 @@
 /*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 17:56:26 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/02 14:09:00 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/04 10:28:42 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ void	export_utils(t_cmd *ptr, t_environment *env, char *arg)
 	if (!es)
 	{
 		our_export(arg, env, -1);
-		// printf("%s => %p\n", arg , arg);
 	}
 	else
 	{
@@ -39,7 +38,6 @@ void	export_utils(t_cmd *ptr, t_environment *env, char *arg)
 
 void	export(t_cmd *ptr, t_environment *env)
 {
-	char			*es;
 	t_environment	*tmp;
 	char			*str;
 
@@ -57,13 +55,9 @@ void	export(t_cmd *ptr, t_environment *env)
 		return ;
 	}
 	if (!ptr->args[2]) 
-	{
-		// printf(" [without quotes] \n");
 		export_utils(ptr, env, ptr->args[1]);
-	}
 	else
 	{
-		// printf(" [with quotes] \n");
 		str = ft_strjoin(ptr->args[1], ptr->args[2]);
 		free(ptr->args[2]);
 		our_export(str, env, 1);

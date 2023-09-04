@@ -79,10 +79,11 @@ void	execute_external_command(t_node *ptr, t_environment *evn_vars)
 	if (str && strcmp(str, getenv("PWD")) && strcmp(str, getenv("HOME")))
 	{
 		pid = fork();
-		if (pid == 0) {
+		if (pid == 0)
+		{
 			execve(str, ptr->content.command.args, evn_vars->environment_array);
 			perror("execve");
-			exit (EXIT_FAILURE);
+			exit(EXIT_FAILURE);
 		}
 		else if (pid < 0)
 			perror("fork");

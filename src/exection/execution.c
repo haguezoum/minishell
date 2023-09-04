@@ -6,7 +6,7 @@
 /*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 00:50:46 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/03 19:21:39 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/04 10:53:49 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char	*ft_strjoin2(char *s1, char *s2)
 	i = 0;
 	j = 0;
 	while (s1[i])
-			new_str[j++] = s1[i++];
+		new_str[j++] = s1[i++];
 	i = 0;
 	while (s2[i])
 		new_str[j++] = s2[i++];
@@ -43,6 +43,7 @@ char	*check_cmand_exist_in_dir(t_node *ptr)
 	int		i;
 	char	**path;
 	char	*tmp;
+	char	*tst;
 
 	str = getenv("PATH");
 	i = 0;
@@ -57,13 +58,12 @@ char	*check_cmand_exist_in_dir(t_node *ptr)
 	}
 	while (path[i])
 	{
-		char *tst = ft_strjoin2(path[i], "/");
+		tst = ft_strjoin2(path[i], "/");
 		tmp = ft_strjoin2(tst, ptr->content.command.args[0]);
 		free(tst);
 		if (access(tmp, F_OK) == 0)
 		{
 			free_double_pointer(path);
-			// free(tmp);
 			return (tmp);
 		}
 		free(tmp);
