@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
+/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 08:54:06 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/03 20:33:06 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/04 11:18:49 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,9 @@ void	excute_builtin(t_cmd *ptr, t_environment *env, t_global *token_list)
 {
 	if (ft_strcmp(ptr->args[0], "echo") == 0)
 		our_echo(ptr, token_list, env->environment_array);
-	else if (ft_strcmp(ptr->args[0], "cd") == 0)
-		our_cd(ptr, &env->environment_array);
+	else if (ft_strcmp(ptr->args[0], "cd") == 0){
+		our_cd(ptr, env->environment_array);
+	}
 	else if (ft_strcmp(ptr->args[0], "pwd") == 0)
 		our_pwd(ptr);
 	else if (ft_strcmp(ptr->args[0], "export") == 0)

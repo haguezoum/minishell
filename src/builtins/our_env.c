@@ -12,27 +12,30 @@
 
 #include "../includes/minishell.h"
 
-int our_env(t_cmd *command, t_environment *env)
+int	our_env(t_cmd *command, t_environment *env)
 {
-    if (!command->args[1])
-    {
-        t_environment *tmp = env->next;
-        while (tmp)
-        {
-            if (tmp->data) {
-                if (tmp->data[0] != '\0')
-                    printf("%s=%s\n", tmp->name, tmp->data);
-            }
-            tmp = tmp->next;
-        }
-        return (EXIT_SUCCESS);
-    }
-    else
-    {
-        write(STDERR_FILENO, "minishell: env: Too many arguments.\n", 36);
-        if (check.exit_status != -1)
-            check.exit_status = 1;
-        return (EXIT_FAILURE);
-    }
-    return (EXIT_SUCCESS);
+	t_environment	*tmp;
+
+	if (!command->args[1])
+	{
+		tmp = env->next;
+		while (tmp)
+		{
+			if (tmp->data)
+			{
+				if (tmp->data[0] != '\0')
+					printf("%s=%s\n", tmp->name, tmp->data);
+			}
+			tmp = tmp->next;
+		}
+		return (EXIT_SUCCESS);
+	}
+	else
+	{
+		write(STDERR_FILENO, "minishell: env: Too many arguments.\n", 36);
+		if (check.exit_status != -1)
+			check.exit_status = 1;
+		return (EXIT_FAILURE);
+	}
+	return (EXIT_SUCCESS);
 }

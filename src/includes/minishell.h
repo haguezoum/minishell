@@ -230,13 +230,14 @@ int is_valid_env_var_name(char *str);
 int update_env_var(t_environment *env, char *name, char *data);
 char *get_key(char *arg);
 char *get_value(char *arg);
+void free_memory(char *name, char *data, int quote);
 int our_export(char *command, t_environment *env, int quote);
 void export(t_cmd *ptr, t_environment *env);
 
 // cd_utils.c :
-void display_chdir_error(const char *path);
-int change_directory(const char *path, char ***environment);
-int our_cd(t_cmd *command, char ***environment);
+
+int change_directory(const char *path, char **environment);
+int our_cd(t_cmd *command, char **environment);
 
 int our_pwd(t_cmd *command);
 int our_env(t_cmd *command, t_environment *env);

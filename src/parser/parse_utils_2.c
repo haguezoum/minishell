@@ -12,25 +12,31 @@
 
 #include "../includes/minishell.h"
 
-int is_env_var(t_global *token) {
-    return token->type == ENV;
+int	is_env_var(t_global *token)
+{
+	return (token->type == ENV);
 }
 
-void skip_to_word_or_env(t_global **token) {
-    while ((*token)->type != WORD && !is_env_var(*token))
-        *token = (*token)->next_token;
+void	skip_to_word_or_env(t_global **token)
+{
+	while ((*token)->type != WORD && !is_env_var(*token))
+		*token = (*token)->next_token;
 }
 
-char *get_env_var_value(char *var_name, t_environment *env) {
-    return store_vars(var_name + 1, env);
+char	*get_env_var_value(char *var_name, t_environment *env)
+{
+	return (store_vars(var_name + 1, env));
 }
 
-int is_whitespace_tokene(t_global *token) {
-    return token->type == WHITE_SPACE;
+int	is_whitespace_tokene(t_global *token)
+{
+	return (token->type == WHITE_SPACE);
 }
 
-void skip_whitespace_tokene(t_global **token) {
-    while (*token && is_whitespace_tokene(*token)) {
-        *token = (*token)->next_token;
-    }
+void	skip_whitespace_tokene(t_global **token)
+{
+	while (*token && is_whitespace_tokene(*token))
+	{
+		*token = (*token)->next_token;
+	}
 }
