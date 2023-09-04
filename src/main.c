@@ -9,7 +9,7 @@ void free_ast_tree(t_tree *tree) {
 
 void display_prompt(t_environment *env) {
     char *line = readline(PROMPT);
-
+    line = ft_strtrim(line, " \t");
     if (!line) {
         printf("exit\n");
         exit(1);

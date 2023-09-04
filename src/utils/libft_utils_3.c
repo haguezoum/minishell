@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft_utils_3.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 18:15:32 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/02 18:32:49 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/03 19:47:03 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ char	*ft_strdup(const char *s1)
 	return (str);
 }
 
-char	*ft_strtrim(char const *s1, char const *set)
+char	*ft_strtrim(char  *s1, char const *set)
 
 {
 	char	*cast_s1;
@@ -46,6 +46,7 @@ char	*ft_strtrim(char const *s1, char const *set)
 	while (len_s1 && ft_strchr(set, cast_s1[len_s1]))
 		len_s1--;
 	final_str = ft_substr(cast_s1, 0, len_s1 + 1);
+	free(s1);
 	return (final_str);
 }
 
