@@ -54,12 +54,12 @@ int main()
 
     sa.sa_handler = &handel_signal;
     sa.sa_flags = SA_RESTART;
+    signal(SIGQUIT, SIG_IGN);
     sigaction(SIGINT, &sa, NULL);
     signal(SIGQUIT, SIG_IGN);
 
     while (1) {
         display_prompt(env);
-        system("leaks -q minishell");
     }
 
     return 0;
