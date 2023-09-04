@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 18:56:24 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/02 22:45:45 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/04 21:41:47 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,7 @@ int	parse_command_arguments(t_global **token, t_environment *env,
 			handle_env_argument(token, env, arguments, &i, &ignore_arguments);
 			break ;
 		}
-		else if ((*token)->type == SQUOTE || (*token)->type == DQUOTE)
+		else if ((*token)->type == SQUOTE )
 			handle_quoted_argument(token, env, arguments, &i,
 					&ignore_arguments);
 		else

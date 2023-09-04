@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 08:54:06 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/04 11:18:49 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/04 21:34:20 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,14 +83,15 @@ void	execute_external_command(t_node *ptr, t_environment *evn_vars)
 		if (pid == 0)
 		{
 			execve(str, ptr->content.command.args, evn_vars->environment_array);
-			perror("execve");
-			exit(EXIT_FAILURE);
+			// perror("execve");
+			// exit(EXIT_FAILURE);
 		}
 		else if (pid < 0)
 			perror("fork");
 		else
 			waitpid(pid, &status, 0);
-		free(str);
+		if(ft_strcmp(ptr->content.command.args[0], str) != 0)
+			free(str);
 	}
 	else
 	{
