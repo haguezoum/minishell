@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 18:56:24 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/05 16:51:01 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/05 18:21:26 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,10 +104,6 @@ void	handle_other_token(t_global **token, t_environment *env, t_rlist *redir,
 			return ;
 		}
 	}
-	else
-	{
-		*token = (*token)->next_token;
-	}
 }
 int	parse_command_arguments(t_global **token, t_environment *env,
 		t_rlist *redir, char **arguments)
@@ -115,6 +111,8 @@ int	parse_command_arguments(t_global **token, t_environment *env,
 	int				i;
 	int				ignore_arguments;
 	enum e_token	first_type;
+	char			**argument;
+	char			*joined;
 
 	i = 0;
 	ignore_arguments = 0;
@@ -126,23 +124,54 @@ int	parse_command_arguments(t_global **token, t_environment *env,
 			return (EXIT_FAILURE);
 		}
 	}
+	argument = arguments;
 	while (*token && (*token)->type != PIPE_LINE)
 	{
-		if (is_whitespace_tokene(*token))
-			skip_whitespace_tokene(token);
-		else if ((*token)->type == WORD)
-			handle_regular_argument(token, arguments, &i, &ignore_arguments);
-		else if ((*token)->type == ENV)
+		if ((*token)->type == WORD)
 		{
-			handle_env_argument(token, env, arguments, &i, &ignore_arguments);
-			break ;
+			*argument = ft_strdup((*token)->content);
+			argument++;
 		}
-		else if ((*token)->type == SQUOTE )
-			handle_quoted_argument(token, env, arguments, &i,
-					&ignore_arguments);
+
+		else if ((*token)->type == DQUOTE || (*token)->type == SQUOTE)
+		{
+			enum e_token	type = (*token)->type;
+			*token = (*token)->next_token;
+			joined = ft_strdup("");
+			while ((*token)->type != type)
+			{
+				joined = ft_strjoin(joined, (*token)->content);
+				*token = (*token)->next_token;
+			}
+			*argument = joined;
+			argument++;
+		}
+
+
 		else
 			handle_other_token(token, env, redir, &ignore_arguments);
+		*token = (*token)->next_token;
 	}
-	arguments[i] = NULL;
 	return (EXIT_SUCCESS);
+}
+
+
+void	expand_all(t_global *_token, t_environment *env)
+{
+	t_global	*token;
+	char		*old_content;
+
+	token = _token;
+	while (token)
+	{
+		if (token->type == ENV && ( token->token_state == DEFAULT || token->token_state == IN_DOUBLE_QUOTES))
+		{
+			old_content = token->content;
+			token->content = store_vars(old_content + 1, env);
+			token->type = WORD;
+			token->size = ft_strlen(token->content);
+			free(old_content);
+		}
+		token = token->next_token;
+	}
 }

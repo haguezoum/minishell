@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 08:02:04 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/08/29 19:19:55 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/05 17:43:13 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ t_node	*build_command_node(t_global **token, t_environment *env)
 {
 	t_node	*command_node;
 
-	command_node = NULL;
+	// command_node = NULL;
 	command_node = build_command_tree(token, env);
 	return (command_node);
 }

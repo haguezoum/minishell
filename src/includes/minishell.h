@@ -289,4 +289,6 @@ char	*ft_substr(char const *s, unsigned int start, size_t len);
 int	ft_isalnum(int c);
 int	ft_isalpha(int ch);
 char	*ft_strtrim(char *s1, char const *set);
+
+void	expand_all(t_global *_token, t_environment *env);
 #endif

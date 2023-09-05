@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 23:45:34 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/03 22:21:27 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/05 17:39:04 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ t_global	*new_token(char *content, int size, enum e_token type,
 	token = malloc(sizeof(t_global));
 	if (!token)
 		return (NULL);
-	token->content = ft_strdup(content);
+	token->content = ft_substr(content, 0, size);
 	token->size = size;
 	token->type = type;
 	token->token_state = token_state;
@@ -82,11 +82,41 @@ void	print_list(t_lexer *lexer)
 	{
 		i = 0;
 		printf("content: ");
-		while (i < token->size)
+		while (token->content && token->content[i])
 			putchar(token->content[i++]);
+		if (token->content == NULL)
+			printf("NULL");
 		printf(", size: %i", token->size);
 		printf(", token_state: %i", token->token_state);
 		printf(", type: %i\n", token->type);
 		token = token->next_token;
 	}
 }
+
+
+// line = echo "$USER $HOME $PWD" | echo $SHLVL
+
+/*
+{
+	content = line;
+	size = 4;
+}
+{
+	content = line + 4;
+	size = 1;
+}
+{
+	content = line + 5;
+	size = 1;
+}
+{
+	content = line + 6;
+	size = 5;
+}
+*/
+/* line = echo "$USER $HOME $PWD" | echo $SHLVL
+{
+	content = ft_substr(line, 0, 4);
+	size = 4;
+}
+*/

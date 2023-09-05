@@ -27,11 +27,11 @@ void free_tree(t_node *node) {
     if (!node)
         return;
     if (node->node_type == COMMAND) {
-        // int i = 0;
-        // while (node->content.command.args[i] ) {
-        //     free(node->content.command.args[i]);
-        //     i++;
-        // }
+        int i = 0;
+        while (node->content.command.args[i] ) {
+            free(node->content.command.args[i]);
+            i++;
+        }
         free(node->content.command.args);
         free_redir_list(node->content.command.redirections);
     }
