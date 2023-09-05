@@ -27,16 +27,16 @@ void display_prompt(t_environment *env) {
     }
 
     t_lexer *lexerObj = tokenizer(line);
-    // print_list(lexerObj);
+    print_list(lexerObj);
 
     int syntax_result = check_command_syntax(lexerObj);
     if (syntax_result == 0) {
         t_tree *astTree = init_tree(NULL);
         final_parse(&astTree, lexerObj->head, env);
         free(line);
-        execute_tree(astTree->top, env, lexerObj->head);
+        // execute_tree(astTree->top, env, lexerObj->head);
 
-        // print_node(astTree->top, 0);
+        print_node(astTree->top, 0);
         free_ast_tree(astTree);
     }
     else
@@ -62,7 +62,7 @@ int main()
 
     while (1) {
         display_prompt(env);
-        system("leaks minishell");
+        // system("leaks minishell");
     }
 
     return 0;
