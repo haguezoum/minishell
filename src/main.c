@@ -9,7 +9,9 @@ void free_ast_tree(t_tree *tree) {
 
 void display_prompt(t_environment *env) {
     char *line = readline(PROMPT);
-    line = ft_strtrim(line, " \t");
+    char *tmp = line;
+    line = ft_strtrim(tmp, " \t");
+    free(tmp);
     if (!line) {
         printf("exit\n");
         exit(1);
@@ -31,6 +33,7 @@ void display_prompt(t_environment *env) {
     if (syntax_result == 0) {
         t_tree *astTree = init_tree(NULL);
         final_parse(&astTree, lexerObj->head, env);
+        free(line);
         execute_tree(astTree->top, env, lexerObj->head);
 
         // print_node(astTree->top, 0);
@@ -41,7 +44,6 @@ void display_prompt(t_environment *env) {
         printf("Syntax error in the input\n");
     }
     free_lexer(lexerObj);
-    free(line);
 }
 
 int main()
