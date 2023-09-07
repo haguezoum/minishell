@@ -6,36 +6,11 @@
 /*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 00:50:46 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/05 19:41:19 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/07 23:40:55 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-char	*ft_strjoin2(char *s1, char *s2)
-{
-	char	*new_str;
-	size_t	i;
-	size_t	j;
-
-	if (!s1)
-	{
-		s1 = malloc(1);
-		s1[0] = '\0';
-	}
-	new_str = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
-	if (new_str == NULL)
-		return (NULL);
-	i = 0;
-	j = 0;
-	while (s1[i])
-		new_str[j++] = s1[i++];
-	i = 0;
-	while (s2[i])
-		new_str[j++] = s2[i++];
-	new_str[j] = '\0';
-	return (new_str);
-}
 
 char	*check_cmand_exist_in_dir(t_node *ptr)
 {
@@ -108,7 +83,6 @@ void	exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)
 
 	stdin = dup(0);
 	stdout = dup(1);
-	
 	if (ptr->content.command.redirections)
 	{
 		tmp = ptr->content.command.redirections->first;
@@ -118,7 +92,8 @@ void	exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)
 			tmp = tmp->next;
 		}
 	}
-	if (check_builtin_cmd(&(ptr->content.command))) {
+	if (check_builtin_cmd(&(ptr->content.command)))
+	{
 		excute_builtin(&(ptr->content.command), evn_vars, token_list);
 	}
 	else

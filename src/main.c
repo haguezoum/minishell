@@ -1,5 +1,5 @@
 #include "./includes/minishell.h"
-
+#include <readline/readline.h>
 
 
 void free_ast_tree(t_tree *tree) {
@@ -65,7 +65,6 @@ int main(int ac, char **av)
         sigemptyset(&sa.sa_mask);
         sigaddset(&sa.sa_mask, SIGINT);
         signal(SIGQUIT, SIG_IGN);
-        rl_on_new_line();
         sigaction(SIGINT, &sa, NULL);
 
         while (1)

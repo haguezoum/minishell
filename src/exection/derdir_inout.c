@@ -15,9 +15,9 @@
 void	herdo_utils(int fd, char *line_to_write, char *match,
 		t_environment *env)
 {
-	char *line;
-	line =  NULL;
-	
+	char	*line;
+
+	line = NULL;
 	while (1)
 	{
 		line = readline(">");
@@ -47,11 +47,10 @@ int	herdoc(char *match, t_environment *env)
 	char	*line_to_write;
 
 	check.exit_status = EXIT_SUCCESS;
-	
-	fd = open("/tmp/.minishell", O_RDWR | O_CREAT  | O_TRUNC, 0666);
-	herdo_utils(fd, line_to_write, match , env);
-    close(fd);
-    fd =  open("/tmp/.minishell", O_RDONLY);
+	fd = open("/tmp/.minishell", O_RDWR | O_CREAT | O_TRUNC, 0666);
+	herdo_utils(fd, line_to_write, match, env);
+	close(fd);
+	fd = open("/tmp/.minishell", O_RDONLY);
 	dup2(fd, STDIN_FILENO);
 	return (1);
 }

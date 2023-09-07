@@ -3,15 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 17:56:26 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/07 22:07:39 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/07 23:51:18 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
+char	*ft_strjoin2(char *s1, char *s2)
+{
+	char	*new_str;
+	size_t	i;
+	size_t	j;
+
+	if (!s1)
+	{
+		s1 = malloc(1);
+		s1[0] = '\0';
+	}
+	new_str = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	if (new_str == NULL)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (s1[i])
+		new_str[j++] = s1[i++];
+	i = 0;
+	while (s2[i])
+		new_str[j++] = s2[i++];
+	new_str[j] = '\0';
+	return (new_str);
+}
 void	export_utils(t_cmd *ptr, t_environment *env, char *arg)
 {
 	char	*es;
@@ -75,7 +99,9 @@ void	export(t_cmd *ptr, t_environment *env, t_global *token_list)
 	char			*value;
 	char			*key;
 	char			*t_arg;
-
+	int i;
+	
+	i = 1;
 	token = ft_strdup("");
 	while (token_list)
 	{
@@ -111,9 +137,10 @@ void	export(t_cmd *ptr, t_environment *env, t_global *token_list)
 			free_double_pointer(tmp);
 			return ;
 		}
-		for (int i = 1; tmp[i]; i++)
+		while(tmp[i])
 		{
 			our_export(tmp[i], env, 0);
+			i++;
 		}
 		free_double_pointer(tmp);
 		return ;

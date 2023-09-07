@@ -287,4 +287,6 @@ int	ft_isalpha(int ch);
 char	*ft_strtrim(char *s1, char const *set);
 int	check_equal(char *s);
 void	expand_all(t_global *_token, t_environment *env);
+char	*ft_strjoin2(char *s1, char *s2);
+
 #endif

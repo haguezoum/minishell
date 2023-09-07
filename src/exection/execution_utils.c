@@ -87,13 +87,13 @@ void	execute_external_command(t_node *ptr, t_environment *evn_vars)
 			perror("fork");
 		else
 			waitpid(pid, &status, 0);
-		if(ft_strcmp(ptr->content.command.args[0], str) != 0)
+		if (ft_strcmp(ptr->content.command.args[0], str) != 0)
 			free(str);
 	}
 	else
 	{
 		printf("minishell: %s: command not found\n",
 			ptr->content.command.args[0]);
-			check.exit_status = 127;
+		check.exit_status = 127;
 	}
 }
