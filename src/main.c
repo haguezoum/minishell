@@ -71,7 +71,7 @@ int main(int ac, char **av)
         while (1)
         {
             display_prompt(env);
-            // system("leaks minishell");
+            system("leaks minishell");
         }
     }
     else

@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 17:56:26 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/07 19:21:38 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/07 22:07:39 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,37 @@ void	export_utils(t_cmd *ptr, t_environment *env, char *arg)
 	}
 }
 
+int	check_equal(char *s)
+{
+	int	i;
+
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == '=')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+char *ft_remove_char(char *str, char c)
+{
+    int i = 0;
+    int j = 0;
+    char *new_str = ft_calloc(ft_strlen(str), sizeof(char));
+    while(str[i])
+    {
+        if(str[i] != c)
+        {
+            new_str[j] = str[i];
+            j++;
+        }
+        i++;
+    }
+    return (new_str);
+}
+
 void	export(t_cmd *ptr, t_environment *env, t_global *token_list)
 {
 	char			*token;
@@ -56,31 +87,49 @@ void	export(t_cmd *ptr, t_environment *env, t_global *token_list)
 		token = ft_strjoin(token, token_list->content);
 		token_list = token_list->next_token;
 	}
-	args = ft_split(token, '=');
-	free(token);
-	tmp = ft_split(args[0], ' ');
-	if (ft_strcmp(tmp[0], "export") == 0 && !tmp[1])
+	if (check_equal(token))
 	{
-		e_tmp = env->next;
-		while (e_tmp)
+		args = ft_split(token, '=');
+		free(token);
+		tmp = ft_split(args[0], ' ');
+	}
+	else
+	{
+		tmp = ft_split(token, ' ');
+		free(token);
+		if (ft_strcmp(tmp[0], "export") == 0 && !tmp[1])
 		{
-			if (e_tmp->data)
-				printf("declare -x %s=\"%s\"\n", e_tmp->name, e_tmp->data);
-			else
-				printf("%s\n", e_tmp->name);
-			e_tmp = e_tmp->next;
+			e_tmp = env->next;
+			while (e_tmp)
+			{
+				if (e_tmp->data)
+					printf("declare -x %s=\"%s\"\n", e_tmp->name, e_tmp->data);
+				else
+					printf("%s\n", e_tmp->name);
+				e_tmp = e_tmp->next;
+			}
+			free_double_pointer(tmp);
+			return ;
 		}
-		free_double_pointer(args);
+		for (int i = 1; tmp[i]; i++)
+		{
+			our_export(tmp[i], env, 0);
+		}
 		free_double_pointer(tmp);
 		return ;
 	}
-	value = ft_strdup(args[1]);
+	if (args[1])
+		value = ft_remove_char(args[1], '"');
+	else
+		value = NULL;
 	key = ft_strdup(tmp[1]);
 	t_arg = ft_strjoin(key, "=");
-	t_arg = ft_strjoin(t_arg, value);
-	our_export(t_arg, env, 1);
+	char	*t;
+	if (value)
+		t = ft_strjoin(t_arg, value);
 	free(value);
-	free(t_arg);
 	free_double_pointer(tmp);
 	free_double_pointer(args);
+	our_export(t, env, 1);
+	free(t);
 }
