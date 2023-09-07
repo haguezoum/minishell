@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 23:45:34 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/05 17:39:04 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/06 21:39:03 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,31 +92,3 @@ void	print_list(t_lexer *lexer)
 		token = token->next_token;
 	}
 }
-
-
-// line = echo "$USER $HOME $PWD" | echo $SHLVL
-
-/*
-{
-	content = line;
-	size = 4;
-}
-{
-	content = line + 4;
-	size = 1;
-}
-{
-	content = line + 5;
-	size = 1;
-}
-{
-	content = line + 6;
-	size = 5;
-}
-*/
-/* line = echo "$USER $HOME $PWD" | echo $SHLVL
-{
-	content = ft_substr(line, 0, 4);
-	size = 4;
-}
-*/

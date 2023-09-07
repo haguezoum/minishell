@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 17:04:36 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/03 22:58:18 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/06 17:01:02 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,13 +79,19 @@ int	our_cd(t_cmd *command, char **environment)
 
 	if (!command->args[1])
 	{
-		home_dir = expand_vars("$HOME", environment);
+		home_dir = getenv("HOME");
+		if (home_dir == NULL)
+		{
+			write(STDERR_FILENO, "minishell: cd: HOME not set\n", 29);
+			return (1);
+		}
 		handle_change_directory(home_dir, environment);
-		free(home_dir);
-		return (handle_change_directory(home_dir, environment));
+		return (0);
 	}
 	else
+	{
 		return (handle_change_directory(command->args[1], environment));
+	}
 	check.exit_status = 0;
 	return (0);
 }

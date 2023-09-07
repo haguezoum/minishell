@@ -1,4 +1,6 @@
 CFLAGS =   #-fsanitize=address -g # -Wall -Wextra -Werror
+RLFLGS    = -L/Users/aet-tass/goinfre/homebrew/opt/readline/lib -lreadline
+RLOFLGS    = -I/Users/aet-tass/goinfre/homebrew/opt/readline/include
 CC = cc
 RM = rm -rf
 SRC = main.c  tokenizer/lexer_utils.c tokenizer/tokenizer.c\
@@ -19,10 +21,10 @@ LIBS = -lreadline
 all: minishell
 
 minishell: $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(LIBS) -o minishell
+	$(CC) $(CFLAGS) $(OBJ) $(LIBS) $(RLFLGS) -o minishell
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(RLOFLGS) -c $< -o $@
 
 clean:
 	@$(RM) $(OBJ)

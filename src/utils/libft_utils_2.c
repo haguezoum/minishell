@@ -12,7 +12,6 @@
 
 #include "../includes/minishell.h"
 
-
 static int	ft_check(int nbr)
 {
 	if (!nbr)

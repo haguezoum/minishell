@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 18:13:02 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/03 23:10:00 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/06 17:02:18 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,3 +29,5 @@ int	change_directory(const char *path, char **environment)
 	}
 	return (0);
 }
+
+

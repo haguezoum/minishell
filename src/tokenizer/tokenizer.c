@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 22:40:51 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/03 22:23:47 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/06 21:40:58 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ int	is_whitespace(char c)
 		|| c == '\n');
 }
 
-void	handle_special_characters(t_lexer *lexer, char *line,
-		int *i, enum e_state *state)
+void	handle_special_characters(t_lexer *lexer, char *line, int *i,
+		enum e_state *state)
 {
 	if (ft_strchr("<>|", line[*i]))
 	{

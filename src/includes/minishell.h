@@ -1,16 +1,16 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
-// # include "../libft/libft.h"
 # include "../tokenizer/token.h"
 # include <limits.h>
-# include <readline/history.h>
-# include <readline/readline.h>
 # include <signal.h>
 # include <stdlib.h>
 # include <string.h>
 # include <sys/wait.h>
 # include <unistd.h>
 #include <fcntl.h>
+# include <stdio.h>
+# include <readline/history.h>
+# include <readline/readline.h>
 
 # define PROMPT "minishell$ "
 
@@ -151,14 +151,12 @@ void						free_redir_list(t_rlist *list);
 
 // parse_utils_1.c :
 
-void						remove_double_quotes(char *input);
-char						*expand_env_in_quotes(t_global **token,
-								t_environment *env);
-char						*join_content(char *argument, char *content,
-								int size);
-char						*parse_quoted_argument(t_global **token,
-								t_environment *env);
-
+int	count_arguments(t_global *token);
+t_node	*create_pipe_node(t_node *left_child, t_node *right_child);
+t_node	*build_command_node(t_global **token, t_environment *env);
+t_relem	*create_non_here_doc_element(enum e_token redir_type, char *argument);
+void	ft_free_split(char **split);
+void	expand_all(t_global *_token, t_environment *env);
 // parse_utils_2.c :
 
 int							is_env_var(t_global *token);
@@ -232,7 +230,6 @@ char *get_key(char *arg);
 char *get_value(char *arg);
 void free_memory(char *name, char *data, int quote);
 int our_export(char *command, t_environment *env, int quote);
-void export(t_cmd *ptr, t_environment *env);
 
 // cd_utils.c :
 
@@ -240,7 +237,7 @@ int change_directory(const char *path, char **environment);
 int our_cd(t_cmd *command, char **environment);
 
 int our_pwd(t_cmd *command);
-int our_env(t_cmd *command, t_environment *env);
+void	our_env(t_cmd *command, t_environment *env);
 int our_unset(t_cmd *cmd, t_environment *env);
 void our_echo(t_cmd *command, t_global *tokenList, char **environment);
 void our_exit(t_cmd *command);
@@ -267,9 +264,8 @@ void						excute_builtin(t_cmd *ptr, t_environment *env,
 void						execute_external_command(t_node *ptr,
 								t_environment *evn_vars);
 char						*check_cmand_exist_in_dir(t_node *ptr);
-void						export(t_cmd *ptr, t_environment *env);
+void						export(t_cmd *ptr, t_environment *env, t_global *token_list);
 void						handel_signal(int sig);
-int							implement_herdocument(char *match, t_environment *env);
 
 
 

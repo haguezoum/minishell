@@ -6,7 +6,7 @@
 /*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 00:50:46 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/04 11:53:16 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/05 19:41:19 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ void	exec_cmd(t_node *ptr, t_environment *evn_vars, t_global *token_list)
 
 	stdin = dup(0);
 	stdout = dup(1);
+	
 	if (ptr->content.command.redirections)
 	{
 		tmp = ptr->content.command.redirections->first;

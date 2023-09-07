@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 18:15:32 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/04 21:52:33 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/07 12:50:54 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ char	*ft_strdup(const char *s1)
 	return (str);
 }
 
-char	*ft_strtrim(char  *s1, char const *set)
+char	*ft_strtrim(char *s1, char const *set)
 
 {
 	char	*cast_s1;
@@ -46,7 +46,6 @@ char	*ft_strtrim(char  *s1, char const *set)
 	while (len_s1 && ft_strchr(set, cast_s1[len_s1]))
 		len_s1--;
 	final_str = ft_substr(cast_s1, 0, len_s1 + 1);
-	// free(s1);
 	return (final_str);
 }
 
@@ -67,12 +66,12 @@ char	*ft_strjoin(char *s1, char *s2)
 	i = 0;
 	j = 0;
 	while (s1[i])
-			new_str[j++] = s1[i++];
+		new_str[j++] = s1[i++];
 	i = 0;
 	while (s2[i])
 		new_str[j++] = s2[i++];
 	new_str[j] = '\0';
-	free (s1);
+	free(s1);
 	return (new_str);
 }
 

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   token.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aet-tass <aet-tass@student.1337.ma>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/09/06 21:41:10 by aet-tass          #+#    #+#             */
+/*   Updated: 2023/09/07 17:48:51 by aet-tass         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef TOKEN_H
 # define TOKEN_H
 
@@ -69,8 +81,9 @@ int					tokenize_redirection(t_lexer *lexer, char *line, int i,
 
 void				process_quotes(t_lexer *lexer, char *line, int *i,
 						enum e_state *state);
-void				process_word(t_lexer *lexer, char *line, int start, int end,
-						enum e_state *state);
+
+void	process_word(t_lexer *lexer, char *line, int start, int end,
+		enum e_state *state);
 int					process_dollar_sign(t_lexer *lexer, char *line, int i,
 						enum e_state *state);
 void				process_word_tokenization(t_lexer *lexer, char *line,

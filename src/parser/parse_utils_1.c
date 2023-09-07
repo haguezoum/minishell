@@ -1,91 +1,70 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_utils_1.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/09/07 11:33:50 by aet-tass          #+#    #+#             */
+/*   Updated: 2023/09/07 12:21:28 by aet-tass         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-void	remove_double_quotes(char *input)
+int	count_arguments(t_global *token)
 {
-	char	*src;
-	char	*dst;
+	int			arg_index;
+	t_global	*tmp;
 
-	src = input;
-	dst = input;
-	while (*src)
+	arg_index = 0;
+	tmp = token;
+	while (tmp && tmp->type != PIPE_LINE)
 	{
-		if (*src != '\"')
+		if (tmp->type == WORD || tmp->type == ENV)
+			arg_index++;
+		else if (tmp->type == DQUOTE || tmp->type == SQUOTE
+			|| tmp->type == REDIR_IN || tmp->type == REDIR_OUT
+			|| tmp->type == DREDIR_OUT || tmp->type == HERE_DOC)
 		{
-			*dst = *src;
-			dst++;
-		}
-		src++;
-	}
-	*dst = '\0';
-}
-
-char	*expand_env_in_quotes(t_global **token, t_environment *env)
-{
-	char	*expanded_argument;
-	char	*expanded;
-
-	expanded_argument = NULL;
-	if ((*token)->type == ENV && (*token)->token_state == IN_DOUBLE_QUOTES)
-	{
-		remove_double_quotes((*token)->content);
-		expanded = store_vars((*token)->content + 1, env);
-		if (expanded)
-		{
-			expanded_argument = expanded;
-			(*token) = (*token)->next_token;
-		}
-	}
-	return (expanded_argument);
-}
-
-char	*join_content(char *argument, char *content, int size)
-{
-	char	*tmp;
-	char	*result;
-
-	tmp = ft_strndup(content, size);
-	result = ft_strjoin(argument, tmp);
-	free(tmp);
-	return (result);
-}
-
-char	*parse_quoted_argument(t_global **token, t_environment *env)
-{
-	char			*argument;
-	enum e_token	open_quote_type;
-	char			*expanded;
-
-	argument = NULL;
-	open_quote_type = (*token)->type;
-	*token = (*token)->next_token;
-	while (*token && (*token)->type != open_quote_type)
-	{
-		if (!argument)
-			argument = ft_strdup("");
-		if ((*token)->type == ENV && (*token)->token_state == IN_DOUBLE_QUOTES)
-		{
-			expanded = expand_env_in_quotes(token, env);
-			if (expanded)
-			{
-				argument = join_content(argument, expanded, strlen(expanded));
-				free(expanded);
-			}
+			if (tmp->type == DQUOTE || tmp->type == SQUOTE)
+				tmp = skip_tokens_until(tmp->next_token, tmp->type);
 			else
-			{
-				argument = join_content(argument, (*token)->content,
-						(*token)->size);
-			}
+				tmp = skip_tokens_until(tmp->next_token, WORD);
+			arg_index++;
 		}
-		else
-		{
-			argument = join_content(argument, (*token)->content,
-					(*token)->size);
-		}
-		*token = (*token)->next_token;
+		if (tmp)
+			tmp = tmp->next_token;
 	}
-	if (*token)
+	return (arg_index);
+}
+
+t_node	*build_command_node(t_global **token, t_environment *env)
+{
+	t_node	*command_node;
+
+	command_node = build_command_tree(token, env);
+	return (command_node);
+}
+
+t_node	*create_pipe_node(t_node *left_child, t_node *right_child)
+{
+	t_node	*pipe_node;
+
+	pipe_node = ft_calloc(1, sizeof(t_node));
+	if (!pipe_node)
 	{
-		*token = (*token)->next_token; // Skip the closing quote token
+		free_asn_node(left_child);
+		free_asn_node(right_child);
+		return (NULL);
 	}
-	return (argument);
+	pipe_node->node_type = PIPE;
+	pipe_node->content.pipe.left = left_child;
+	pipe_node->content.pipe.right = right_child;
+	if (!pipe_node->content.pipe.left || !pipe_node->content.pipe.right)
+	{
+		free_asn_node(pipe_node);
+		return (NULL);
+	}
+	return (pipe_node);
 }

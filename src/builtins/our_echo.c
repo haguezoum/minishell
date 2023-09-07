@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 17:04:10 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/03 23:12:39 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/06 15:48:07 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,15 @@ void	handle_option_n(int *hasOptionN, char **args, int *cur_index)
 	}
 }
 
+int	hyphen_check(char *s) {
+	int	i = 0;
+	while (i < strlen(s)) {
+		if (s[i] == '-')
+			return (1);
+		i++;
+	}
+	return (0);
+}
 void	our_echo(t_cmd *command, t_global *tokenList, char **environment)
 {
 	int	cur_index;
@@ -81,7 +90,7 @@ void	our_echo(t_cmd *command, t_global *tokenList, char **environment)
 	cur_index = 1;
 	first_arg = 1;
 	has_option_n = 0;
-	while (command->args[cur_index] && check_option(command->args[cur_index]))
+	while (command->args[cur_index] && hyphen_check(command->args[cur_index]) && check_option(command->args[cur_index]))
 	{
 		has_option_n = 1;
 		cur_index++;

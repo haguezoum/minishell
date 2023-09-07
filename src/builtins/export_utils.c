@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 18:13:50 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/03 23:44:57 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/06 18:23:09 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,13 +75,9 @@ char	*get_key(char *arg)
 	name = NULL;
 	equal_sign = ft_strchr(arg, '=');
 	if (equal_sign)
-	{
 		name = ft_strndup(arg, equal_sign - arg);
-	}
 	else
-	{
 		name = ft_strdup(arg);
-	}
 	return (name);
 }
 
@@ -93,9 +89,7 @@ char	*get_value(char *arg)
 	data = NULL;
 	equal_sign = ft_strchr(arg, '=');
 	if (equal_sign)
-	{
 		data = ft_strdup(equal_sign + 1);
-	}
 	return (data);
 }
 
@@ -107,7 +101,5 @@ void	free_memory(char *name, char *data, int quote)
 		free(name);
 	}
 	else if (quote == -1)
-	{
 		free(name);
-	}
 }

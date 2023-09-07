@@ -6,26 +6,11 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 08:02:26 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/08/29 19:34:04 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/07 11:40:19 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-t_relem	*create_non_here_doc_element(enum e_token redir_type, char *argument)
-{
-	t_relem	*element;
-
-	element = ft_calloc(1, sizeof(t_relem));
-	if (!element)
-	{
-		free(argument);
-		return (NULL);
-	}
-	element->argument = argument;
-	element->type = redir_type;
-	return (element);
-}
 
 t_rlist	*add_redir_element(t_rlist *redir_list, t_relem *redir_element)
 {
@@ -42,11 +27,32 @@ t_rlist	*add_redir_element(t_rlist *redir_list, t_relem *redir_element)
 	return (redir_list);
 }
 
+char	*extract_first_argument(char *redir_argument)
+{
+	char	**args;
+	char	*first_arg;
+	int		i;
+
+	args = ft_split(redir_argument, ' ');
+	first_arg = NULL;
+	if (args && args[0])
+	{
+		first_arg = ft_strdup(args[0]);
+	}
+	i = 0;
+	while (args && args[i])
+	{
+		free(args[i]);
+		i++;
+	}
+	free(args);
+	return (first_arg);
+}
+
 char	*parse_redir_argument_value(t_global **token, t_environment *env,
 		enum e_token redir_type)
 {
 	char	*redir_argument;
-	char	**args;
 	char	*first_arg;
 
 	redir_argument = NULL;
@@ -63,17 +69,7 @@ char	*parse_redir_argument_value(t_global **token, t_environment *env,
 	{
 		redir_argument = ft_strdup((*token)->content);
 	}
-	args = ft_split(redir_argument, ' ');
-	first_arg = NULL;
-	if (args && args[0])
-	{
-		first_arg = ft_strdup(args[0]);
-	}
-	for (int i = 0; args && args[i]; i++)
-	{
-		free(args[i]);
-	}
-	free(args);
+	first_arg = extract_first_argument(redir_argument);
 	free(redir_argument);
 	return (first_arg);
 }

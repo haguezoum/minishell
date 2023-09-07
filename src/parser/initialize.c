@@ -12,38 +12,38 @@
 
 #include "../includes/minishell.h"
 
-t_rlist *initialize_redir_list() {
-    t_rlist *redir_list = calloc(1, sizeof(t_rlist));
-    return redir_list;
+t_rlist	*initialize_redir_list(void)
+{
+	t_rlist	*redir_list;
+
+	redir_list = calloc(1, sizeof(t_rlist));
+	return (redir_list);
 }
 
-void clean_up(t_rlist *redir_list, char **arguments) {
-    free_redir_list(redir_list);
-    free(arguments);
+void	clean_up(t_rlist *redir_list, char **arguments)
+{
+	free_redir_list(redir_list);
+	free(arguments);
 }
 
-t_tree *init_tree(t_tree *structure_tree) {
-    structure_tree = calloc(sizeof(t_tree), 1);
-    return structure_tree;
+t_tree	*init_tree(t_tree *structure_tree)
+{
+	structure_tree = calloc(sizeof(t_tree), 1);
+	return (structure_tree);
 }
 
-t_node *init_node(char **cmd_args, char **env, t_rlist *redirections) {
-    t_node *node = malloc(sizeof(t_node));
+t_node	*init_node(char **cmd_args, char **env, t_rlist *redirections)
+{
+	t_node	*node;
 
-    if (!node)
-        return NULL;
-
-    node->node_type = COMMAND;
-
-    node->content.command.args = cmd_args;
-
-    node->content.command.env = env;
-
-    node->content.command.redirections = redirections;
-
-    node->content.command.fd.input = 0;
-
-    node->content.command.fd.output = 1;
-
-    return node;
+	node = malloc(sizeof(t_node));
+	if (!node)
+		return (NULL);
+	node->node_type = COMMAND;
+	node->content.command.args = cmd_args;
+	node->content.command.env = env;
+	node->content.command.redirections = redirections;
+	node->content.command.fd.input = 0;
+	node->content.command.fd.output = 1;
+	return (node);
 }

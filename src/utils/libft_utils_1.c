@@ -6,36 +6,35 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 18:14:20 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/02 18:32:42 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/07 12:48:01 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-
-int ft_strcmp(const char *s1, const char *s2)
+int	ft_strcmp(const char *s1, const char *s2)
 {
-	if (s1 == NULL || s2 == NULL) // Add this line to avoid segfaults.
+	if (s1 == NULL || s2 == NULL) 
 	{
-        return 0;
-    }
-    while (*s1 && *s2 && (*s1 == *s2))
+		return (0);
+	}
+	while (*s1 && *s2 && (*s1 == *s2))
 	{
-        s1++;
-        s2++;
-    }
-
-    if (*s1 == *s2)
-        return 0;
-    else if (*s1 < *s2)
-        return -1;
-    else
-        return 1;
+		s1++;
+		s2++;
+	}
+	if (*s1 == *s2)
+		return (0);
+	else if (*s1 < *s2)
+		return (-1);
+	else
+		return (1);
 }
 
 size_t	ft_strlen(const char *str)
 {
 	int	i;
+
 	if (!str)
 		return (0);
 	i = 0;
@@ -71,8 +70,7 @@ char	*ft_strndup(char *s1, int n)
 		i++;
 	}
 	copy[i] = '\0';
-
-	return (copy); // Add this line to return the allocated copy.
+	return (copy);
 }
 
 void	*ft_calloc(size_t count, size_t size)

@@ -6,12 +6,11 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 18:17:07 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/02 18:32:51 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/07 12:51:16 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
 
 void	ft_putstr_fd(char *s, int fd)
 {
@@ -43,6 +42,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 		new_str[0] = '\0';
 	return (new_str);
 }
+
 int	ft_isalnum(int c)
 {
 	if (((c >= '0') && (c <= '9')) || ((c >= 'a') && (c <= 'z')) || ((c >= 'A')
@@ -50,11 +50,10 @@ int	ft_isalnum(int c)
 		return (1);
 	return (0);
 }
+
 int	ft_isalpha(int ch)
 {
 	if (((ch >= 'a') && (ch <= 'z')) || ((ch >= 'A') && (ch <= 'Z')))
 		return (1);
 	return (0);
 }
-
-

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   our_export.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 23:20:02 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/03 23:47:36 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/06 18:14:41 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ int	our_export(char *command, t_environment *env, int quote)
 	arg = command;
 	name = get_key(arg);
 	data = get_value(arg);
+
 	if (!command)
 	{
 		print_all_variables(env);
@@ -93,7 +94,6 @@ int	our_export(char *command, t_environment *env, int quote)
 	}
 	if (name && !is_valid_env_var_name(name))
 	{
-		free(name);
 		handle_invalid_env_var(arg, &exit_status, data);
 	}
 	else
@@ -101,5 +101,7 @@ int	our_export(char *command, t_environment *env, int quote)
 		handle_valid_env_var(name, data, env, &exit_status);
 		free_memory(name, data, quote);
 	}
+	free(data);
+	free(name);
 	return (exit_status);
 }

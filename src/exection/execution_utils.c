@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 08:54:06 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/04 21:34:20 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/06 17:03:41 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,12 @@ void	excute_builtin(t_cmd *ptr, t_environment *env, t_global *token_list)
 {
 	if (ft_strcmp(ptr->args[0], "echo") == 0)
 		our_echo(ptr, token_list, env->environment_array);
-	else if (ft_strcmp(ptr->args[0], "cd") == 0){
+	else if (ft_strcmp(ptr->args[0], "cd") == 0)
 		our_cd(ptr, env->environment_array);
-	}
 	else if (ft_strcmp(ptr->args[0], "pwd") == 0)
 		our_pwd(ptr);
 	else if (ft_strcmp(ptr->args[0], "export") == 0)
-		export(ptr, env);
+		export(ptr, env, token_list);
 	else if (ft_strcmp(ptr->args[0], "unset") == 0)
 		our_unset(ptr, env);
 	else if (ft_strcmp(ptr->args[0], "env") == 0)
@@ -83,8 +82,6 @@ void	execute_external_command(t_node *ptr, t_environment *evn_vars)
 		if (pid == 0)
 		{
 			execve(str, ptr->content.command.args, evn_vars->environment_array);
-			// perror("execve");
-			// exit(EXIT_FAILURE);
 		}
 		else if (pid < 0)
 			perror("fork");
@@ -97,5 +94,6 @@ void	execute_external_command(t_node *ptr, t_environment *evn_vars)
 	{
 		printf("minishell: %s: command not found\n",
 			ptr->content.command.args[0]);
+			check.exit_status = 127;
 	}
 }

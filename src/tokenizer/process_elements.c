@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 23:04:22 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/03 22:25:19 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/07 17:48:14 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void	process_word(t_lexer *lexer, char *line, int start, int end,
 		add_token(lexer, new_token(line + start, end - start, WORD, DEFAULT));
 	}
 }
+
 
 int	process_dollar_sign(t_lexer *lexer, char *line, int i, enum e_state *state)
 {
