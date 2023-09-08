@@ -6,7 +6,7 @@
 /*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 00:50:46 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/08 10:43:42 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/08 19:48:50 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void	run_pipe(t_node *ptr, t_environment *evn_vars, t_global *token_list)
 
 int	execute_tree(t_node *ptr, t_environment *evn_vars, t_global *token_list)
 {
-	if (ptr->node_type == COMMAND)
+	if (ptr->t_node_type == COMMAND)
 	{
 		exec_cmd(ptr, evn_vars, token_list);
 	}

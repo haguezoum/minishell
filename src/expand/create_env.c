@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   create_env.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 04:54:17 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/08 16:47:29 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/08 19:22:41 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ t_environment	*create_env_vars(char **environment_array)
 	if (env->environment_array == NULL)
 		return (NULL);
 	env->count = 0;
-	check.exit_status = 0;
+	g_check.exit_status = 0;
 	i = 0;
 	while (environment_array[i])
 	{

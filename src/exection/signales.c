@@ -6,7 +6,7 @@
 /*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 21:57:04 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/07 23:26:52 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/08 19:22:41 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,5 +27,5 @@ void	exit_signal(void)
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-	check.exit_status = 130;
+	g_check.exit_status = 130;
 }

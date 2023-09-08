@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   final_expand.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 04:55:39 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/08 15:37:10 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/08 19:22:41 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	*expand_dollar(char *line, int *i, char **environment_array)
 	if (line[*i] == '?')
 	{
 		(*i)++;
-		return (ft_itoa(check.exit_status));
+		return (ft_itoa(g_check.exit_status));
 	}
 	else
 	{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   final_parser.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 08:02:04 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/08 17:33:17 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/08 19:48:50 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int	final_parse(t_tree **tree, t_global *token, t_environment *env)
 		}
 		else
 		{
-			if ((*tree)->top->node_type == PIPE)
+			if ((*tree)->top->t_node_type == PIPE)
 				update_top_node(tree, command_node);
 			else
 				create_new_pipe_node(tree, command_node);

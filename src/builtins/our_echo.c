@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   our_echo.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 17:04:10 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/08 18:37:00 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/08 19:22:41 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,5 +76,5 @@ void	our_echo(t_cmd *command, t_global *tokenList, char **environment)
 	}
 	if (!has_option_n)
 		write(STDOUT_FILENO, "\n", 1);
-	check.exit_status = EXIT_SUCCESS;
+	g_check.exit_status = EXIT_SUCCESS;
 }

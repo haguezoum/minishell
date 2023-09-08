@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   our_env.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 17:11:19 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/06 17:11:19 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/08 19:22:41 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,14 @@ void	our_env(t_cmd *command, t_environment *env)
 			}
 			tmp = tmp->next;
 		}
-		check.exit_status = EXIT_SUCCESS;
+		g_check.exit_status = EXIT_SUCCESS;
 	}
 	else
 	{
 		write(STDERR_FILENO, "minishell: env: Too many arguments.\n", 36);
-		if (check.exit_status != -1)
-			check.exit_status = 1;
-		check.exit_status = EXIT_FAILURE;
+		if (g_check.exit_status != -1)
+			g_check.exit_status = 1;
+		g_check.exit_status = EXIT_FAILURE;
 	}
-	check.exit_status = EXIT_SUCCESS;
+	g_check.exit_status = EXIT_SUCCESS;
 }

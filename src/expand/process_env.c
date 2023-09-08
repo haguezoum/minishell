@@ -6,7 +6,7 @@
 /*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 04:54:45 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/03 22:39:31 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/08 19:22:41 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	*store_vars(char *search, t_environment *env)
 	if (ft_strcmp(search, "?") == 0 || ft_strcmp(search, "?\n") == 0)
 	{
 		free(search);
-		return (ft_itoa(check.exit_status));
+		return (ft_itoa(g_check.exit_status));
 	}
 	while (tmp)
 	{

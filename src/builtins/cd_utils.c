@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 18:13:02 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/06 17:02:18 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/08 19:22:41 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	change_directory(const char *path, char **environment)
 	if (chdir(path) != 0)
 	{
 		display_chdir_error(path, environment);
-		check.exit_status = 1;
+		g_check.exit_status = 1;
 		return (1);
 	}
 	return (0);

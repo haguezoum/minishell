@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 08:54:06 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/06 17:03:41 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/08 19:22:41 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	execute_external_command(t_node *ptr, t_environment *evn_vars)
 	char	*str;
 
 	str = check_cmand_exist_in_dir(ptr);
-	if (str && strcmp(str, getenv("PWD")) && strcmp(str, getenv("HOME")))
+	if (str && ft_strcmp(str, getenv("PWD")) && ft_strcmp(str, getenv("HOME")))
 	{
 		pid = fork();
 		if (pid == 0)
@@ -94,6 +94,6 @@ void	execute_external_command(t_node *ptr, t_environment *evn_vars)
 	{
 		printf("minishell: %s: command not found\n",
 			ptr->content.command.args[0]);
-		check.exit_status = 127;
+		g_check.exit_status = 127;
 	}
 }

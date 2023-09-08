@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialize.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 08:01:28 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/08 16:00:57 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/08 19:48:50 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ t_node	*init_node(char **cmd_args, char **env, t_rlist *redirections)
 	node = malloc(sizeof(t_node));
 	if (!node)
 		return (NULL);
-	node->node_type = COMMAND;
+	node->t_node_type = COMMAND;
 	node->content.command.args = cmd_args;
 	node->content.command.env = env;
 	node->content.command.redirections = redirections;

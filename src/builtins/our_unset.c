@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   our_unset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 17:03:34 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/02 18:40:43 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/08 19:22:41 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	update_env(char *args, t_environment *env_vars)
 	if (args && !(ft_isalpha(args[0]) || args[0] == '_') && strlen(args) > 1)
 	{
 		printf("minishell: unset: `%s`: not a valid identifier\n", args);
-		check.exit_status = EXIT_FAILURE;
+		g_check.exit_status = EXIT_FAILURE;
 	}
 	else
 	{
@@ -57,11 +57,11 @@ int	our_unset(t_cmd *cmd, t_environment *ev)
 	int	i;
 
 	i = 1;
-	check.exit_status = EXIT_SUCCESS;
+	g_check.exit_status = EXIT_SUCCESS;
 	while (cmd->args[i])
 	{
 		update_env(cmd->args[i], ev);
 		i++;
 	}
-	return (check.exit_status);
+	return (g_check.exit_status);
 }

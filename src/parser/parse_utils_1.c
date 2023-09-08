@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_utils_1.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 11:33:50 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/08 18:28:35 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/08 19:48:50 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ t_node	*create_pipe_node(t_node *left_child, t_node *right_child)
 		free_asn_node(right_child);
 		return (NULL);
 	}
-	pipe_node->node_type = PIPE;
+	pipe_node->t_node_type = PIPE;
 	pipe_node->content.pipe.left = left_child;
 	pipe_node->content.pipe.right = right_child;
 	if (!pipe_node->content.pipe.left || !pipe_node->content.pipe.right)

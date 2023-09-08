@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   our_exit.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 17:02:07 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/08 16:13:28 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/08 19:22:41 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	get_exit_code(t_cmd *command)
 		return (exit_code);
 	}
 	else
-		return (check.exit_status);
+		return (g_check.exit_status);
 }
 
 void	our_exit(t_cmd *command)
@@ -64,11 +64,11 @@ void	our_exit(t_cmd *command)
 		print_exit_error("minishell: exit: numeric argument required\n");
 		exit(255);
 	}
-	check.exit_status = exit_code;
+	g_check.exit_status = exit_code;
 	if (get_nb_args(command->args) > 2)
 	{
 		print_exit_error("minishell: exit: too many arguments\n");
-		exit(check.exit_status);
+		exit(g_check.exit_status);
 	}
-	exit(check.exit_status);
+	exit(g_check.exit_status);
 }
