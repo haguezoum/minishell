@@ -6,7 +6,7 @@
 /*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 00:50:20 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/04 11:52:52 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/08 10:08:28 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,13 @@ int	herdoc(char *match, t_environment *env)
 	char	*line_to_write;
 
 	check.exit_status = EXIT_SUCCESS;
+	unlink("/tmp/.minishell");
 	fd = open("/tmp/.minishell", O_RDWR | O_CREAT | O_TRUNC, 0666);
 	herdo_utils(fd, line_to_write, match, env);
 	close(fd);
 	fd = open("/tmp/.minishell", O_RDONLY);
 	dup2(fd, STDIN_FILENO);
+	close(fd);
 	return (1);
 }
 
