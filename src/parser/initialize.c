@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 08:01:28 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/05 18:02:53 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/08 16:00:57 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ t_rlist	*initialize_redir_list(void)
 {
 	t_rlist	*redir_list;
 
-	redir_list = calloc(1, sizeof(t_rlist));
+	redir_list = ft_calloc(1, sizeof(t_rlist));
 	return (redir_list);
 }
 
@@ -28,7 +28,7 @@ void	clean_up(t_rlist *redir_list, char **arguments)
 
 t_tree	*init_tree(t_tree *structure_tree)
 {
-	structure_tree = calloc(sizeof(t_tree), 1);
+	structure_tree = ft_calloc(sizeof(t_tree), 1);
 	return (structure_tree);
 }
 

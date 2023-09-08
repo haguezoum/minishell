@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 23:04:22 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/07 17:48:14 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/08 16:03:10 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,20 +24,6 @@ void	process_quotes(t_lexer *lexer, char *line, int *i, enum e_state *state)
 	}
 	(*i)++;
 }
-
-void	process_word(t_lexer *lexer, char *line, int start, int end,
-		enum e_state *state)
-{
-	if (*state == IN_SINGLE_QUOTES || *state == IN_DOUBLE_QUOTES)
-	{
-		add_token(lexer, new_token(line + start, end - start, WORD, *state));
-	}
-	else
-	{
-		add_token(lexer, new_token(line + start, end - start, WORD, DEFAULT));
-	}
-}
-
 
 int	process_dollar_sign(t_lexer *lexer, char *line, int i, enum e_state *state)
 {
@@ -69,19 +55,18 @@ void	process_word_tokenization(t_lexer *lexer, char *line, int *i,
 		if (*state == DEFAULT && (line[*i] == '\'' || line[*i] == '\"'))
 		{
 			if (line[*i] == '\"')
-			{
 				*state = IN_DOUBLE_QUOTES;
-			}
 			else if (line[*i] == '\'')
-			{
 				*state = IN_SINGLE_QUOTES;
-			}
-			process_word(lexer, line, j, *i, state);
+			add_token(lexer, new_token(line + j, *i - j, WORD, *state));
 			j = *i + 1;
 		}
 		(*i)++;
 	}
-	process_word(lexer, line, j, *i, state);
+	if (*state == DEFAULT)
+		add_token(lexer, new_token(line + j, *i - j, WORD, DEFAULT));
+	else
+		add_token(lexer, new_token(line + j, *i - j, WORD, *state));
 }
 
 void	process_redirection(t_lexer *lexer, char *line, int *i,

@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 08:01:03 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/07 11:33:42 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/08 17:41:22 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ char	**build_arguments_array(int size)
 {
 	char	**arguments;
 
-	arguments = calloc(sizeof(char *), (size + 1));
+	arguments = ft_calloc(sizeof(char *), (size + 1));
 	return (arguments);
 }
 
@@ -41,7 +41,9 @@ char	**build_arguments(t_global **token, t_environment *env,
 	arg_index = count_arguments(*token);
 	arguments = build_arguments_array(arg_index);
 	if (!arguments)
+	{
 		return (NULL);
+	}
 	if (parse_arguments(token, env, redir_list, arguments) == EXIT_FAILURE)
 	{
 		free(arguments);

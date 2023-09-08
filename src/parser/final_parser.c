@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 08:02:04 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/07 12:21:57 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/08 17:33:17 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,9 @@ int	final_parse(t_tree **tree, t_global *token, t_environment *env)
 		if (!command_node)
 			return (EXIT_FAILURE);
 		if (!(*tree)->top)
+		{
 			(*tree)->top = command_node;
+		}
 		else
 		{
 			if ((*tree)->top->node_type == PIPE)

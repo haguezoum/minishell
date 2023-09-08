@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 18:56:24 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/07 12:17:17 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/08 18:28:12 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,21 +83,20 @@ int	parse_command_arguments(t_global **token, t_environment *env,
 	i = 0;
 	ignore_arguments = 0;
 	argument = arguments;
-	while (*token && (*token)->type != PIPE_LINE)
+	while ((*token) && (*token)->type != PIPE_LINE)
 	{
-		if ((*token)->type == WORD)
+		if ((*token) && (*token)->type == WORD)
 		{
+			if ((*token)->content == NULL)
+				return (EXIT_SUCCESS);
 			argument[i] = ft_strdup((*token)->content);
 			i++;
 		}
-		else if ((*token)->type == DQUOTE || (*token)->type == SQUOTE)
-		{
+		else if ((*token) && ((*token)->type == DQUOTE
+				|| (*token)->type == SQUOTE))
 			parse_quoted_argument_value(token, argument, &i);
-		}
 		else
-		{
 			handle_other_token(token, env, redir, &ignore_arguments);
-		}
 		*token = (*token)->next_token;
 	}
 	return (EXIT_SUCCESS);

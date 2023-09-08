@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 04:55:39 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/06 19:26:02 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/08 15:37:10 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ char	*allocate_initial_memory(void)
 	char	*res;
 
 	res = malloc(1000);
+	if (!res)
+		return (NULL);
 	return (res);
 }
 

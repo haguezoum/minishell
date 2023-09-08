@@ -6,45 +6,17 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 18:13:50 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/06 18:23:09 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/08 16:15:31 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	is_valid_env_var_name(char *str)
+int	add_new_env_var(t_environment *env, const char *name, const char *data)
 {
-	int	i;
-
-	if (!str)
-		return (0);
-	i = 0;
-	while (str[i])
-	{
-		if (!ft_isalnum(str[i]) && str[i] != '_')
-			return (0);
-		i++;
-	}
-	return (str[0] && ft_isalnum(str[0]));
-}
-
-int	update_env_var(t_environment *env, char *name, char *data)
-{
-	t_environment	*tmp;
 	t_environment	*new_var;
 	t_environment	*tail;
 
-	tmp = env->next;
-	while (tmp)
-	{
-		if (ft_strcmp(tmp->name, name) == 0)
-		{
-			free(tmp->data);
-			tmp->data = ft_strdup(data);
-			return (1);
-		}
-		tmp = tmp->next;
-	}
 	new_var = ft_calloc(1, sizeof(t_environment));
 	if (!new_var)
 		return (0);
@@ -65,6 +37,22 @@ int	update_env_var(t_environment *env, char *name, char *data)
 	}
 	env->count++;
 	return (1);
+}
+
+int	update_env_var(t_environment *env, char *name, char *data)
+{
+	t_environment	*existing_var;
+
+	existing_var = find_environment_variable(env, name);
+	if (existing_var)
+	{
+		update_existing_env_var(existing_var, data);
+		return (1);
+	}
+	else
+	{
+		return (add_new_env_var(env, name, data));
+	}
 }
 
 char	*get_key(char *arg)

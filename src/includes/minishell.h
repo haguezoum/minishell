@@ -80,7 +80,6 @@ char						*expand_dollar(char *line, int *i,
 char						*allocate_initial_memory(void);
 char						*expand_vars(char *line, char **environment_array);
 
-/*------------------------------------------------------------------------------------*/
 
 typedef struct s_rlist
 {
@@ -230,7 +229,22 @@ char *get_value(char *arg);
 void free_memory(char *name, char *data, int quote);
 int our_export(char *command, t_environment *env, int quote);
 
-// cd_utils.c :
+// export_utils_2.c :
+
+int	is_valid_env_var_name(char *str);
+t_environment *find_environment_variable(t_environment *env, const char *name);
+void update_existing_env_var(t_environment *var, const char *data);
+int handle_export_without_arguments(t_environment *env, int exit_status);
+
+
+// echo_utils.c :
+
+int	check_option(char *arg);
+void	concatenate_arguments(char **args, int cur_index,
+		int args_to_concatenate);
+void	process_arguments(t_cmd *command, t_global *tokenList,
+		char **environment);
+
 
 int change_directory(const char *path, char **environment);
 int our_cd(t_cmd *command, char **environment);

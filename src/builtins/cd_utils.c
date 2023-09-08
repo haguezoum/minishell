@@ -29,5 +29,3 @@ int	change_directory(const char *path, char **environment)
 	}
 	return (0);
 }
-
-
