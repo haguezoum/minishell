@@ -269,7 +269,7 @@ void						handel_signal(int sig);
 
 
 
-
+char *check_cmand_exist_in_dir(t_node *ptr);
 void 	free_double_pointer(char **ptr);
 void	*ft_calloc(size_t count, size_t size);
 char	*ft_itoa(int n);
