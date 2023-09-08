@@ -4,7 +4,6 @@
 # include <limits.h>
 # include <signal.h>
 # include <stdlib.h>
-# include <string.h>
 # include <sys/wait.h>
 # include <unistd.h>
 #include <fcntl.h>
@@ -288,5 +287,13 @@ char	*ft_strtrim(char *s1, char const *set);
 int	check_equal(char *s);
 void	expand_all(t_global *_token, t_environment *env);
 char	*ft_strjoin2(char *s1, char *s2);
+
+
+//export_utils
+void	export_names(char **tmp, t_environment *env);
+void	print_environment(t_environment *env);
+char	*ft_remove_char(char *str, char c);
+void	export_utils(t_cmd *ptr, t_environment *env, char *arg);
+
 
 #endif
