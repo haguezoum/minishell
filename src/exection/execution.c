@@ -6,47 +6,11 @@
 /*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 00:50:46 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/07 23:40:55 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/08 10:43:42 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-char	*check_cmand_exist_in_dir(t_node *ptr)
-{
-	char	*str;
-	int		i;
-	char	**path;
-	char	*tmp;
-	char	*tst;
-
-	str = getenv("PATH");
-	i = 0;
-	path = ft_split(str, ':');
-	tmp = NULL;
-	if (!path)
-		return (NULL);
-	if (access(ptr->content.command.args[0], F_OK) == 0)
-	{
-		free_double_pointer(path);
-		return (ptr->content.command.args[0]);
-	}
-	while (path[i])
-	{
-		tst = ft_strjoin2(path[i], "/");
-		tmp = ft_strjoin2(tst, ptr->content.command.args[0]);
-		free(tst);
-		if (access(tmp, F_OK) == 0)
-		{
-			free_double_pointer(path);
-			return (tmp);
-		}
-		free(tmp);
-		i++;
-	}
-	free_double_pointer(path);
-	return (NULL);
-}
 
 int	redirection(t_relem *tmp, t_environment *evn_vars)
 {
