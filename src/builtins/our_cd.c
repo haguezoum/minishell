@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   our_cd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
+/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 17:04:36 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/08 19:22:41 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/08 21:00:42 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	update_env_variable(t_environment *env_vars, const char *name,
 	t_environment	*current_env_elem;
 
 	current_env_elem = env_vars;
-	while (current_env_elem && strcmp(current_env_elem->name, name) != 0)
+	while (current_env_elem && ft_strcmp(current_env_elem->name, name) != 0)
 		current_env_elem = current_env_elem->next;
 	if (current_env_elem)
 	{

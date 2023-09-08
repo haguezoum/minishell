@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
+/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/08 19:02:15 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/08 20:14:20 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/09 00:55:10 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,10 @@ int	main(int ac, char **av)
 	extern char			**environ;
 	t_environment		*env;
 	struct sigaction	sa;
-
-	if (ac == 1)
-	{
+	(void)ac;
+	(void)av;
+	// if (ac && av)
+	// {
 		env = create_env_vars(environ);
 		g_check.exit_status = 0;
 		sa.sa_handler = &handel_signal;
@@ -93,11 +94,11 @@ int	main(int ac, char **av)
 		sigaction(SIGINT, &sa, NULL);
 		while (1)
 			display_prompt(env);
-	}
-	else
-	{
-		printf("Oooops , we dont do that here boy !\n");
-		printf("\tUsage: ./minishell\n");
-	}
+	// }
+	// else
+	// {
+	// 	printf("Oooops , we dont do that here boy !\n");
+	// 	printf("\tUsage: ./minishell\n");
+	// }
 	return (0);
 }

@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   check_syntax_2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
+/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/08 20:23:40 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/08 20:35:22 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/09 00:18:58 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
+
 
 int	check_pipe_error(t_global *current_token)
 {
@@ -35,86 +36,91 @@ int	check_redirection_error(t_global *current_token)
 	return (EXIT_SUCCESS);
 }
 
-t_global	*check_unclosed_quotes(t_global **current_token, enum e_token type)
+
+
+static int check_escape(t_global **current_token)
 {
-	while (*current_token)
-	{
-		*current_token = (*current_token)->next_token;
-		if (!*current_token || (*current_token)->type == type)
-			break ;
-	}
-	if (!*current_token)
-		write(STDERR_FILENO, "minishell: unclosed quotes detected.\n",
-			ft_strlen("minishell: unclosed quotes detected.\n"));
-	return (*current_token);
+    if (!(*current_token)->next_token)
+        return syntax_error("unexpected token `escape'");
+    *current_token = (*current_token)->next_token;
+    return EXIT_SUCCESS;
 }
-/*
-int	check_command_syntax(t_lexer *lexer)
+
+static int check_valid_token(t_global *current_token, int *has_operator, int *has_command, t_global **prev_word)
 {
-	t_global	*current_token;
-	t_global	*prev_word;
-	int			has_operator;
-	int			has_command;
-	t_global	*next_token;
-	t_global	*quote;
+    if (is_valid_word(current_token->type))
+    {
+        *prev_word = current_token;
+        *has_operator = 0;
+        *has_command = 1;
+    }
+    else if (current_token->type == DQUOTE || current_token->type == SQUOTE)
+    {
+        if (check_quotes_and_escape(&current_token) != EXIT_SUCCESS)
+            return EXIT_FAILURE;
+    }
+    else if (current_token->type == ESCAPE)
+    {
+        if (check_escape(&current_token) != EXIT_SUCCESS)
+            return EXIT_FAILURE;
+    }
+    else if (!is_valid_char(current_token->type))
+    {
+        return syntax_error("unexpected token");
+    }
 
-	current_token = lexer->head;
-	prev_word = NULL;
-	has_operator = 0;
-	has_command = 0;
-	while (current_token)
-	{
-		if (current_token->type == PIPE_LINE)
-		{
-			if (has_operator || !has_command)
-				return (syntax_error("unexpected pipe `|'"));
-			has_operator = 1;
-		}
-		else if (is_operator(current_token->type))
-		{
-			if (!prev_word)
-				return (syntax_error("unexpected token before redirection"));
-			next_token = skip_whitespace(current_token->next_token, 1);
-			if (!next_token || !is_valid_word(next_token->type))
-				return (syntax_error("unexpected token after redirection"));
-			has_operator = 1;
-			current_token = next_token;
-		}
-		else if (current_token->type == NEW_LINE)
-		{
-			if (!prev_word && !has_operator)
-				return (syntax_error("unexpected token `newline'"));
-			has_operator = 0;
-			has_command = 0;
-		}
-		else if (current_token->type == DQUOTE || current_token->type == SQUOTE)
-		{
-			quote = check_unclosed_quotes(&current_token, current_token->type);
-			if (!quote)
-				return (EXIT_FAILURE);
-		}
-		else if (current_token->type == ESCAPE)
-		{
-			if (!current_token->next_token)
-				return (syntax_error("unexpected token `escape'"));
-			current_token = current_token->next_token;
-		}
-		else if (!is_valid_char(current_token->type))
-		{
-			return (syntax_error("unexpected token"));
-		}
-		if (is_valid_word(current_token->type))
-		{
-			prev_word = current_token;
-			has_operator = 0;
-			has_command = 1;
-		}
-		current_token = current_token->next_token;
-	}
-	if (has_operator || !has_command)
-		return (syntax_error("unexpected end of command"));
-	return (EXIT_SUCCESS);
+    return EXIT_SUCCESS;
 }
-*/
 
 
+static int process_token(t_global *current_token, int *has_operator, int *has_command, t_global **prev_word)
+{
+    if (current_token->type == PIPE_LINE)
+    {
+        if (*has_operator || !*has_command)
+            return syntax_error("unexpected pipe `|'");
+
+        *has_operator = 1;
+    }
+    else if (current_token->type == NEW_LINE)
+    {
+        if (!*prev_word && !*has_operator)
+            return syntax_error("unexpected token `newline'");
+
+        *has_operator = 0;
+        *has_command = 0;
+    }
+    else
+    {
+        if (check_valid_token(current_token, has_operator, has_command, prev_word) != EXIT_SUCCESS)
+            return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+}
+
+static int check_end_of_command(int has_operator, int has_command)
+{
+    if (has_operator || !has_command)
+        return syntax_error("unexpected end of command");
+
+    return EXIT_SUCCESS;
+}
+
+int check_command_syntax(t_lexer *lexer)
+{
+    t_global *current_token = lexer->head;
+    int has_operator = 0;
+    int has_command = 0;
+    t_global *prev_word = NULL;
+
+    while (current_token)
+    {
+        if (process_token(current_token, &has_operator, &has_command, &prev_word) != EXIT_SUCCESS)
+            return EXIT_FAILURE;
+
+        current_token = current_token->next_token;
+    }
+
+    return check_end_of_command(has_operator, has_command);
+}

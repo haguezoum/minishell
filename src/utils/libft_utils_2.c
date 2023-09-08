@@ -6,13 +6,13 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 18:15:05 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/02 18:32:47 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/08 23:10:07 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static int	ft_check(int nbr)
+int	ft_check(int nbr)
 {
 	if (!nbr)
 		return (0);
@@ -21,7 +21,7 @@ static int	ft_check(int nbr)
 	return (nbr);
 }
 
-static int	ft_len(int nbr)
+int	ft_len(int nbr)
 {
 	int	len;
 
@@ -59,7 +59,7 @@ char	*ft_itoa(int n)
 	return (str);
 }
 
-static int	count_words(const char *str, char c)
+int	count_words(const char *str, char c)
 {
 	int	i;
 	int	counter;

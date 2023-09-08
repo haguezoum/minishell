@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
+/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/08 19:20:52 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/08 20:25:42 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/09 00:28:27 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ char						*expand_vars(char *line, char **environment_array);
 typedef enum e_type
 {
 	COMMAND,
-	PIPE,
+	PIPE
 }	t_type;
 
 typedef struct s_rlist
@@ -284,6 +284,14 @@ char						*ft_remove_char(char *str, char c);
 void						export_utils(t_cmd *ptr, t_environment *env,
 								char *arg);
 void						print_all_variables(t_environment *env);
+int							check_pipe_error(t_global *current_token);
+int							check_redirection_error(t_global *current_token);
 int							check_command_syntax(t_lexer *lexer);
+
+int	check_pipe_error(t_global *current_token);
+t_global	*check_unclosed_quotes(t_global **current_token, enum e_token type);
+int check_pipe_line(t_global *current_token, int *has_operator, int *has_command);
+int check_new_line(t_global *current_token, int *has_operator, int *has_command, t_global **prev_word);
+int check_quotes_and_escape(t_global **current_token);
 
 #endif
