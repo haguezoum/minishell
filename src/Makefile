@@ -13,7 +13,7 @@ SRC = main.c  tokenizer/lexer_utils.c tokenizer/tokenizer.c\
   parser/build_cmd.c parser/final_parser.c parser/initialize.c parser/parse_cmd.c\
   parser/parse_utils_1.c  parser/parse_utils_2.c  parser/parse_utils_3.c parser/redir_parse.c \
   exection/derdir_inout.c exection/redir_inout.c exection/execution.c  exection/execution_utils.c exection/builtin_utils.c \
-  exection/signales.c  utils/libft_utils_1.c utils/libft_utils_2.c utils/libft_utils_3.c utils/libft_utils_4.c
+  exection/signales.c  exection/execution_utils2.c utils/libft_utils_1.c utils/libft_utils_2.c utils/libft_utils_3.c utils/libft_utils_4.c 
 
 OBJ = ${SRC:.c=.o}
 LIBS = -lreadline
