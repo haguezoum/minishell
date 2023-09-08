@@ -1,6 +1,6 @@
 CFLAGS =   #-fsanitize=address -g # -Wall -Wextra -Werror
-RLFLGS    = -L/Users/aet-tass/goinfre/homebrew/opt/readline/lib -lreadline
-RLOFLGS    = -I/Users/aet-tass/goinfre/homebrew/opt/readline/include
+RLFLGS    = -L/Users/haguezou/.brew/opt/readline/lib -lreadline
+RLOFLGS    = -I/Users/haguezou/.brew/opt/readline/include
 CC = cc
 RM = rm -rf
 SRC = main.c  tokenizer/lexer_utils.c tokenizer/tokenizer.c\
