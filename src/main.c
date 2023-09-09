@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/08 19:02:15 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/09 00:55:10 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/09 22:25:17 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,10 @@ int	main(int ac, char **av)
 		sigaddset(&sa.sa_mask, SIGINT);
 		signal(SIGQUIT, SIG_IGN);
 		sigaction(SIGINT, &sa, NULL);
-		while (1)
+		while (1){
 			display_prompt(env);
+			// system("leaks minishell");
+		}
 	// }
 	// else
 	// {

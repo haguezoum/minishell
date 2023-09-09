@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/08 19:20:52 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/09 00:28:27 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/09 22:06:05 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -286,12 +286,19 @@ void						export_utils(t_cmd *ptr, t_environment *env,
 void						print_all_variables(t_environment *env);
 int							check_pipe_error(t_global *current_token);
 int							check_redirection_error(t_global *current_token);
-int							check_command_syntax(t_lexer *lexer);
 
-int	check_pipe_error(t_global *current_token);
 t_global	*check_unclosed_quotes(t_global **current_token, enum e_token type);
-int check_pipe_line(t_global *current_token, int *has_operator, int *has_command);
-int check_new_line(t_global *current_token, int *has_operator, int *has_command, t_global **prev_word);
-int check_quotes_and_escape(t_global **current_token);
+int			process_operator(t_global **current_token, int *has_operator, t_global **prev_word);
+int			process_token(t_global **current_token, int *has_operator, int *has_command, t_global **prev_word);
+int			handle_pipe_line(t_global **current_token, int *has_operator, int *has_command);
+int			handle_operator_case(t_global **current_token, int *has_operator, t_global **prev_word);
+int			is_valid_word(enum e_token type);
+int			is_valid_char(enum e_token type);
+int			syntax_error(const char *msg);
+int			check_pipe_error(t_global *current_token);
+int			check_redirection_error(t_global *current_token);
+t_global	*skip_whitespace(t_global *current_token, int direction);
+int			is_operator(enum e_token type);
+int			check_command_syntax(t_lexer *lexer);
 
 #endif

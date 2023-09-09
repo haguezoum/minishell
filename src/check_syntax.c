@@ -1,34 +1,78 @@
 #include "./includes/minishell.h"
 
-t_global *skip_whitespace(t_global *current_token, int direction) {
-    while (current_token && current_token->type == WHITE_SPACE) {
-        if (direction)
-            current_token = current_token->next_token;
-        else
-            current_token = current_token->prev_token;
+
+int handle_new_line(t_global **current_token, int *has_operator, int *has_command, t_global **prev_word) {
+    if (!*prev_word && !*has_operator)
+        return syntax_error("unexpected token `newline'");
+    *has_operator = 0;
+    *has_command = 0;
+    return EXIT_SUCCESS;
+}
+
+
+int handle_other_cases(t_global **current_token) {
+    if ((*current_token)->type == DQUOTE || (*current_token)->type == SQUOTE) {
+        t_global *quote = check_unclosed_quotes(current_token, (*current_token)->type);
+        if (!quote)
+            return EXIT_FAILURE;
+    } else if ((*current_token)->type == ESCAPE) {
+        if (!(*current_token)->next_token)
+            return syntax_error("unexpected token `escape'");
+        *current_token = (*current_token)->next_token;
+    } else if (!is_valid_char((*current_token)->type)) {
+        return syntax_error("unexpected token");
     }
-    return current_token;
+    return EXIT_SUCCESS;
 }
 
+int handle_token_case(t_global **current_token, int *has_operator, int *has_command, t_global **prev_word) {
+    if ((*current_token)->type == PIPE_LINE) {
+        int result = handle_pipe_line(current_token, has_operator, has_command);
+        if (result != EXIT_SUCCESS)
+            return result;
+    } else if (is_operator((*current_token)->type)) {
+        int result = handle_operator_case(current_token, has_operator, prev_word);
+        if (result != EXIT_SUCCESS)
+            return result;
+    } else if ((*current_token)->type == NEW_LINE) {
+        int result = handle_new_line(current_token, has_operator, has_command, prev_word);
+        if (result != EXIT_SUCCESS)
+            return result;
+    } else {
+        int result = handle_other_cases(current_token);
+        if (result != EXIT_SUCCESS)
+            return result;
+    }
 
-int is_operator(enum e_token type) {
-    return (type == PIPE_LINE || type == REDIR_IN || type == REDIR_OUT || type == DREDIR_OUT || type == HERE_DOC);
+    return EXIT_SUCCESS;
 }
 
+int parse_token(t_global **current_token, int *has_operator, int *has_command, t_global **prev_word) {
+    int result = handle_token_case(current_token, has_operator, has_command, prev_word);
+    if (result != EXIT_SUCCESS)
+        return result;
 
-int is_valid_word(enum e_token type) {
-    return (type == WORD || type == ENV);
+    result = process_token(current_token, has_operator, has_command, prev_word);
+    if (result != EXIT_SUCCESS)
+        return result;
+
+    return EXIT_SUCCESS;
 }
 
-int is_valid_char(enum e_token type) {
-    return (type == WHITE_SPACE || type == NEW_LINE || type == SQUOTE || type == DQUOTE ||
-            type == ESCAPE || is_operator(type) || is_valid_word(type));
-}
+int check_command_syntax(t_lexer *lexer) {
+    t_global *current_token = lexer->head;
+    t_global *prev_word = NULL;
+    int has_operator = 0;
+    int has_command = 0;
 
+    while (current_token) {
+        int result = parse_token(&current_token, &has_operator, &has_command, &prev_word);
+        if (result != EXIT_SUCCESS)
+            return result;
+    }
 
-int syntax_error(const char *msg) {
-    write(STDERR_FILENO, "minishell: syntax error: ", ft_strlen("minishell: syntax error: "));
-    write(STDERR_FILENO, msg, ft_strlen(msg));
-    write(STDERR_FILENO, "\n", 1);
-    return EXIT_FAILURE;
+    if (has_operator || !has_command)
+        return syntax_error("unexpected end of command");
+
+    return EXIT_SUCCESS;
 }

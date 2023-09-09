@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/06 21:41:10 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/08 15:25:43 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/09 21:50:51 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ typedef struct s_lexer
 	t_global		*last;
 	int				count;
 }					t_lexer;
+
 
 // lexer_utils.c :
 
