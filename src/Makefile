@@ -1,4 +1,4 @@
-CFLAGS =   #-fsanitize=address -g # -Wall -Wextra -Werror
+CFLAGS =   -Wall -Wextra -Werror
 RLFLGS    = -L/Users/aet-tass/goinfre/homebrew/opt/readline/lib -lreadline
 RLOFLGS    = -I/Users/aet-tass/goinfre/homebrew/opt/readline/include
 CC = cc
