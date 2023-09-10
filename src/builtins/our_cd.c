@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   our_cd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 17:04:36 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/08 21:00:42 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/10 03:07:10 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,11 @@ char	**convert_env_list_to_array(t_environment *env_vars)
 	return (env_array);
 }
 
-int	handle_change_directory(char *path, char **environment)
+int	handle_change_directory(char *path)
 {
 	char	current_working_dir[PATH_MAX];
 
-	if (change_directory(path, environment) != 0)
+	if (change_directory(path) != 0)
 	{
 		return (1);
 	}
@@ -64,17 +64,14 @@ int	handle_change_directory(char *path, char **environment)
 }
 
 void	handle_update_env_variables(t_environment *env_vars,
-									const char *current_working_dir,
-									const char *old_working_dir)
+		const char *current_working_dir, const char *old_working_dir)
 {
 	update_env_variable(env_vars, "PWD", current_working_dir);
 	update_env_variable(env_vars, "OLDPWD", old_working_dir);
 }
 
-int	our_cd(t_cmd *command, char **environment)
+int	our_cd(t_cmd *command)
 {
-	char	current_working_dir[PATH_MAX];
-	char	old_working_dir[PATH_MAX];
 	char	*home_dir;
 
 	if (!command->args[1])
@@ -85,12 +82,12 @@ int	our_cd(t_cmd *command, char **environment)
 			write(STDERR_FILENO, "minishell: cd: HOME not set\n", 29);
 			return (1);
 		}
-		handle_change_directory(home_dir, environment);
+		handle_change_directory(home_dir);
 		return (0);
 	}
 	else
 	{
-		return (handle_change_directory(command->args[1], environment));
+		return (handle_change_directory(command->args[1]));
 	}
 	g_check.exit_status = 0;
 	return (0);

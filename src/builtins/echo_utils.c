@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/08 16:25:19 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/08 18:37:24 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/10 03:50:24 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,14 @@ void	concatenate_arguments(char **args, int cur_index,
 
 	while (++args_to_concatenate > 0 && args[cur_index + args_to_concatenate])
 	{
-		temp = ft_strjoin(args[cur_index], args[cur_index
-				+ args_to_concatenate]);
+		temp = ft_strjoin(args[cur_index], \
+				args[cur_index + args_to_concatenate]);
 		free(args[cur_index]);
 		args[cur_index] = temp;
 	}
 }
 
-void	process_arguments(t_cmd *command, t_global *tokenList,
-		char **environment)
+void	process_arguments(t_cmd *command)
 {
 	int	cur_index;
 	int	first_arg;

@@ -6,7 +6,7 @@
 /*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/08 13:44:48 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/08 14:12:43 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/10 03:15:33 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ char	*ft_strjoin2(char *s1, char *s2)
 	return (new_str);
 }
 
-void	export_utils(t_cmd *ptr, t_environment *env, char *arg)
+void	export_utils(t_environment *env, char *arg)
 {
 	char	*es;
 	char	*str;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 22:40:51 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/08 16:03:27 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/10 03:52:52 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,8 @@ int	tokenize_lexeme(t_lexer *lexer, char *line, int i, enum e_state *state)
 	else
 		process_word_tokenization(lexer, line, &i, state);
 	process_redirection(lexer, line, &i, state);
-	if ((*state == IN_DOUBLE_QUOTES && line[i] == '\"')
-		|| (*state == IN_SINGLE_QUOTES && line[i] == '\''))
+	if ((*state == IN_DOUBLE_QUOTES && line[i] == '\"') || \
+			(*state == IN_SINGLE_QUOTES && line[i] == '\''))
 	{
 		*state = DEFAULT;
 		add_token(lexer, new_token(line + i, 1, line[i], *state));
@@ -68,6 +68,7 @@ t_lexer	*tokenizer(char *line)
 	enum e_state	state;
 	int				i;
 
+	lexer = NULL;
 	lexer = init_lexer(lexer);
 	if (lexer)
 	{

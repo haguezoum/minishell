@@ -6,7 +6,7 @@
 /*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 04:54:45 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/08 19:22:41 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/10 03:02:08 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ char	*find_env_value(char *env_search, char **environment_array)
 	while (environment_array[k])
 	{
 		pos = ft_strchr(environment_array[k], '=');
-		if (pos != NULL && strncmp(environment_array[k], env_search, pos
+		if (pos != NULL && ft_strncmp(environment_array[k], env_search, pos
 				- environment_array[k]) == 0)
 		{
 			return (pos + 1);

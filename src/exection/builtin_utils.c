@@ -6,7 +6,7 @@
 /*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 17:56:26 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/08 14:03:45 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/10 03:13:31 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,12 +83,14 @@ int	check_equal(char *s)
 	return (0);
 }
 
-void	export(t_cmd *ptr, t_environment *env, t_global *token_list)
+void	export(t_environment *env, t_global *token_list)
 {
 	char	*token;
 	char	**args;
 	char	**tmp;
 
+	args = NULL;
+	tmp = NULL;
 	token = parse_tokens(token_list);
 	if (check_equal(token))
 	{

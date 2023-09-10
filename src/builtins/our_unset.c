@@ -6,7 +6,7 @@
 /*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 17:03:34 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/08 19:22:41 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/10 03:03:00 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ t_environment	*find_env_elem(t_environment *env, char *key)
 	t_environment	*tmp;
 
 	tmp = env->next;
-	while (tmp && strcmp(tmp->name, key) != 0)
+	while (tmp && ft_strcmp(tmp->name, key) != 0)
 		tmp = tmp->next;
 	return (tmp);
 }
@@ -39,7 +39,7 @@ void	update_env(char *args, t_environment *env_vars)
 	t_environment	*elem;
 
 	elem = NULL;
-	if (args && !(ft_isalpha(args[0]) || args[0] == '_') && strlen(args) > 1)
+	if (args && !(ft_isalpha(args[0]) || args[0] == '_') && ft_strlen(args) > 1)
 	{
 		printf("minishell: unset: `%s`: not a valid identifier\n", args);
 		g_check.exit_status = EXIT_FAILURE;

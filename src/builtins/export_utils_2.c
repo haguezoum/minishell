@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_utils_2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/08 16:10:19 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/08 18:35:38 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/10 03:18:55 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	is_valid_env_var_name(char *str)
 	i = 0;
 	while (str[i])
 	{
-		if (!ft_isalnum(str[i]) && str[i] != '_')
+		if (ft_isalnum(str[i]) && str[i] != '_')
 			return (0);
 		i++;
 	}

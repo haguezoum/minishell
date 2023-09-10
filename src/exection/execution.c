@@ -6,7 +6,7 @@
 /*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 00:50:46 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/08 19:48:50 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/10 03:11:13 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 int	redirection(t_relem *tmp, t_environment *evn_vars)
 {
-	int	fd;
-
 	if (tmp->type == REDIR_OUT)
 	{
 		if (redirout(tmp->argument))

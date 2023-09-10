@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 08:54:06 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/10 02:45:59 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/10 03:51:55 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,35 +32,16 @@ void	execute_right_child(t_node *right_node, int pipe_fd[2],
 	exit(0);
 }
 
-int	check_builtin_cmd(t_cmd *ptr)
-{
-	if (ft_strcmp(ptr->args[0], "echo") == 0)
-		return (1);
-	else if (ft_strcmp(ptr->args[0], "cd") == 0)
-		return (1);
-	else if (ft_strcmp(ptr->args[0], "pwd") == 0)
-		return (1);
-	else if (ft_strcmp(ptr->args[0], "export") == 0)
-		return (1);
-	else if (ft_strcmp(ptr->args[0], "unset") == 0)
-		return (1);
-	else if (ft_strcmp(ptr->args[0], "env") == 0)
-		return (1);
-	else if (ft_strcmp(ptr->args[0], "exit") == 0)
-		return (1);
-	return (0);
-}
-
 void	excute_builtin(t_cmd *ptr, t_environment *env, t_global *token_list)
 {
 	if (ft_strcmp(ptr->args[0], "echo") == 0)
-		our_echo(ptr, token_list, env->environment_array);
+		our_echo(ptr);
 	else if (ft_strcmp(ptr->args[0], "cd") == 0)
-		our_cd(ptr, env->environment_array);
+		our_cd(ptr);
 	else if (ft_strcmp(ptr->args[0], "pwd") == 0)
 		our_pwd(ptr);
 	else if (ft_strcmp(ptr->args[0], "export") == 0)
-		export(ptr, env, token_list);
+		export(env, token_list);
 	else if (ft_strcmp(ptr->args[0], "unset") == 0)
 		our_unset(ptr, env);
 	else if (ft_strcmp(ptr->args[0], "env") == 0)
@@ -69,13 +50,31 @@ void	excute_builtin(t_cmd *ptr, t_environment *env, t_global *token_list)
 		our_exit(ptr);
 }
 
-void	execute_external_command(t_node *ptr, t_environment *evn_vars)
+void	ft_execve(char *str, t_node *p, t_environment *e, int s)
 {
 	pid_t	pid;
+
+	pid = fork();
+	if (pid < 0)
+		perror("fork");
+	else if (pid == 0)
+		execve(str, p->content.command.args, e->environment_array);
+	else
+	{
+		waitpid(pid, &s, 0);
+		if (ft_strcmp(p->content.command.args[0], str) != 0)
+			free(str);
+	}
+}
+
+void	execute_external_command(t_node *ptr, t_environment *evn_vars)
+{
 	int		status;
 	char	*str;
 
-	if (!ft_strcmp(ptr->content.command.args[0], "./minishell")) {
+	status = EXIT_SUCCESS;
+	if (!ft_strcmp(ptr->content.command.args[0], "./minishell"))
+	{
 		str = ft_strdup("minishell");
 	}
 	else
@@ -86,19 +85,7 @@ void	execute_external_command(t_node *ptr, t_environment *evn_vars)
 		return ;
 	}
 	if (str)
-	{
-		pid = fork();
-		if (pid < 0)
-			perror("fork");
-		else if (pid == 0)
-			execve(str, ptr->content.command.args, evn_vars->environment_array);
-		else
-		{
-			waitpid(pid, &status, 0);
-			if (ft_strcmp(ptr->content.command.args[0], str) != 0)
-				free(str);
-		}
-	}
+		ft_execve(str, ptr, evn_vars, status);
 	else
 	{
 		printf("minishell: %s: command not found\n",

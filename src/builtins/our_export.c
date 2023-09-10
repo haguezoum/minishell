@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   our_export.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 23:20:02 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/08 18:35:35 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/10 03:44:17 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,9 @@ void	print_export_error(const char *arg)
 
 	error_msg = "minishell: export: ";
 	not_valid_msg = ": not a valid identifier\n";
-	write(STDERR_FILENO, error_msg, strlen(error_msg));
-	write(STDERR_FILENO, arg, strlen(arg));
-	write(STDERR_FILENO, not_valid_msg, strlen(not_valid_msg));
+	write(STDERR_FILENO, error_msg, ft_strlen(error_msg));
+	write(STDERR_FILENO, arg, ft_strlen(arg));
+	write(STDERR_FILENO, not_valid_msg, ft_strlen(not_valid_msg));
 }
 
 void	handle_invalid_env_var(char *arg, int *exit_status, char *data)
@@ -89,16 +89,16 @@ int	our_export(char *command, t_environment *env, int quote)
 	if (!command)
 		return (handle_export_without_arguments(env, exit_status));
 	if (name && !is_valid_env_var_name(name))
+	{
+		free(name);
 		handle_invalid_env_var(arg, &exit_status, data);
+		return (exit_status);
+	}
 	else
 	{
 		handle_valid_env_var(name, data, env, &exit_status);
 		free_memory(name, data, quote);
 	}
-	if (name && data)
-	{
-		free(name);
-		free(data);
-	}
+	free_memory(name, data, 0);
 	return (exit_status);
 }

@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/08 19:20:52 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/10 02:47:36 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/10 03:40:50 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # include "../tokenizer/token.h"
-#include <dirent.h>
+# include <dirent.h>
 # include <fcntl.h>
 # include <limits.h>
 # include <stdio.h>
@@ -89,7 +89,7 @@ typedef enum e_type
 {
 	COMMAND,
 	PIPE
-}	t_type;
+}							t_type;
 
 typedef struct s_rlist
 {
@@ -220,18 +220,15 @@ int							handle_export_without_arguments(t_environment *env,
 int							check_option(char *arg);
 void						concatenate_arguments(char **args, int cur_index,
 								int args_to_concatenate);
-void						process_arguments(t_cmd *command,
-								t_global *tokenList, char **environment);
+void						process_arguments(t_cmd *command);
 
-int							change_directory(const char *path,
-								char **environment);
-int							our_cd(t_cmd *command, char **environment);
+int							change_directory(const char *path);
+int							our_cd(t_cmd *command);
 
 int							our_pwd(t_cmd *command);
 void						our_env(t_cmd *command, t_environment *env);
 int							our_unset(t_cmd *cmd, t_environment *env);
-void						our_echo(t_cmd *command, t_global *tokenList,
-								char **environment);
+void						our_echo(t_cmd *command);
 void						our_exit(t_cmd *command);
 void						exec_cmd(t_node *ptr, t_environment *evn_vars,
 								t_global *tokenList);
@@ -254,8 +251,7 @@ void						excute_builtin(t_cmd *ptr, t_environment *env,
 void						execute_external_command(t_node *ptr,
 								t_environment *evn_vars);
 char						*check_cmand_exist_in_dir(t_node *ptr);
-void						export(t_cmd *ptr, t_environment *env,
-								t_global *token_list);
+void						export(t_environment *env, t_global *token_list);
 void						handel_signal(int sig);
 
 char						*check_cmand_exist_in_dir(t_node *ptr);
@@ -282,24 +278,30 @@ char						*ft_strjoin2(char *s1, char *s2);
 void						export_names(char **tmp, t_environment *env);
 void						print_environment(t_environment *env);
 char						*ft_remove_char(char *str, char c);
-void						export_utils(t_cmd *ptr, t_environment *env,
-								char *arg);
+void						export_utils(t_environment *env, char *arg);
 void						print_all_variables(t_environment *env);
 int							check_pipe_error(t_global *current_token);
 int							check_redirection_error(t_global *current_token);
 
-t_global	*check_unclosed_quotes(t_global **current_token, enum e_token type);
-int			process_operator(t_global **current_token, int *has_operator, t_global **prev_word);
-int			process_token(t_global **current_token, int *has_operator, int *has_command, t_global **prev_word);
-int			handle_pipe_line(t_global **current_token, int *has_operator, int *has_command);
-int			handle_operator_case(t_global **current_token, int *has_operator, t_global **prev_word);
-int			is_valid_word(enum e_token type);
-int			is_valid_char(enum e_token type);
-int			syntax_error(const char *msg);
-int			check_pipe_error(t_global *current_token);
-int			check_redirection_error(t_global *current_token);
-t_global	*skip_whitespace(t_global *current_token, int direction);
-int			is_operator(enum e_token type);
-int			check_command_syntax(t_lexer *lexer);
+t_global					*check_unclosed_quotes(t_global **current_token,
+								enum e_token type);
+int							process_operator(t_global **current_token,
+								int *has_operator);
+int							process_token(t_global **current_token,
+								int *has_operator, int *has_command,
+								t_global **prev_word);
+int							handle_pipe_line(int *has_operator,
+								int *has_command);
+int							handle_operator_case(t_global **current_token,
+								int *has_operator, t_global **prev_word);
+int							is_valid_word(enum e_token type);
+int							is_valid_char(enum e_token type);
+int							syntax_error(const char *msg);
+int							check_pipe_error(t_global *current_token);
+int							check_redirection_error(t_global *current_token);
+t_global					*skip_whitespace(t_global *current_token,
+								int direction);
+int							is_operator(enum e_token type);
+int							check_command_syntax(t_lexer *lexer);
 
 #endif

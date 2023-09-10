@@ -6,7 +6,7 @@
 /*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 17:04:10 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/08 19:22:41 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/10 03:04:21 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	hyphen_check(char *s)
 	int	i;
 
 	i = 0;
-	while (i < strlen(s))
+	while (i < (int)ft_strlen(s))
 	{
 		if (s[i] == '-')
 			return (1);
@@ -54,12 +54,12 @@ int	print_echo_argument(t_cmd *command, int first_arg, int cur_index)
 	else
 		first_arg = 0;
 	write(STDOUT_FILENO, command->args[cur_index],
-		strlen(command->args[cur_index]));
+		ft_strlen(command->args[cur_index]));
 	cur_index++;
 	return (cur_index);
 }
 
-void	our_echo(t_cmd *command, t_global *tokenList, char **environment)
+void	our_echo(t_cmd *command)
 {
 	int	cur_index;
 	int	first_arg;

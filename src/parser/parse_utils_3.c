@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_utils_3.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 19:01:51 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/08 17:10:38 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/10 03:10:07 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ t_global	*skip_tokens_until(t_global *token, int target_type)
 	t_global	*tmp;
 
 	tmp = token;
-	while (tmp && tmp->type != target_type)
+	while (tmp && (int)tmp->type != target_type)
 	{
 		tmp = tmp->next_token;
 	}
@@ -45,7 +45,7 @@ int	count_quoted_arguments(t_global *token, int quote_type)
 	arg_index = 0;
 	tmp = token;
 	tmp = tmp->next_token;
-	while (tmp && tmp->type != quote_type)
+	while (tmp && (int)tmp->type != quote_type)
 	{
 		tmp = tmp->next_token;
 		arg_index++;

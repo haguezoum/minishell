@@ -12,17 +12,20 @@
 
 #include "./includes/minishell.h"
 
-t_global *skip_whitespace(t_global *current_token, int direction) {
-    while (current_token && current_token->type == WHITE_SPACE) {
-        if (direction)
-            current_token = current_token->next_token;
-        else
-            current_token = current_token->prev_token;
-    }
-    return current_token;
+t_global	*skip_whitespace(t_global *current_token, int direction)
+{
+	while (current_token && current_token->type == WHITE_SPACE)
+	{
+		if (direction)
+			current_token = current_token->next_token;
+		else
+			current_token = current_token->prev_token;
+	}
+	return (current_token);
 }
 
-
-int is_operator(enum e_token type) {
-    return (type == PIPE_LINE || type == REDIR_IN || type == REDIR_OUT || type == DREDIR_OUT || type == HERE_DOC);
+int	is_operator(enum e_token type)
+{
+	return (type == PIPE_LINE || type == REDIR_IN || type == REDIR_OUT
+		|| type == DREDIR_OUT || type == HERE_DOC);
 }

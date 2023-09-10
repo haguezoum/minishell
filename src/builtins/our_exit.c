@@ -6,7 +6,7 @@
 /*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 17:02:07 by aet-tass          #+#    #+#             */
-/*   Updated: 2023/09/08 19:22:41 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/10 03:04:30 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	get_nb_args(char **args)
 
 void	print_exit_error(const char *error_msg)
 {
-	write(STDERR_FILENO, error_msg, strlen(error_msg));
+	write(STDERR_FILENO, error_msg, ft_strlen(error_msg));
 }
 
 int	get_exit_code(t_cmd *command)

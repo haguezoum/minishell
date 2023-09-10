@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/08 19:02:15 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/10 02:46:45 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/10 03:21:08 by haguezou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,10 @@ void	execute_command(char *line, t_environment *env)
 		execute_tree(ast_tree->top, env, lexer_obj->head);
 		free_ast_tree(ast_tree);
 	}
-	else {
+	else
+	{
 		free_lexer(lexer_obj);
-        return ;
+		return ;
 	}
 	free_lexer(lexer_obj);
 }
@@ -81,6 +82,7 @@ int	main(int ac, char **av, char **envp)
 {
 	t_environment		*env;
 	struct sigaction	sa;
+
 	if (ac && av[0])
 	{
 		env = create_env_vars(envp);
@@ -91,8 +93,10 @@ int	main(int ac, char **av, char **envp)
 		sigaddset(&sa.sa_mask, SIGINT);
 		signal(SIGQUIT, SIG_IGN);
 		sigaction(SIGINT, &sa, NULL);
-		while (1){
+		while (1)
+		{
 			display_prompt(env);
+			system("leaks minishell");
 		}
 	}
 	return (0);
