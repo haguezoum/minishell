@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
+/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/08 19:02:15 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/10 03:21:08 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/10 04:14:31 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,6 @@ int	main(int ac, char **av, char **envp)
 		while (1)
 		{
 			display_prompt(env);
-			system("leaks minishell");
 		}
 	}
 	return (0);
