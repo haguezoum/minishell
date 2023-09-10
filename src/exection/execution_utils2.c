@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_utils2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haguezou <haguezou@student.1337.ma >       +#+  +:+       +#+        */
+/*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/08 10:53:21 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/08 10:55:49 by haguezou         ###   ########.fr       */
+/*   Updated: 2023/09/10 02:47:24 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,14 @@ char	*check_cmand_exist_in_dir(t_node *ptr)
 	char	*str;
 	char	**path;
 	char	*tmp;
+	DIR		*dir;
 
+	if ((dir = opendir (ptr->content.command.args[0])) != NULL) {
+        printf("minishell: %s: is a directory\n", ptr->content.command.args[0]);
+		g_check.exit_status = 126;
+		closedir(dir);
+		return (ft_strdup("dir"));
+    }
 	str = getenv("PATH");
 	path = ft_split(str, ':');
 	if (!path)
@@ -51,3 +58,4 @@ char	*check_cmand_exist_in_dir(t_node *ptr)
 	free_double_pointer(path);
 	return (tmp);
 }
+

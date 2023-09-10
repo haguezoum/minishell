@@ -6,13 +6,14 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/08 19:20:52 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/09 22:06:05 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/10 02:47:36 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # include "../tokenizer/token.h"
+#include <dirent.h>
 # include <fcntl.h>
 # include <limits.h>
 # include <stdio.h>

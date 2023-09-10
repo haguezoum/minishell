@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/08 19:02:15 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/09 22:25:17 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/10 02:46:45 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,10 @@ void	execute_command(char *line, t_environment *env)
 		execute_tree(ast_tree->top, env, lexer_obj->head);
 		free_ast_tree(ast_tree);
 	}
-	else
+	else {
+		free_lexer(lexer_obj);
         return ;
+	}
 	free_lexer(lexer_obj);
 }
 
@@ -75,16 +77,13 @@ void	display_prompt(t_environment *env)
 	}
 }
 
-int	main(int ac, char **av)
+int	main(int ac, char **av, char **envp)
 {
-	extern char			**environ;
 	t_environment		*env;
 	struct sigaction	sa;
-	(void)ac;
-	(void)av;
-	// if (ac && av)
-	// {
-		env = create_env_vars(environ);
+	if (ac && av[0])
+	{
+		env = create_env_vars(envp);
 		g_check.exit_status = 0;
 		sa.sa_handler = &handel_signal;
 		sa.sa_flags = SA_RESTART;
@@ -94,13 +93,7 @@ int	main(int ac, char **av)
 		sigaction(SIGINT, &sa, NULL);
 		while (1){
 			display_prompt(env);
-			// system("leaks minishell");
 		}
-	// }
-	// else
-	// {
-	// 	printf("Oooops , we dont do that here boy !\n");
-	// 	printf("\tUsage: ./minishell\n");
-	// }
+	}
 	return (0);
 }

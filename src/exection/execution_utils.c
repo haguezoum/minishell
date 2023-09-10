@@ -6,7 +6,7 @@
 /*   By: aet-tass <aet-tass@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 08:54:06 by haguezou          #+#    #+#             */
-/*   Updated: 2023/09/09 00:48:21 by aet-tass         ###   ########.fr       */
+/*   Updated: 2023/09/10 02:45:59 by aet-tass         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,20 +75,29 @@ void	execute_external_command(t_node *ptr, t_environment *evn_vars)
 	int		status;
 	char	*str;
 
-	str = check_cmand_exist_in_dir(ptr);
-	if (str && ft_strcmp(str, getenv("PWD")) && ft_strcmp(str, getenv("HOME")))
+	if (!ft_strcmp(ptr->content.command.args[0], "./minishell")) {
+		str = ft_strdup("minishell");
+	}
+	else
+		str = check_cmand_exist_in_dir(ptr);
+	if (str && !ft_strcmp(str, "dir"))
+	{
+		free(str);
+		return ;
+	}
+	if (str)
 	{
 		pid = fork();
-		if (pid == 0)
-		{
-			execve(str, ptr->content.command.args, evn_vars->environment_array);
-		}
-		else if (pid < 0)
+		if (pid < 0)
 			perror("fork");
+		else if (pid == 0)
+			execve(str, ptr->content.command.args, evn_vars->environment_array);
 		else
+		{
 			waitpid(pid, &status, 0);
-		if (ft_strcmp(ptr->content.command.args[0], str) != 0)
-			free(str);
+			if (ft_strcmp(ptr->content.command.args[0], str) != 0)
+				free(str);
+		}
 	}
 	else
 	{
